@@ -22,22 +22,36 @@
       <h3>
 <a id="summary" class="anchor" href="#summary" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Summary</h3>
 
-<p>We are going to parallelize</p>
+<p>We are going to parallelize the training and prediction phases of Gaussian Process Regression on a GPU.</p>
 
 <h3>
-<a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Designer Templates</h3>
+<a id="background" class="anchor" href="#background" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Background</h3>
 
-<p>We’ve crafted some handsome templates for you to use. Go ahead and click 'Continue to layouts' to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved.</p>
-
-<h3>
-<a id="creating-pages-manually" class="anchor" href="#creating-pages-manually" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Creating pages manually</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<p>Gaussian Process (GP) regression models have become very popular in recent years in the machine learning community. This can be attributed to the flexibility offered by these models to allow users to choose the appropriate covariance function to control the degree of smoothness. GP regression is basically a Bayesian nonparametric model (where an underlying finite-dimensional random variable is replaced by a stochastic process). Formally, a GP is a stochastic process where any finite number of random variables have a joint Gaussian distribution (Ref Rasmussen). </p>
 
 <h3>
-<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<a id="challenges" class="anchor" href="#challenges" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Challenges</h3>
 
-<p>You can <a href="https://help.github.com/articles/basic-writing-and-formatting-syntax/#mentioning-users-and-teams" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor’s GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<ul>
+<li>Understand Gaussian Processes and then design an efficient implementation for performing parallel Regression on the same.</li>
+<li>Gaussian Processes rely heavily on matrix operations, such as matrix multiplication matrix inversion. Thus, our main challenge will be to ensure that these bandwidth-bound operations are done efficiently on a GPU.</li>
+<li>We hope to leverage currently available matrix operation routines provided by Magma [reference]. However, the Magma routines are built for general purpose matrix operations, and may have to sacrifice on application-specific optimizations. Therefore, another challenge for us is to try and exploit data access patterns and data locality to squeeze out performance while using general-purpose libraries.</li>
+<li>We understand that achieving linear speedup as the number of cores on the GPU increases may be difficult to achieve due to the inherent nature of the algorithm to update some global state during each phase of the training phase. Therefore, much of our focus will be on achieving maximum acceleration on each individual iteration of the training phase.</li>
+<li>Another challenge will be to ensure that the system scales as the size of the input and the processing power increase.
+Now-a-days, the main focus is not on raw speedup obtained, but speedup obtained per dollar spent. Therefore, another challenge will be to explore whether it is truly better to implement Gaussian Processes on a GPU, or are we better off on a CPU.</li>
+<li>The limitations of resources such as shared memory will limit the scaling that we may able to achieve as the problem size grows. However, given the resources that we have, we should be able to achieve good speedups for workloads upto a certain point beyond which the resources will make it tough to keep going at the same level of performance.</li>
+</ul>
+
+<h3>
+<a id="plan-to-achieve" class="anchor" href="#plan-to-achieve" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Plan to achieve</h3>
+
+<ul>
+<li>Implement a correct, parallel, and efficient implementation of Gaussian Processes on a wide variety of data sets.</li>
+<li>Implement at least 3 covariance kernels.</li>
+<li>Implement code to report metrics of the system. For instance, total job time, statistics about the utilization of compute resources (including divergence statistics), memory bandwidth achieved, accuracy obtained, etc. We will also compare the performance achieved by using different kernels which can potentially help the user to tune the choice of using kernels. For instance, the Squared Exponential Kernel may work well on a certain type of workload, or the Rational Quadratic Kernel may work well on certain other types of workloads etc.</li>
+<li>Compare the system to an efficient serial version that runs on a CPU. Also, we understand that just calculating speedups when code is run on CPU vs GPU is not the correct way of judging how well a system has been designed. Therefore, as discussed previously, we will do a “throughput per dollar” comparison for both platforms and draw conclusions from the * same.</li>
+<li>Design and implement several test suites. These will be used to measure the performance of the code and to compare it to the baseline models.</li>
+</ul>
 
 <h3>
 <a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Support or Contact</h3>
