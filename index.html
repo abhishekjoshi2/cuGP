@@ -29,6 +29,43 @@
 
 <p>Gaussian Process (GP) regression models have become very popular in recent years in the machine learning community. This can be attributed to the flexibility offered by these models to allow users to choose the appropriate covariance function to control the degree of smoothness. GP regression is basically a Bayesian nonparametric model (where an underlying finite-dimensional random variable is replaced by a stochastic process). Formally, a GP is a stochastic process where any finite number of random variables have a joint Gaussian distribution (Ref Rasmussen). </p>
 
+<p>A GP is completely specified by a mean function ($m(\vec{x})$) and a covariance function ($\kappa (\vec{x}_1, \vec{x}_2)$), which for a real process $f(\vec{x})$ can be defined as:</p>
+
+<p>$$ m(\vec{x}) = \mathbf{E}[f(\vec{x})] \ 
+\kappa (\vec{x}_1, \vec{x}_2) =  \mathbf{E}[(f(\vec{x}_1) - m(\vec{x}_1))( f(\vec{x}_2) - m(\vec{x}_2)  )] $$</p>
+
+<p>Generally, the mean function is taken as zero. In that case, the covariance function  ($\kappa (\vec{x}_1, \vec{x}_2)$) basically turns into the covariance between $f(\vec{x}_1)$ and $f(\vec{x}_2)$. The squared exponential (SE) kernel is a common choice of covariance function (amongst a wide range of available choices for the kernel), and is defined as follows:
+$$ \kappa (\vec{x}_1, \vec{x}_2)  = \exp( -\frac{1}{2l^2} | \vec{x}_1 -  \vec{x}_2 |^2 ),$$
+where, $l$ is the lengthscale parameter that needs to be estimated.</p>
+
+<p>In order to perform nonparametric regression, a GP prior is placed over the unknown function. The posterior distribution obtained by multiplying the prior with the likelihood is again a GP. The predictive distribution for a new test point ($\vec{x}<em>*$), given the entire dataset ($n$ tuples of the form $(\vec{x}, y)$) can be shown to be a Gaussian with the following mean ($\overline{f</em><em>}$) and variance ($\mathbf{V}[f_</em>]$):
+$$ \overline{f_<em>} = {\vec{k}_</em>}^{T} (K + \sigma_{n}^2I)^{-1} \vec{y} \
+\mathbf{V}[f_<em>] = \kappa (\vec{x}_</em>, \vec{x}<em>*) - {\vec{k}</em><em>}^{T} (K + \sigma_{n}^2I)^{-1} \vec{k}_</em>
+,$$
+where,  </p>
+
+<ul>
+<li>$K$ is a $n \times n$ matrix where the $ij$th entry is computed as $K_{ij} = \kappa (\vec{x}_i, \vec{x}_j)$,
+
+<ul>
+<li>$\vec{y}$ is a $n \times 1$ vector formed by stacking the $n$ target values together from the dataset,</li>
+<li>$I$ is a $n \times n$ identity matrix,</li>
+<li>$\sigma^2$ is the noise variance,</li>
+<li>$ \vec{k}<em>*$ is a $n \times 1$ vector where each entry is computed as $ \vec{k}</em>{<em><em>{i}} = \kappa (\vec{x}_i, \vec{x}</em></em>)$</li>
+</ul>
+</li>
+</ul>
+
+<p>In order to learn the different parameters (lengthscale(s) of the covariance kernel, the noise and signal variances), a common technique is to use the marginal likelihood maximization framework (this step can be thought of as the 'training' phase). The log marginal likelihood has the following form:</p>
+
+<p>$$ LML = \log p(\vec{y} | X) = -\frac{1}{2} \vec{y}^T (K + \sigma_{n}^2I)^{-1}\vec{y} - \frac{1}{2} \log |K + \sigma_{n}^2I | - \frac{n}{2} \log 2\pi    $$  </p>
+
+<p>If we consider $\vec{\theta}$ as the vector of parameters to estimate, gradient based methods (conjugate gradient of L-BFGS) can be employed after obtaining suitable analytic gradients $ \frac{\partial LML}{ \partial \vec{\theta}_i}$.</p>
+
+<p>The main bottleneck for both training and prediction phases is the matrix inversion step which requires $\mathcal{O}(n^3)$ flops, thus limiting the application of GPs for large datasets having $ n &gt; 10000$ samples.</p>
+
+<p>Our main task in this project is to exploit the data parallelism available while constructing the $K$ matrix, as well as efficiently computing the matrix inverse. If time permits we would like to look at recent approximate approaches that might be more suitable for distributed GPU setting.</p>
+
 <h3>
 <a id="challenges" class="anchor" href="#challenges" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Challenges</h3>
 
