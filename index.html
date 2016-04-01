@@ -51,8 +51,8 @@
 $$ \kappa (\vec{x}_1, \vec{x}_2)  = \exp( -\frac{1}{2l^2} | \vec{x}_1 -  \vec{x}_2 |^2 ),$$
 where, $l$ is the lengthscale parameter that needs to be estimated.</p>
 
-<p>In order to perform nonparametric regression, a GP prior is placed over the unknown function. The posterior distribution obtained by multiplying the prior with the likelihood is again a GP. The predictive distribution for a new test point ( $ \vec{x}_{t} $ ), given the entire dataset ($n$ tuples of the form $(\vec{x}, y)$) can be shown to be a Gaussian with the following mean ( $ \overline{f_{t}} $ ) and variance ( $ \mathbf{V}[f_{t}] $ ):
-$$ \overline{f_{t}} = {\vec{k}_{t}}^{T} (K + \sigma_{n}^2I)^{-1} \vec{y} $$ 
+<p>In order to perform nonparametric regression, a GP prior is placed over the unknown function. The posterior distribution obtained by multiplying the prior with the likelihood is again a GP. The predictive distribution for a new test point ( $ \vec{x}_{t} $ ), given the entire dataset ($n$ tuples of the form $(\vec{x}, y)$) can be shown to be a Gaussian with the following mean ( $ \hat{f_{t}} $ ) and variance ( $ \mathbf{V}[f_{t}] $ ):
+$$ \hat{f_{t}} = {\vec{k}_{t}}^{T} (K + \sigma_{n}^2I)^{-1} \vec{y} $$ 
 
 $$ \mathbf{V}[f_{t}] = \kappa (\vec{x}_{t}, \vec{x}_{t}) - {\vec{k}_{t}}^{T} (K + \sigma_{n}^2I)^{-1} \vec{k}_{t} $$
 where,  </p>
