@@ -51,10 +51,10 @@
 $$ \kappa (\vec{x}_1, \vec{x}_2)  = \exp( -\frac{1}{2l^2} | \vec{x}_1 -  \vec{x}_2 |^2 ),$$
 where, $l$ is the lengthscale parameter that needs to be estimated.</p>
 
-<p>In order to perform nonparametric regression, a GP prior is placed over the unknown function. The posterior distribution obtained by multiplying the prior with the likelihood is again a GP. The predictive distribution for a new test point ( $ \vec{x}_{*} $ ), given the entire dataset ($n$ tuples of the form $(\vec{x}, y)$) can be shown to be a Gaussian with the following mean ($\overline{f_{*}}$) and variance ($\mathbf{V}[f_{*}]$):
-$$ \overline{f_{*}} = {\vec{k}_{*}}^{T} (K + \sigma_{n}^2I)^{-1} \vec{y} $$ 
+<p>In order to perform nonparametric regression, a GP prior is placed over the unknown function. The posterior distribution obtained by multiplying the prior with the likelihood is again a GP. The predictive distribution for a new test point ( $ \vec{x}_{t} $ ), given the entire dataset ($n$ tuples of the form $(\vec{x}, y)$) can be shown to be a Gaussian with the following mean ($\overline{f_{t}}$) and variance ($\mathbf{V}[f_{t}]$):
+$$ \overline{f_{t}} = {\vec{k}_{t}}^{T} (K + \sigma_{n}^2I)^{-1} \vec{y} $$ 
 
-$$ \mathbf{V}[f_{*}] = \kappa (\vec{x}_{*}, \vec{x}_{*}) - {\vec{k}_{*}}^{T} (K + \sigma_{n}^2I)^{-1} \vec{k}_{*} $$
+$$ \mathbf{V}[f_{t}] = \kappa (\vec{x}_{t}, \vec{x}_{t}) - {\vec{k}_{t}}^{T} (K + \sigma_{n}^2I)^{-1} \vec{k}_{t} $$
 where,  </p>
 
 <ul>
@@ -62,7 +62,7 @@ where,  </p>
 <li>$\vec{y}$ is a $n \times 1$ vector formed by stacking the $n$ target values together from the dataset,</li>
 <li>$I$ is a $n \times n$ identity matrix,</li>
 <li>$\sigma^2$ is the noise variance,</li>
-<li>$ \vec{k}_{*}$ is a $n \times 1$ vector where each entry is computed as $ \vec{k}_{*_{i}} = \kappa (\vec{x}_i, \vec{x}_{*})$</li>
+<li>$ \vec{k}_{t}$ is a $n \times 1$ vector where each entry is computed as $ \vec{k}_{t_{i}} = \kappa (\vec{x}_i, \vec{x}_{t})$</li>
 </ul>
 
 
@@ -97,7 +97,7 @@ Now-a-days, the main focus is not on raw speedup obtained, but speedup obtained 
 <li>Implement a correct, parallel, and efficient implementation of Gaussian Processes on a wide variety of data sets.</li>
 <li>Implement at least 3 covariance kernels.</li>
 <li>Implement code to report metrics of the system. For instance, total job time, statistics about the utilization of compute resources (including divergence statistics), memory bandwidth achieved, accuracy obtained, etc. We will also compare the performance achieved by using different kernels which can potentially help the user to tune the choice of using kernels. For instance, the Squared Exponential Kernel may work well on a certain type of workload, or the Rational Quadratic Kernel may work well on certain other types of workloads etc.</li>
-<li>Compare the system to an efficient serial version that runs on a CPU. Also, we understand that just calculating speedups when code is run on CPU vs GPU is not the correct way of judging how well a system has been designed. Therefore, as discussed previously, we will do a “throughput per dollar” comparison for both platforms and draw conclusions from the * same.</li>
+<li>Compare the system to an efficient serial version that runs on a CPU. Also, we understand that just calculating speedups when code is run on CPU vs GPU is not the correct way of judging how well a system has been designed. Therefore, as discussed previously, we will do a “throughput per dollar” comparison for both platforms and draw conclusions from the t same.</li>
 <li>Design and implement several test suites. These will be used to measure the performance of the code and to compare it to the baseline models.</li>
 </ul>
 
