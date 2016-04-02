@@ -40,7 +40,8 @@
 <h3>
 <a id="background" class="anchor" href="#background" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Background</h3>
 
-<p>Gaussian Process (GP) regression models have become very popular in recent years in the machine learning community. This can be attributed to the flexibility offered by these models to allow users to choose the appropriate covariance function to control the degree of smoothness. GP regression is basically a Bayesian nonparametric model (where an underlying finite-dimensional random variable is replaced by a stochastic process). Formally, a GP is a stochastic process where any finite number of random variables have a joint Gaussian distribution (Ref Rasmussen). </p>
+<p>Gaussian Process (GP) regression models have become very popular in recent years in the machine learning community. This can be attributed to the flexibility offered by these models to allow users to choose the appropriate covariance function to control the degree of smoothness. GP regression is basically a Bayesian nonparametric model (where an underlying finite-dimensional random variable is replaced by a stochastic process). Formally, a GP is a stochastic process where any finite number of random variables have a joint Gaussian distribution [RW06]. </p>
+
 
 <p>A GP is completely specified by a mean function ($m(\vec{x})$) and a covariance function ($\kappa (\vec{x}_1, \vec{x}_2)$), which for a real process $f(\vec{x})$ can be defined as:</p>
 
@@ -75,7 +76,7 @@ where,  </p>
 
 <p>The main bottleneck for both training and prediction phases is the matrix inversion step which requires $\mathcal{O}(n^3)$ flops, thus limiting the application of GPs for large datasets having $ n &gt; 10000$ samples.</p>
 
-<p>Our main task in this project is to exploit the data parallelism available while constructing the $K$ matrix, as well as efficiently computing the matrix inverse. If time permits we would like to look at recent approximate approaches that might be more suitable for distributed GPU setting.</p>
+<p>Our main task in this project is to exploit the data parallelism available while constructing the $K$ matrix, as well as efficiently computing the matrix inverse. If time permits we would like to look at recent approximate approaches that might be more suitable for distributed GPU setting. [DN15, GN15]]</p>
 
 <h3>
 <a id="challenges" class="anchor" href="#challenges" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Challenges</h3>
@@ -178,7 +179,12 @@ We will use the C++ programming language for this project along with the Nvidia 
 
 </ul>
 
+<h3>
+<a id="references" class="anchor" href="#references" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>References</h3>
 
+[RW06]: Williams, Christopher KI, and Carl Edward Rasmussen. "Gaussian processes for machine learning." the MIT Press 2.3 (2006): 4.
+[WN15]: Wilson, Andrew Gordon, and Hannes Nickisch. "Kernel interpolation for scalable structured Gaussian processes (KISS-GP)." arXiv preprint arXiv:1503.01057 (2015).
+[DN15]: Deisenroth, Marc Peter, and Jun Wei Ng. "Distributed Gaussian Processes." arXiv preprint arXiv:1502.02843 (2015).
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/abhishekjoshi2/cuGP">cuGP</a> is maintained by <a href="https://github.com/sidgoyal78">sidgoyal78</a> and <a href="https://github.com/abhishekjoshi2">abhishekjoshi2</a>.</span>
