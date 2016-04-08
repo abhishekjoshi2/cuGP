@@ -104,6 +104,88 @@ Now-a-days, the main focus is not on raw speedup obtained, but speedup obtained 
 <li>Design and implement several test suites. These will be used to measure the performance of the code and to compare it to the baseline models.</li>
 </ul>
 
+
+<h3>
+<a id="presentation" class="anchor" href="#presentation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Presentation</h3>
+
+<p>We will show the performance of the system under several workloads, and we will compare it to a serial version implemented on a CPU. We will show several graphs for different test data sets.</p>
+
+<h3>
+<a id="platform" class="anchor" href="#platform" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Platform Choice</h3>
+<p>
+We will use the C++ programming language for this project along with the Nvidia CUDA library. We will develop our code on the latedays cluster, since the cluster has the fastest Nvidia GPUs (Nvidia TitanX GPU) on campus, and we would be focusing on obtaining maximum performance for the hardware on latedays.
+</p>
+
+
+<h3>
+<a id="resources" class="anchor" href="#resources" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resources</h3>
+
+<p>We will start our code base from scratch.</p>
+
+
+
+<h3>
+<a id="schedule" class="anchor" href="#schedule" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Schedule</h3>
+
+
+
+<ul>
+
+<li>2nd April</li>
+
+<ul>
+<li>Install Magma, Lapack, Atlas, ACML, BLAS, CBLAS.</li>
+</ul>
+
+<li>8th April</li>
+
+<ul>
+<li>Get a sequential code for GP working. Implement at least 2 Covariance Kernels.</li>
+<li>Test it on chosen workloads to get a fair estimate of how it performs</li>
+<li>Work on Design of the GPU version of the system, and discuss how to port the code to run on GPU</li>
+</ul>
+
+<li>15th April (checkpoint)</li>
+
+<ul>
+<li>Implement one more covariance kernel</li>
+<li>Should have a naively parallelized code running on GPU</li>
+<li>Keep performing regression tests to ensure that the porting of code is correct</li>
+</ul>
+
+<li>22nd April</li>
+
+<ul>
+<li>Reevaluate design of parallel code and optimize for performance, locality, access patterns</li>
+<li>Read research papers to extend our current design and possibly implement different strategies</li>
+<li>Start work on performance evaluation to find places where the framework takes a long time. Find bottlenecks</li>
+</ul>
+
+<li>29th April</li>
+<ul>
+<li>Investigate scalability of the framework, both - with increasing number of cores, and with increasing data sets. Does the framework scale?</li>
+<li>Investigate effects of different covariance kernels. Find reasons for why they perform as they do.</li>
+</ul>
+
+<li>4th May</li>
+<ul>
+<li>Finish all work</li>
+<li>Evaluate system performance and fine tune different parameters</li>
+</ul>
+
+<li>7th May</li>
+<ul>
+<li>Code drop in</li>
+<li>Finish writeup</li>
+</ul>
+
+</ul>
+
+
+
+
+
+
 <h3>
 <a id="references" class="anchor" href="#references" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>References</h3>
 
