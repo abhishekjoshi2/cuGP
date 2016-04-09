@@ -48,13 +48,16 @@ def main():
 	d = 4
 	
 	for i in range(t):
-		M = np.random.random([d, d])
+		M = np.random.random([d, d]) * 1000
 		symM = np.dot(M.transpose(), M)
-		
+		print symM
 		# cholesky from numpy
 		ans_ref = np.linalg.cholesky(symM)
 		serial_cholesky_inplace(symM)
-	        	
+		print '=========================='
+		print symM 
+		print np.dot(symM, symM.transpose())
+		print
 		print "------- test case", i+1, "--------"
 		val = compare_two(ans_ref, symM)
 		print val
