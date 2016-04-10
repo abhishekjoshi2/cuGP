@@ -48,12 +48,17 @@ int main()
 
 	double inithypervalues[] = {1.0, 1.0, 1.0};
 
-	Covsum kernelobj(n, dim);
+	Covsum kernelobj(200, dim);
 	kernelobj.set_loghyperparam(inithypervalues);
 	double ans = kernelobj.compute_loglikelihood(X, y);
-	
+
+		
+
+	double *grad = kernelobj.compute_gradient_loghyperparam(X, y);
+	std::cout << grad[0] << std::endl;
+	std::cout << grad[1] << std::endl;
+	std::cout << grad[2] << std::endl;
+	// 
 	std::cout << ans << std::endl;
 	return 0;	
 }		
-	
-

@@ -2,7 +2,7 @@
 #include "matrixops.h"
 #include <cmath>
 #include <iostream>
-
+#include <cstdio>
 // Just for the sake of default constructor
 Covsum::Covsum(){ }
 
@@ -56,21 +56,38 @@ void Covsum::compute_K_train(double **X, double **output){
 	double ell_sq = exp(this->loghyper[0] * 2); //l^2 after coverting back from the log form
 	double signal_var = exp(this->loghyper[1] * 2); // signal variance
 	double noise_var = exp(this->loghyper[2] * 2); //noise variance
+
 	int n = this->inputdatasize;
 
-	for (int i = 0 ; i < n ;i++){
-		for(int j = i; j < n;j++){
-			if (i == j){
-				output[i][j] = noise_var;		// for the noise covariance kernel
-				continue;
-			}
+	std::cout << "ELL_SQ: " << ell_sq << std::endl;
+	std::cout << "SIGNAL_VAR: " << signal_var << std::endl;
+	std::cout << "NOISE_VAR: " << noise_var << std::endl;	
+	
+	
+	for (int i = 0 ; i < n ;i++)
+	{
+		for(int j = i; j < n;j++)
+		{
+			printf("i = %d, j = %d \n", i, j);
 			subtract_vec(X[i], X[j], this->temp1dvec, this->numdim);
 			double val = dotproduct_vec(this->temp1dvec, this->temp1dvec, this->numdim);
 			val = signal_var * exp(-val * 0.5 / ell_sq); 	//for SE kernel
 			output[i][j] = val;
 			output[j][i] = val;				// exploting symmetry
+
+			if (i == j)
+				output[i][j] += noise_var;		// for the noise covariance kernel
 		}
 	}
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			std::cout << output[i][j] << " ";
+		}
+		std::cout << std::endl;
+	}
+	printf("Sahi ho gaya\n");
 }
 
 // computes the 1 x n covariance vector for a given test point (xtest): CURRENTLY - only implements SE + noise
@@ -93,15 +110,21 @@ double Covsum::compute_loglikelihood(double **X, double *y){
 
 	compute_K_train(X, this->tempKmatrix);
 	std::pair<double, double> pp = compute_chol_and_det(this->tempKmatrix, y, n);
-	return -0.5 * ( pp.first + log(pp.second) + n * 1.83787);  // log (2 * pi) = 1.8378770664093453
+	std::cout << "Product: " << pp.first << " log Determinant: " << pp.second << std::endl;
+
+
+
+	return -0.5 * ( pp.first + pp.second + n * 1.83787);  // log (2 * pi) = 1.8378770664093453
 	
 }
 void Covsum::compute_squared_dist(double **X, double c){
 	int n = this->inputdatasize;
 	int d = this->numdim;
 	int i,j;
+	std::cout << "inside the squared dist function";
 	for(i = 0 ; i < n ; i++){
 		for(j = i ; j< n ;j++){
+			printf("i = %d, j = %d\n", i,j);
 			if (i == j){
 				tempmatrix2[i][j] = 0.0;
 				continue;
@@ -112,7 +135,11 @@ void Covsum::compute_squared_dist(double **X, double c){
 			tempmatrix2[j][i] = val; 		// by symmetry
 		}
 	}
+	printf("Okay boyy: Now printing the squared distance matrix\n");
+	print_matrix(tempmatrix2, n , n);	
+
 }
+
 
 
 //returns the array of gradients (size = num of hyperparameters)
@@ -123,11 +150,16 @@ double* Covsum::compute_gradient_loghyperparam(double **X, double *y){
 	double noise_var = exp(this->loghyper[2] * 2); //noise variance
 	double *ans = new double[3]; // return 3 gradients
 
-
+	printf("Yahhan tak aya");
 	compute_K_train(X, this->tempKmatrix); //required by all
 
 	//for length scale	
+	
+	printf("compute_K_train ka calll ho gaya\n");
+	printf("Now squred dist me\n");
 	compute_squared_dist(X, ell_sq);	 			   //tempmatrix2 will be populated
+
+	printf("\n\n Now calling elementwise matrix multiply\n");
 	elementwise_matrixmultiply(this->tempKmatrix, this->tempmatrix2, this->tempmatrix3, n ,n ); //tempmatrix3 will be populated	
 	
 	//for signal variance
@@ -140,28 +172,47 @@ double* Covsum::compute_gradient_loghyperparam(double **X, double *y){
 	// Now the common parts
 		
 	// computing inverse of K: tempKinv = K^{-1}
+
+	printf("Now calling compute_K_inverse\n");
 	compute_K_inverse(this->tempKmatrix, this->tempKinv, n); // fill the value in tempKinv;	
+	
+
+	printf("now Kinvy using cholesky to save some flops\n");
 	vector_Kinvy_using_cholesky(this->tempKmatrix, y, this->temp1dvec, n); //fill the vector in temp1dvec = alpha
 	
 	// now computing: tempAlphamatrix =  alpha * alpha.transpose()
+	
+	printf("now getting outer product of the 2 vectors\n");
 	get_outer_product(this->temp1dvec, this->temp1dvec, this->tempAlphamatrix, n); //fill in the matrix tempAlphamatrix = t1 * t1.transpose()
 	
 	// now computing: tempWmatrix = K^{-1} - alpha * alpha.transpose() = tempKinv - tempAlphamatrix;
+	
+	printf("now in subtract matrices\n");
 	subtract_matrices(this->tempKinv, this->tempAlphamatrix, this->tempWmatrix, n , n);
 	
 	double psum1 = 0.0, psum2 = 0.0, psum3 = 0.0; //partial sum variables for ell, sigma_var, noise_var respectively
+
+
+	printf("Please check the W matrix\n");
+	print_matrix(tempWmatrix, n, n);
+	printf("\n\n");
+	printf("now check K matrix\n");
+	print_matrix(tempKmatrix, n, n);
+	printf("\n\n");
 	
 	for(int i = 0 ; i < n ; i++){
-		for(int j = 0 ; j < n ;i++){
+		for(int j = 0 ; j < n ; j++){
 			double curele = this->tempWmatrix[i][j];
 			psum1 += curele * this->tempmatrix3[i][j]; //tempmatrix3 has the stuff of ell 
-			psum2 += curele * 2.0 * this->tempKmatrix[i][j]; // for sigma_var we need 2 * K
+			psum2 += curele * 2.0 * this->tempKmatrix[i][j] ; // for sigma_var we need 2 * K
 			if(i == j){
 				psum3 += curele * noise_var * 2;
+				psum2 -= curele * 2.0 * noise_var;
 			}
 		}
 	}
 
+	printf(" KKKKKKKKKKKKKKKKKKKKKKKKK \n");
 	ans[0] = psum1/2.0;
 	ans[1] = psum2/2.0;
 	ans[2] = psum3/2.0;

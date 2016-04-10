@@ -1,11 +1,15 @@
 #include<cstdlib>
 #include<utility>
+#include<cstdio>
+
 void vector_matrix_multiply(double *, double **, int , double *);
 
 double vector_vector_multiply(double *, double *, int);
 
 void get_cholesky(double **, double **, int);
 
+void print_matrix(double **M , int r, int c);
+void print_vector(double *M, int n);
 
 void subtract_vec(double *, double *, double *, int);
 double dotproduct_vec(double *, double *, int );

@@ -1,5 +1,24 @@
 #include <cmath>
 #include <utility>
+#include <cstdio>
+
+void print_matrix(double **M , int r, int c){
+        for(int i = 0 ; i < r; i++){
+                for(int j = 0 ; j< c ;j++){
+                        printf("%lf ", M[i][j]);
+                }
+                printf("\n");
+        }
+}
+
+void print_vector(double *M, int n){
+
+	for(int i = 0 ; i < n ;i++){
+		printf("%lf\n", M[i]);
+	}
+}
+
+
 void vector_matrix_multiply(double *vector, double **matrix, int n, double *out_vector)
 {
 	double sum;
@@ -69,11 +88,12 @@ void get_cholesky(double **input, double **output, int dim)
 // It computes 2 things:
 //	- y'*inv(K)*y
 //	- det(inv(k))
-std::pair<double, double> multiply_and_get_determinant(double *yt, double **X, double *y, int n)
+std::pair<double, double> multiply_and_get_logdeterminant(double *yt, double **X, double *y, int n)
 {
 	double **L, **U;
 	double product = 0.0;
-	double det = 1;
+	double det = 0.0;
+	//double det = 1;
 
 	L = new double*[n];
 	U = new double*[n];
@@ -85,8 +105,11 @@ std::pair<double, double> multiply_and_get_determinant(double *yt, double **X, d
 	
 	get_cholesky(X, L, n);
 
-	for (int i = 0; i < n; i++)
-		det *= L[i][i] * L[i][i];
+	for (int i = 0; i < n; i++){
+		det += log(L[i][i]) ;
+		//det *= L[i][i] * L[i][i];
+	}
+	det = 2 * det;
 
 	matrix_transpose(L, U, n); 	//MAYBE WE CAN AVOID TRANSPOSE - BY USING L[j][i] INSTEAD OF U[i][j]
 
@@ -173,7 +196,7 @@ double dotproduct_vec(double *a, double *b, int DIM){
 
 
 std::pair<double, double> compute_chol_and_det(double **K, double * y, int n){
- 	return multiply_and_get_determinant(y, K, y, n);
+ 	return multiply_and_get_logdeterminant(y, K, y, n);
 }
 
 // For computing: C = A - B (element wise matrix difference)
@@ -183,6 +206,8 @@ void subtract_matrices(double **A, double **B, double **C, int n1, int n2){
 			C[i][j] = A[i][j] - B[i][j];		
 		}
 	}
+	printf("inside matrix subtraction\n");
+	print_matrix(C, n1, n2);
 }
 
 // For computing: 
@@ -192,6 +217,8 @@ void get_outer_product(double *a, double *b, double **M, int n){
 			M[i][j] = a[i] * b[j];
 		}
 	}
+	printf("Inside outer_product\n");
+	print_matrix(M, n, n);
 }
 
 // For computing: ans = inv(K) * y
@@ -239,6 +266,8 @@ void vector_Kinvy_using_cholesky(double **K, double *y, double *ans, int n){
 	}
 	delete L;
 	delete U;
+	printf("kinvy using chol ho gaya, now see the output\n");
+	print_vector(ans, n);
 }
 
 // For making M = I (identity matrix)
@@ -319,6 +348,10 @@ void compute_K_inverse(double **K, double **outputK, int n){
 	//	- Now MBS
 	matrix_backward_substitution(temp1, T, outputK, n); // should make L' * outputK = T
 	
+	printf("Now seeing the inv(K) matrix only\n");
+
+	print_matrix(outputK, n, n);
+	
 }
 
 void elementwise_matrixmultiply(double ** inp1, double ** inp2, double ** output, int n1, int n2){
@@ -327,4 +360,6 @@ void elementwise_matrixmultiply(double ** inp1, double ** inp2, double ** output
 			output[i][j] = inp1[i][j] * inp2[i][j];
 		}
 	}
+	printf("Now printing the output matrix from EEM\n");
+	print_matrix(output, n1, n2);
 }
