@@ -25,5 +25,6 @@ class Covsum{
                 void compute_squared_dist(double **, double );
                 double* get_loghyperparam();
                 void set_loghyperparam(double *);
+
 };
 
