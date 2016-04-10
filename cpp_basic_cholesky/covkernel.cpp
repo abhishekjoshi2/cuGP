@@ -56,20 +56,34 @@ void Covsum::compute_K_train(double **X, double **output){
 	double ell_sq = exp(this->loghyper[0] * 2); //l^2 after coverting back from the log form
 	double signal_var = exp(this->loghyper[1] * 2); // signal variance
 	double noise_var = exp(this->loghyper[2] * 2); //noise variance
+
 	int n = this->inputdatasize;
 
-	for (int i = 0 ; i < n ;i++){
-		for(int j = i; j < n;j++){
-			if (i == j){
-				output[i][j] = noise_var;		// for the noise covariance kernel
-				continue;
-			}
+	std::cout << "ELL_SQ: " << ell_sq << std::endl;
+	std::cout << "SIGNAL_VAR: " << signal_var << std::endl;
+	std::cout << "NOISE_VAR: " << noise_var << std::endl;
+
+	for (int i = 0 ; i < n ;i++)
+	{
+		for(int j = i; j < n;j++)
+		{
 			subtract_vec(X[i], X[j], this->temp1dvec, this->numdim);
 			double val = dotproduct_vec(this->temp1dvec, this->temp1dvec, this->numdim);
 			val = signal_var * exp(-val * 0.5 / ell_sq); 	//for SE kernel
 			output[i][j] = val;
 			output[j][i] = val;				// exploting symmetry
+
+			if (i == j)
+				output[i][j] += noise_var;		// for the noise covariance kernel
 		}
+	}
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			std::cout << output[i][j] << " ";
+		}
+		std::cout << std::endl;
 	}
 }
 
@@ -93,6 +107,10 @@ double Covsum::compute_loglikelihood(double **X, double *y){
 
 	compute_K_train(X, this->tempKmatrix);
 	std::pair<double, double> pp = compute_chol_and_det(this->tempKmatrix, y, n);
+	std::cout << "Product: " << pp.first << ", Determinant: " << pp.second << std::endl;
+
+
+
 	return -0.5 * ( pp.first + log(pp.second) + n * 1.83787);  // log (2 * pi) = 1.8378770664093453
 	
 }

@@ -48,12 +48,12 @@ int main()
 
 	double inithypervalues[] = {1.0, 1.0, 1.0};
 
-	Covsum kernelobj(n, dim);
+	Covsum kernelobj(10, dim);
 	kernelobj.set_loghyperparam(inithypervalues);
 	double ans = kernelobj.compute_loglikelihood(X, y);
 	
 	std::cout << ans << std::endl;
+
+	// 
 	return 0;	
 }		
-	
-
