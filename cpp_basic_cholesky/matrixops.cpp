@@ -64,6 +64,7 @@ void get_cholesky(double **input, double **output, int dim)
 	}*/
 }
 
+
 std::pair<double, double> multiply_and_get_determinant(double *yt, double **X, double *y, int n)
 {
 	double **L, **U;
@@ -83,7 +84,7 @@ std::pair<double, double> multiply_and_get_determinant(double *yt, double **X, d
 	for (int i = 0; i < n; i++)
 		det *= L[i][i] * L[i][i];
 
-	matrix_transpose(L, U, n);
+	matrix_transpose(L, U, n); 	//MAYBE WE CAN AVOID TRANSPOSE - BY USING L[j][i] INSTEAD OF U[i][j]
 
 	// Ax = b -> LUx = b. Then y is defined to be Ux
 	double *x = new double[n];
@@ -184,5 +185,47 @@ void get_outer_product(double *a, double *b, double **M, int n){
 		}
 	}
 }
+
+
+// Much of it is taken from the above multiply_and_determinant code
+void vector_Kinvy_using_cholesky(double **K, double *y, double *ans, int n){
+
+	double **L, **U;
+
+	L = new double*[n];
+	U = new double*[n];
+	for (int i = 0; i < n; i++)
+	{
+		L[i] = new double[n];
+		U[i] = new double[n];
+	}
+	
+	get_cholesky(X, L, n);
+	matrix_transpose(L, U, n); 	//MAYBE WE CAN AVOID TRANSPOSE - BY USING L[j][i] INSTEAD OF U[i][j]
+
+	double *temp = new double[n];
+	// Forward solve Ly = b
+	for (int i = 0; i < n; i++)
+	{
+		temp[i] = y[i];
+		for (int j = 0; j < i; j++)
+		{
+			temp[i] -= L[i][j] * temp[j];
+		}
+		temp[i] /= L[i][i];
+	}
+	// Backward solve Ux = y
+	for (int i = n - 1; i >= 0; i--)
+	{
+		ans[i] = temp[i];
+		for (int j = i + 1; j < n; j++)
+		{
+			ans[i] -= U[i][j] * ans[j];
+		}
+		ans[i] /= U[i][i];
+	}
+}
+
+
 
 

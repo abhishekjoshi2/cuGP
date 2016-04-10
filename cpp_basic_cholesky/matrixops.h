@@ -7,8 +7,6 @@ void get_cholesky(double **, double **, int);
 
 void subtract_vec(double *, double *, double *, int);
 
-
-
 /*
 
 Calls to the matrix library:

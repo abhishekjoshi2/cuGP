@@ -39,7 +39,7 @@ Calls to the matrix library:
 - subtract_vec(a, b, c, DIM) -> c = a - b (all 3 are vectors of size DIM x 1)
 			   for subtracting 2 vectors: takes 3 args - 2 inputs (both 1D double array)  and fills the third input array (1D double array)
 
-- dotproduct_vec(a, b, n, DIM) ->  return a' * b
+- dotproduct_vec(a, b, DIM) ->  return a' * b
 			return: transpose(vector1) * vector2 [both vectors have size DIM x 1]
 			computes the dotproduct of 2 vectors : takes 2 args - 2 inputs (both 1D double array) and outputs a double
 
@@ -56,7 +56,7 @@ Calls to the matrix library:
 
 - compute_K_inverse(K, outputK, n); -> outputK = inverse(K) // so can't use cholesky, K is n x n square matrix
 
-- vector_using_cholesky(K, y, ans, n); -> ans = inverse(K) * y //can very well use cholesky
+- vector_Kinvy_using_cholesky(K, y, ans, n); -> ans = inverse(K) * y //can very well use cholesky
 					K: n x n, y: n x 1, ans: n x 1
 
 */
@@ -194,7 +194,7 @@ double* Covsum::compute_gradient_loghyperparam(double **X, double *y){
 		
 	// computing inverse of K: tempKinv = K^{-1}
 	compute_K_inverse(tempKmatrix, tempKinv, n); // fill the value in tempKinv;	
-	vector_using_cholesky(tempKmatrix, y, temp1dvec, n); //fill the vector in temp1dvec = alpha
+	vector_Kinvy_using_cholesky(tempKmatrix, y, temp1dvec, n); //fill the vector in temp1dvec = alpha
 	
 	// now computing: tempAlphamatrix =  alpha * alpha.transpose()
 	get_outer_product(temp1dvec, temp1dvec, tempAlphamatrix, n); //fill in the matrix tempAlphamatrix = t1 * t1.transpose()
