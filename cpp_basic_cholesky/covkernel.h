@@ -10,7 +10,8 @@ class Covsum{
                        ** tempmatrix3, \
                        ** tempmatrix4, \
                         ** tempWmatrix, \
-                        ** tempAlphamatrix;
+                        ** tempAlphamatrix, \
+			**tempKinv;
         public:
 
                 Covsum();
@@ -19,10 +20,10 @@ class Covsum{
 
                 double compute_loglikelihood(double **, double *); // arguments are X, y
                 double* compute_gradient_loghyperparam(double **, double *);
-                void compute_K(double **, double **);
+                void compute_K_train(double **, double **);
                 void compute_k_test(double **, double *, double *);
-                void Covsum::compute_squared_dist(double **, double );
-             //   double* get_loghyperparam();
-              //  void set_loghyperparam(double *);
+                void compute_squared_dist(double **, double );
+                double* get_loghyperparam();
+                void set_loghyperparam(double *);
 };
 

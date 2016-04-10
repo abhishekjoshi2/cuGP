@@ -208,7 +208,7 @@ void vector_Kinvy_using_cholesky(double **K, double *y, double *ans, int n){
 		U[i] = new double[n];
 	}
 	
-	get_cholesky(X, L, n);
+	get_cholesky(K, L, n);
 	matrix_transpose(L, U, n); 	//MAYBE WE CAN AVOID TRANSPOSE - BY USING L[j][i] INSTEAD OF U[i][j]
 
 	double *temp = new double[n];
@@ -291,7 +291,7 @@ void matrix_backward_substitution(double **A, double **B, double **output, int D
 //			So we employ MBS with L' and T to get S					        
 void compute_K_inverse(double **K, double **outputK, int n){
 
-	double **temp1, **T, **I, *L;
+	double **temp1, **T, **I, **L;
 	temp1 = new double*[n];
 	T = new double*[n];
 	I = new double *[n];
@@ -299,7 +299,7 @@ void compute_K_inverse(double **K, double **outputK, int n){
 	
 	for(int i = 0 ; i < n ;i++){
 		temp1[i] = new double[n];
-		T = new double[n];
+		T[i] = new double[n];
 		I[i] = new double[n];
 		L[i] = new double[n];
 	}
@@ -319,4 +319,12 @@ void compute_K_inverse(double **K, double **outputK, int n){
 	//	- Now MBS
 	matrix_backward_substitution(temp1, T, outputK, n); // should make L' * outputK = T
 	
+}
+
+void elementwise_matrixmultiply(double ** inp1, double ** inp2, double ** output, int n1, int n2){
+	for(int i = 0 ; i < n1 ;i++){
+		for(int j = 0 ; j < n2; j++){
+			output[i][j] = inp1[i][j] * inp2[i][j];
+		}
+	}
 }
