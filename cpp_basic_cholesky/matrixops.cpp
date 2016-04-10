@@ -122,4 +122,67 @@ std::pair<double, double> multiply_and_get_determinant(double *yt, double **X, d
 	return ret;
 }
 
+/*
+
+Calls to the matrix library:
+- subtract_vec(a, b, c, DIM) -> c = a - b (all 3 are vectors of size DIM x 1)
+                           for subtracting 2 vectors: takes 3 args - 2 inputs (both 1D double array)  and fills the third input array (1D double array)
+
+- dotproduct_vec(a, b, DIM) ->  return a' * b
+                        return: transpose(vector1) * vector2 [both vectors have size DIM x 1]
+                        computes the dotproduct of 2 vectors : takes 2 args - 2 inputs (both 1D double array) and outputs a double
+
+- compute_chol_and_det(K, y, n); -> returns a pair (note n is for size, as K: n x n and y: n x 1)
+                                pair.first = transpose(y) * inverse(K) * inverse(y)
+                                pair.second = determinant(K)
+                                
+- subtract_matrices(A, B, C, n1, n2); -> C = A - B  // all 3 matrices are of size n1 x n2
+                                ( subtraction is elementwise )
+
+- get_outer_product(a, b, M, n); ->  M = a * transpose(b)  //n is telling the size
+                                basically it is vector1 * vector2.transpose()
+                                a: n x 1, b = n x 1, transpose(b): 1 x n => M will be n x n
+
+- compute_K_inverse(K, outputK, n); -> outputK = inverse(K) // so can't use cholesky, K is n x n square matrix
+
+- vector_using_cholesky(K, y, ans, n); -> ans = inverse(K) * y //can very well use cholesky
+                                        K: n x n, y: n x 1, ans: n x 1
+
+*/
+
+void subtract_vec(double *a, double *b, double *c, int DIM){
+	for (int i = 0 ; i < DIM ; i++){
+		c[i] = a[i] - b[i];
+	}
+}
+
+double dotproduct_vec(double *a, double *b, int DIM){
+	double ans  = 0.0;
+	for(int i = 0 ; i < DIM; i++){
+		ans += a[i] * b[i];
+	}
+	return ans;
+}
+
+
+std::pair<double, double> compute_chol_and_det(double **K, double * y, int n){
+ 	return multiply_and_get_determinant(y, K, y, n);
+}
+
+void subtract_matrices(double **A, double **B, double **C, int n1, int n2){
+	for(int i = 0 ; i < n1; i++){
+		for(int j = 0 ; j < n2 ; j++){
+			C[i][j] = A[i][j] - B[i][j];		
+		}
+	}
+}
+
+void get_outer_product(double *a, double *b, double **M, int n){
+	for(int i = 0 ; i < n ; i++){
+		for(int j = 0 ; j < n ; j++){
+			M[i][j] = a[i] * b[j];
+		}
+	}
+}
+
 
