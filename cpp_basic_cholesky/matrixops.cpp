@@ -29,7 +29,9 @@ void matrix_transpose(double **input, double**output, int n)
 			output[j][i] = input[i][j];
 }
 
-
+// For computing Cholesky decomposition of a matrix A = LL'
+//	- we first decompose input as L * L'
+//	- output = L
 void get_cholesky(double **input, double **output, int dim)
 {
 	for (int i = 0; i < dim; i++)
@@ -64,7 +66,9 @@ void get_cholesky(double **input, double **output, int dim)
 	}*/
 }
 
-
+// It computes 2 things:
+//	- y'*inv(K)*y
+//	- det(inv(k))
 std::pair<double, double> multiply_and_get_determinant(double *yt, double **X, double *y, int n)
 {
 	double **L, **U;
@@ -151,12 +155,14 @@ Calls to the matrix library:
 
 */
 
+// For computing c = a - b (element wise vector subtraction)
 void subtract_vec(double *a, double *b, double *c, int DIM){
 	for (int i = 0 ; i < DIM ; i++){
 		c[i] = a[i] - b[i];
 	}
 }
 
+// For computing ans = a' * b;
 double dotproduct_vec(double *a, double *b, int DIM){
 	double ans  = 0.0;
 	for(int i = 0 ; i < DIM; i++){
@@ -170,6 +176,7 @@ std::pair<double, double> compute_chol_and_det(double **K, double * y, int n){
  	return multiply_and_get_determinant(y, K, y, n);
 }
 
+// For computing: C = A - B (element wise matrix difference)
 void subtract_matrices(double **A, double **B, double **C, int n1, int n2){
 	for(int i = 0 ; i < n1; i++){
 		for(int j = 0 ; j < n2 ; j++){
@@ -178,6 +185,7 @@ void subtract_matrices(double **A, double **B, double **C, int n1, int n2){
 	}
 }
 
+// For computing: 
 void get_outer_product(double *a, double *b, double **M, int n){
 	for(int i = 0 ; i < n ; i++){
 		for(int j = 0 ; j < n ; j++){
@@ -186,7 +194,7 @@ void get_outer_product(double *a, double *b, double **M, int n){
 	}
 }
 
-
+// For computing: ans = inv(K) * y
 // Much of it is taken from the above multiply_and_determinant code
 void vector_Kinvy_using_cholesky(double **K, double *y, double *ans, int n){
 
@@ -224,8 +232,91 @@ void vector_Kinvy_using_cholesky(double **K, double *y, double *ans, int n){
 		}
 		ans[i] /= U[i][i];
 	}
+	
+	for(int i = 0 ; i < n ; i++){
+		delete L[i];
+		delete U[i];
+	}
+	delete L;
+	delete U;
 }
 
+// For making M = I (identity matrix)
+void make_identity(double **M, int n){
+	for (int i = 0; i < n ; i++){
+		for(int j = 0 ; j < n; j++){
+			if(i == j) M[i][j] =1.0;
+			else M[i][j] = 0.0;
+		}
+	}
+}
 
+// Computes output for satisfying A * output = B, using forward substitution (columnwise, for each column of B)
+//	INVARIANT for correct result: A is lower triangular
+void matrix_forward_substitution(double **A, double **B, double **output, int DIM){
+	for(int k = 0; k < DIM ; k++){ // this is looping over columns of B matrix
+                for(int i = 0 ; i < DIM; i++){
+                        output[i][k] = B[i][k];
+                        for(int j = 0 ; j < i ; j++){
+                                output[i][k] = output[i][k] - A[i][j]*output[j][k];
+                        }
+                        output[i][k] = output[i][k] / A[i][i];
+                }
+        }
+}
 
+// Computes output for satisfying A * output = B, using backward substitution (columnwise, for each column of B)
+//	INVARIANT for correct result: A is upper triangular
+void matrix_backward_substitution(double **A, double **B, double **output, int DIM){
+        for(int k = 0 ; k < DIM; k++){
+                for(int i = DIM - 1; i >= 0 ; i--){
+                        output[i][k] = B[i][k];
+                        for(int j = i + 1; j < DIM; j++){
+                                output[i][k] = output[i][k] - A[i][j]*output[j][k];
+                        }
+                        output[i][k] = output[i][k] / A[i][i];
+                }
+        }
 
+}
+
+//We need inverse(K), K = LL' => inv(K) = inv(LL') = inv(L') * inv(L)  equivalent to inv(L') * (inv(L) * I)
+//	- Now, first we have to solve inv(L) * I
+//		- we can use Matrix_forward_substitution (MFS)
+//			=> let T = inv(L) * I <=> L * T = I (identity)
+//			So we employ MFS with L and I to get T 
+//
+//		- our subsequent task is to solve: inv(L') * T
+//			=> let S = inv(L') * T <=> L' * S = T
+//			So we employ MBS with L' and T to get S					        
+void compute_K_inverse(double **K, double **outputK, int n){
+
+	double **temp1, **T, **I, *L;
+	temp1 = new double*[n];
+	T = new double*[n];
+	I = new double *[n];
+	L = new double *[n];
+	
+	for(int i = 0 ; i < n ;i++){
+		temp1[i] = new double[n];
+		T = new double[n];
+		I[i] = new double[n];
+		L[i] = new double[n];
+	}
+	
+	// 1. Solving inv(L) * I using MFS
+	//	- Need identity matrix
+	make_identity(I, n);
+	// 	- Need the lower triangular matrix of K (by cholesky); result stored in L
+	get_cholesky(K, L, n);
+	//	- Now MFS
+	matrix_forward_substitution(L, I, T, n); // should make L * T = I
+	
+		
+	// 2. Solving inv(L') * T
+	// 	- Need L.transpose()
+	matrix_transpose(L, temp1, n); 		// temp1 = L'
+	//	- Now MBS
+	matrix_backward_substitution(temp1, T, outputK, n); // should make L' * outputK = T
+	
+}
