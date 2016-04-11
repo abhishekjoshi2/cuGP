@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstdio>
 #include "debug.h"
+#include <utility>
 // Just for the sake of default constructor
 Covsum::Covsum(){ }
 
@@ -302,11 +303,86 @@ void Covsum::compute_test_means_and_variances(double **X, double *y, double **Xt
 	delete testK;
 	delete singlevec;
 }
+
 void Covsum::set_loghyper_eigen(Eigen::VectorXd initval) {
 	for(int i = 0 ; i < 3; i++) { //specific hardcoding for SE + NOISE -> REMVOVE 3
 		this->loghyper[i] = initval[i];
 	}
 }
+
+double sign(double x) {
+	if (x > 0) return 1.0;
+	if (x < 0) return -1.0;
+	return 0.0;
+}
+
+void Covsum::rprop_solve(double **X_mat, double *y_vec, bool verbose=true)
+{
+	double eps_stop = 0.0;
+	double Delta0 = 0.1;
+	double Deltamin = 1e-6;
+	double Deltamax = 50;
+	double etaminus = 0.5;
+	double etaplus = 1.2;
+	int n = 100;
+
+	// int param_dim = get_param_dim();
+	int param_dim = 3;
+	Eigen::VectorXd Delta = Eigen::VectorXd::Ones(param_dim) * Delta0;
+	Eigen::VectorXd grad_old = Eigen::VectorXd::Zero(param_dim);
+
+	// Eigen::VectorXd params = gp->covf().get_loghyper();
+
+	double *log_hyper_param = get_loghyperparam();
+
+	Eigen::VectorXd params(3);
+	params[0] = log_hyper_param[0];
+	params[1] = log_hyper_param[1];
+	params[2] = log_hyper_param[2];
+
+	Eigen::VectorXd best_params = params;
+
+	// init(double eps_stop = 0.0, double Delta0=0.1, double Deltamin=1e-6, double Deltamax=50, double etaminus=0.5, double etaplus=1.2);
+
+	double best = log(0);
+
+	for (size_t i=0; i<n; ++i) {
+		// Eigen::VectorXd grad = -gp->log_likelihood_gradient();
+		double *gradient_loghp = compute_gradient_loghyperparam(X_mat, y_vec);
+
+		Eigen::VectorXd grad(3);
+
+		grad[0] = gradient_loghp[0];
+		grad[1] = gradient_loghp[1];
+		grad[2] = gradient_loghp[2];
+
+		grad_old = grad_old.cwiseProduct(grad);
+
+		for (int j=0; j<grad_old.size(); ++j) {
+			if (grad_old(j) > 0) {
+				Delta(j) = std::min(Delta(j)*etaplus, Deltamax);        
+			} else if (grad_old(j) < 0) {
+				Delta(j) = std::max(Delta(j)*etaminus, Deltamin);
+				grad(j) = 0;
+			} 
+			params(j) += -sign(grad(j)) * Delta(j);
+		}
+		grad_old = grad;
+		if (grad_old.norm() < eps_stop) break;
+		//gp->covf().set_loghyper(params);
+		set_loghyper_eigen(params);
+		// double lik = gp->log_likelihood();
+		double lik = compute_loglikelihood(X_mat, y_vec);
+		if (verbose) std::cout << i << " " << -lik << std::endl;
+		if (lik > best) {
+			best = lik;
+			best_params = params;
+		}
+	}
+	// gp->covf().set_loghyper(best_params);
+	set_loghyper_eigen(best_params);
+}
+
 
 void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 
@@ -317,31 +393,31 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 	const double SIG = 0.1, RHO = SIG/2;
 
 	int n = 100;
-	/* SIG and RHO are the constants controlling the Wolfe-
-	   Powell conditions. SIG is the maximum allowed absolute ratio between
-	   previous and new slopes (derivatives in the search direction), thus setting
-	   SIG to low (positive) values forces higher precision in the line-searches.
-	   RHO is the minimum allowed fraction of the expected (from the slope at the
-	   initial point in the linesearch). Constants must satisfy 0 < RHO < SIG < 1.
-	   Tuning of SIG (depending on the nature of the function to be optimized) may
-	   speed up the minimization; it is probably not worth playing much with RHO.
-	 */
+	//   SIG and RHO are the constants controlling the Wolfe-
+	//   Powell conditions. SIG is the maximum allowed absolute ratio between
+	//   previous and new slopes (derivatives in the search direction), thus setting
+	//   SIG to low (positive) values forces higher precision in the line-searches.
+	//   RHO is the minimum allowed fraction of the expected (from the slope at the
+	//   initial point in the linesearch). Constants must satisfy 0 < RHO < SIG < 1.
+	//   Tuning of SIG (depending on the nature of the function to be optimized) may
+	//   speed up the minimization; it is probably not worth playing much with RHO.
+	 
 
-	/* The code falls naturally into 3 parts, after the initial line search is
-	   started in the direction of steepest descent. 1) we first enter a while loop
-	   which uses point 1 (p1) and (p2) to compute an extrapolation (p3), until we
-	   have extrapolated far enough (Wolfe-Powell conditions). 2) if necessary, we
-	   enter the second loop which takes p2, p3 and p4 chooses the subinterval
-	   containing a (local) minimum, and interpolates it, unil an acceptable point
-	   is found (Wolfe-Powell conditions). Note, that points are always maintained
-	   in order p0 <= p1 <= p2 < p3 < p4. 3) compute a new search direction using
-	   conjugate gradients (Polack-Ribiere flavour), or revert to steepest if there
-	   was a problem in the previous line-search. Return the best value so far, if
-	   two consecutive line-searches fail, or whenever we run out of function
-	   evaluations or line-searches. During extrapolation, the "f" function may fail
-	   either with an error or returning Nan or Inf, and maxmize should handle this
-	   gracefully.
-	 */
+	// The code falls naturally into 3 parts, after the initial line search is
+	// started in the direction of steepest descent. 1) we first enter a while loop
+	// which uses point 1 (p1) and (p2) to compute an extrapolation (p3), until we
+	// have extrapolated far enough (Wolfe-Powell conditions). 2) if necessary, we
+	// enter the second loop which takes p2, p3 and p4 chooses the subinterval
+	// containing a (local) minimum, and interpolates it, unil an acceptable point
+	// is found (Wolfe-Powell conditions). Note, that points are always maintained
+	// in order p0 <= p1 <= p2 < p3 < p4. 3) compute a new search direction using
+	// conjugate gradients (Polack-Ribiere flavour), or revert to steepest if there
+	// was a problem in the previous line-search. Return the best value so far, if
+	// two consecutive line-searches fail, or whenever we run out of function
+	// evaluations or line-searches. During extrapolation, the "f" function may fail
+	// either with an error or returning Nan or Inf, and maxmize should handle this
+	// gracefully.
+	 
 
 	bool ls_failed = false;									//prev line-search failed
 
@@ -394,10 +470,6 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 			{
 				M --;
 				i++;
-
-				/* gp->covf().set_loghyper(X+s*x3);
-				   f3 = -gp->log_likelihood();
-				   df3 = -gp->log_likelihood_gradient(); */
 
 				set_loghyper_eigen((X+s*x3));
 				f3 = -1.0 * compute_loglikelihood(X_mat, y_vec);
@@ -481,10 +553,6 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 
 			x3 = std::max(std::min(x3, x4-INT*(x4-x2)), x2+INT*(x4-x2));
 
-			/*gp->covf().set_loghyper(X+s*x3);
-			  f3 = -gp->log_likelihood();
-			  df3 = -gp->log_likelihood_gradient();*/
-
 			set_loghyper_eigen((X+s*x3));
 			f3 = -1.0 * compute_loglikelihood(X_mat, y_vec);
 			double *df3_temp = compute_gradient_loghyperparam(X_mat, y_vec);
@@ -555,4 +623,8 @@ double Covsum::get_negative_log_predprob(double *actual, double *predmean, doubl
 		ans += val;
 	}
 	return ans / TS;
+}
+
+int Covsum::get_param_dim() {
+	return numdim;
 }

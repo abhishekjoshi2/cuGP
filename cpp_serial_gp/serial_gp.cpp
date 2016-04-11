@@ -64,7 +64,7 @@ int main()
 
 	std::cout << "Invoking cg_solve" << std::endl;
 
-	kernelobj.cg_solve(X, y, false);
+	kernelobj.rprop_solve(X, y, true);
 	
 	std::cout << "Done with cg_solve" << std::endl;
 
