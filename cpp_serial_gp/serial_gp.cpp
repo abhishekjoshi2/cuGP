@@ -61,7 +61,7 @@ int main()
 	std::cout << grad[2] << std::endl;
 	std::cout << ans << std::endl;
 
-	/*std::cout << "Invoking cg_solve" << std::endl;
+	std::cout << "Invoking cg_solve" << std::endl;
 
 	kernelobj.cg_solve(X, y, true);
 	
@@ -74,13 +74,13 @@ int main()
 	std::cout << new_hyper_params[1] << std::endl;
 	std::cout << new_hyper_params[2] << std::endl;
 
-	// ans = kernelobj.compute_loglikelihood(X, y);
+	ans = kernelobj.compute_loglikelihood(X, y);
 
-	std::cout << "Final answer is : " << ans << std::endl;*/
+	std::cout << "Final answer is : " << ans << std::endl;
 	
 	// Just to check the testing phase
-	double acthp[] = {0.8771, 0.0786, -2.9346};
-	kernelobj.set_loghyperparam(acthp);
+	//double acthp[] = {0.8771, 0.0786, -2.9346};
+	//kernelobj.set_loghyperparam(acthp);
 
 	printf("\n Now checking the values for the correct hyperparameters\n");
 	printf("The hyperparameters are :\n");
@@ -94,10 +94,20 @@ int main()
 	double *tvarvec = new double[numtest];
 	kernelobj.compute_test_means_and_variances(X, y, X + numtrain, tmeanvec, tvarvec, numtest);
 	
-	printf("Now printing the test means\n");
-	print_vector(tmeanvec, numtest);
-	printf("\n\n Now priting the covariances\n");
-	print_vector(tvarvec, numtest);
-
+//	printf("Now printing the test means\n");
+//	print_vector(tmeanvec, numtest);
+//	printf("\n\n Now priting the covariances\n");
+//	print_vector(tvarvec, numtest);
+	printf("Now printing the mean and var for the test set\n");
+	for(int i = 0; i < numtest; i++){
+		printf("%lf %lf %lf\n", tmeanvec[i], tvarvec[i], y[numtest + i]);
+	}
+	printf("Call kar NLPP\n\n");
+	double dsfd = kernelobj.get_negative_log_predprob(y + numtrain, tmeanvec, tvarvec, numtest);
+	std::cout << "NLPP = "  << dsfd << "\n";
+		
+	delete tmeanvec;
+	delete tvarvec;
+	
 	return 0;	
 }		

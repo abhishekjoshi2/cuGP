@@ -32,6 +32,7 @@ class Covsum{
 		void compute_test_means_and_variances(double **, double *, double **, double *, double *, int numtest);
 		void set_loghyper_eigen(Eigen::VectorXd );
 		void cg_solve(double **, double *, bool);
+		double get_negative_log_predprob(double *, double *, double *, int);
 
 };
 

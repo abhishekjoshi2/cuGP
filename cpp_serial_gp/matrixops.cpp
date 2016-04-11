@@ -11,10 +11,10 @@ void print_matrix(double **M , int r, int c){
                 }
                 printf("\n");
         }
+	
 }
 
 void print_vector(double *M, int n){
-
 	if (debug)
 	for(int i = 0 ; i < n ;i++){
 		printf("%lf\n", M[i]);

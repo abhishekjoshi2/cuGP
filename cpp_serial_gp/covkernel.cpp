@@ -123,7 +123,7 @@ double Covsum::compute_loglikelihood(double **X, double *y){
 	compute_K_train(X, this->tempKmatrix);
 	std::pair<double, double> pp = compute_chol_and_det(this->tempKmatrix, y, n);
 
-	//if (debug)
+	if (debug)
 		std::cout << "Product: " << pp.first << " log Determinant: " << pp.second << std::endl;
 
 	return -0.5 * ( pp.first + pp.second + n * 1.83787);  // log (2 * pi) = 1.8378770664093453
@@ -311,7 +311,7 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 	const double RATIO = 10;	// maximum allowed slope ratio
 	const double SIG = 0.1, RHO = SIG/2;
 
-	int n = 50;
+	int n = 100;
 	/* SIG and RHO are the constants controlling the Wolfe-
 	   Powell conditions. SIG is the maximum allowed absolute ratio between
 	   previous and new slopes (derivatives in the search direction), thus setting
@@ -350,9 +350,9 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 	double *log_hyper_param = get_loghyperparam();
 
 	Eigen::VectorXd df0(3);
-	df0[0] = -1.0 * gradient_loghp[0];
-	df0[1] = -1.0 * gradient_loghp[1];
-	df0[2] = -1.0 * gradient_loghp[2];
+	df0[0] = 1.0 * gradient_loghp[0];
+	df0[1] = 1.0 * gradient_loghp[1];
+	df0[2] = 1.0 * gradient_loghp[2];
 
 	Eigen::VectorXd X(3);
 	X[0] = log_hyper_param[0];
@@ -367,7 +367,7 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 
 	double f3 = 0;
 	double d3 = 0;
-	Eigen::VectorXd df3 = df0;
+	Eigen::VectorXd df3 =df0;
 
 	double x2 = 0, x4 = 0;
 	double f2 = 0, f4 = 0;
@@ -403,9 +403,9 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 				f3 = -1.0 * compute_loglikelihood(X_mat, y_vec);
 				double *df3_temp = compute_gradient_loghyperparam(X_mat, y_vec);
 
-				df3[0] = -1.0 * df3_temp[0];
-				df3[1] = -1.0 * df3_temp[1];
-				df3[2] = -1.0 * df3_temp[2];
+				df3[0] = 1.0 * df3_temp[0];
+				df3[1] = 1.0 * df3_temp[1];
+				df3[2] = 1.0 * df3_temp[2];
 
 				if(verbose) std::cout << f3 << std::endl;
 
@@ -489,9 +489,9 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 			f3 = -1.0 * compute_loglikelihood(X_mat, y_vec);
 			double *df3_temp = compute_gradient_loghyperparam(X_mat, y_vec);
 
-			df3[0] = -1.0 * df3_temp[0];
-			df3[1] = -1.0 * df3_temp[1];
-			df3[2] = -1.0 * df3_temp[2];
+			df3[0] = 1.0 * df3_temp[0];
+			df3[1] = 1.0 * df3_temp[1];
+			df3[2] = 1.0 * df3_temp[2];
 
 			if(f3 < F0)												// keep best values
 			{
@@ -544,4 +544,16 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 
 	}
 	set_loghyper_eigen(X);
+}
+
+double Covsum::get_negative_log_predprob(double *actual, double *predmean, double *predvar, int TS){
+	
+	double ans = 0.0;
+	for(int i = 0; i < TS; i++){	
+		//val = 0.5 * log(2*pi*variances(i)) + (predictedy(i) - actualy(i))^2/(2*variances(i));	
+		double val = 0.5 * log(6.283185 * predvar[i]) + pow( (predmean[i] - actual[i]) , 2) / (2 * predvar[i]);
+		std::cout << val << std::endl;
+		ans += val ;
+	}
+	return ans / TS;
 }
