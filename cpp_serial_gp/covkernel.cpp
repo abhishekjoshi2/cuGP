@@ -29,10 +29,13 @@ Covsum::Covsum(int n, int d){
 		tempmatrix4[i] = new double[n];
 	}
 	this->temp1dvec = new double[n];
+	this->covtempvec = new double[n];
 }
 Covsum::~Covsum(){
 	delete this->loghyper;
 	delete this->temp1dvec;
+	delete this->covtempvec;
+
 	for (int i = 0 ; i < this->inputdatasize ;i++){
 		delete this->tempKinv[i];
 		delete this->tempKmatrix[i];
@@ -98,9 +101,9 @@ void Covsum::compute_k_test(double **X, double *xtest, double *output){
 	int n = this->inputdatasize;
 	int d = this->numdim;
 	for (int i = 0 ; i < n ; i++){
-		subtract_vec(X[i], xtest, this->temp1dvec, d);
-		double val = dotproduct_vec(this->temp1dvec, this->temp1dvec, this->numdim);
-		output[i] = exp(-val * 0.5 * ell_sq);
+		subtract_vec(X[i], xtest, covtempvec, d);
+		double val = dotproduct_vec(covtempvec, covtempvec, d);
+		output[i] = signal_var * exp(-val * 0.5 / ell_sq);
 	}
 }
 
@@ -230,3 +233,35 @@ void Covsum::set_loghyperparam(double *initval){
 	}
 }
 
+
+void Covsum::compute_test_means_and_variances(double **X, double *y, double **Xtest, double *tmeanvec, double *tvarvec, int numtest){
+	
+	int n = this->inputdatasize;
+	double ell_sq = exp(this->loghyper[0] * 2); //l^2 after coverting back from the log form
+        double signal_var = exp(this->loghyper[1] * 2); // signal variance
+        double noise_var = exp(this->loghyper[2] * 2); //noise variance
+	
+	double *testK = new double[n];
+	double *singlevec = new double[n];
+
+	// For test means: K* x inv(K) x y
+	// For test variance: var = k** - transpose(K*) x K x K* 
+
+	compute_K_train(X, tempKmatrix);
+	vector_Kinvy_using_cholesky( tempKmatrix, y, temp1dvec, n); // so temp1dvec has inv(K) * y which is required for mean
+	compute_K_inverse( tempKmatrix, tempKinv, n);   // tempKinv will have inv(K) only
+
+		
+	for(int i = 0 ; i < numtest;i++){
+		
+		// i'th test sample: Xtest[i]
+		compute_k_test(X, Xtest[i], testK);  
+
+		tmeanvec[i] = vector_vector_multiply(testK, temp1dvec, n); 	// testK * ( inv(K) * y) = testK * temp1dvec;
+		
+		tvarvec[i] = signal_var + noise_var; //k** term
+		vector_matrix_multiply(testK, tempKinv, n, singlevec); 		// singlevec = testK * tempKinv;
+		double tempans = vector_vector_multiply(singlevec, testK, n); 	// tempans = singlevec * testK
+		tvarvec[i] -= tempans;
+	}
+}

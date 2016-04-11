@@ -33,9 +33,20 @@ void vector_matrix_multiply(double *vector, double **matrix, int n, double *out_
 	}
 }
 
+void matrix_vector_multiply(double **matrix, double *vector, int n, double *output){
+	double sum;
+	for(int row = 0; row < n ; row++){
+		sum = 0.0;
+		for(int col = 0; col < n ; col++){
+			sum += vector[col] * matrix[row][col];
+		}
+		output[row] = sum;
+	}
+}
+
 double vector_vector_multiply(double *vector1, double *vector2, int n)
 {
-	double ret;
+	double ret = 0.0;
 	for (int i = 0; i < n; i++)
 		ret += vector1[i] * vector2[i];
 	return ret;
@@ -206,8 +217,8 @@ void subtract_matrices(double **A, double **B, double **C, int n1, int n2){
 			C[i][j] = A[i][j] - B[i][j];		
 		}
 	}
-	printf("inside matrix subtraction\n");
-	print_matrix(C, n1, n2);
+	//printf("inside matrix subtraction\n");
+	//print_matrix(C, n1, n2);
 }
 
 // For computing: 
@@ -217,8 +228,8 @@ void get_outer_product(double *a, double *b, double **M, int n){
 			M[i][j] = a[i] * b[j];
 		}
 	}
-	printf("Inside outer_product\n");
-	print_matrix(M, n, n);
+//	printf("Inside outer_product\n");
+//	print_matrix(M, n, n);
 }
 
 // For computing: ans = inv(K) * y
@@ -266,7 +277,7 @@ void vector_Kinvy_using_cholesky(double **K, double *y, double *ans, int n){
 	}
 	delete L;
 	delete U;
-	printf("kinvy using chol ho gaya, now see the output\n");
+	printf("KINVY using chol ho gaya, now see the output\n");
 	print_vector(ans, n);
 }
 
