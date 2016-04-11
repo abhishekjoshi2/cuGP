@@ -11,6 +11,6 @@ serial_gp.o: serial_gp.cpp
 	g++ -g -c serial_gp.cpp -o serial_gp.o
 
 clean:
-	rm *.o gp
+	rm -f *.o gp
 
 
