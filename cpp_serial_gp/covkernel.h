@@ -13,7 +13,9 @@ class Covsum{
                         ** tempWmatrix, \
                         ** tempAlphamatrix, \
 			**tempKinv;
-        public:
+		double *covtempvec;
+        
+	public:
 
                 Covsum();
                 Covsum(int, int);
@@ -26,6 +28,8 @@ class Covsum{
                 void compute_squared_dist(double **, double );
                 double* get_loghyperparam();
                 void set_loghyperparam(double *);
+	
+		void compute_test_means_and_variances(double **, double *, double **, double *, double *, int numtest);
 		void set_loghyper_eigen(Eigen::VectorXd );
 		void cg_solve(double **, double *, bool);
 

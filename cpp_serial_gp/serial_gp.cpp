@@ -48,7 +48,10 @@ int main()
 
 	double inithypervalues[] = {1.0, 1.0, 1.0};
 
-	Covsum kernelobj(200, dim);
+	int total = 200;
+	int numtrain = 100;
+	int numtest = total - numtrain;
+	Covsum kernelobj(numtrain, dim);
 	kernelobj.set_loghyperparam(inithypervalues);
 	double ans = kernelobj.compute_loglikelihood(X, y);
 
@@ -58,7 +61,7 @@ int main()
 	std::cout << grad[2] << std::endl;
 	std::cout << ans << std::endl;
 
-	std::cout << "Invoking cg_solve" << std::endl;
+	/*std::cout << "Invoking cg_solve" << std::endl;
 
 	kernelobj.cg_solve(X, y, true);
 	
@@ -73,6 +76,28 @@ int main()
 
 	// ans = kernelobj.compute_loglikelihood(X, y);
 
-	std::cout << "Final answer is : " << ans << std::endl;
+	std::cout << "Final answer is : " << ans << std::endl;*/
+	
+	// Just to check the testing phase
+	double acthp[] = {0.8771, 0.0786, -2.9346};
+	kernelobj.set_loghyperparam(acthp);
+
+	printf("\n Now checking the values for the correct hyperparameters\n");
+	printf("The hyperparameters are :\n");
+	grad = kernelobj.get_loghyperparam();
+	std::cout << grad[0] << std::endl;
+	std::cout << grad[1] << std::endl;
+	std::cout << grad[2] << std::endl;
+	ans = kernelobj.compute_loglikelihood(X, y);
+	printf("The NLML is: %lf\n", -ans);
+	double *tmeanvec = new double[numtest];
+	double *tvarvec = new double[numtest];
+	kernelobj.compute_test_means_and_variances(X, y, X + numtrain, tmeanvec, tvarvec, numtest);
+	
+	printf("Now printing the test means\n");
+	print_vector(tmeanvec, numtest);
+	printf("\n\n Now priting the covariances\n");
+	print_vector(tvarvec, numtest);
+
 	return 0;	
 }		

@@ -35,9 +35,20 @@ void vector_matrix_multiply(double *vector, double **matrix, int n, double *out_
 	}
 }
 
+void matrix_vector_multiply(double **matrix, double *vector, int n, double *output){
+	double sum;
+	for(int row = 0; row < n ; row++){
+		sum = 0.0;
+		for(int col = 0; col < n ; col++){
+			sum += vector[col] * matrix[row][col];
+		}
+		output[row] = sum;
+	}
+}
+
 double vector_vector_multiply(double *vector1, double *vector2, int n)
 {
-	double ret;
+	double ret = 0.0;
 	for (int i = 0; i < n; i++)
 		ret += vector1[i] * vector2[i];
 	return ret;
@@ -221,7 +232,7 @@ void get_outer_product(double *a, double *b, double **M, int n){
 		}
 	}
 	if (debug)
-	printf("Inside outer_product\n");
+		printf("Inside outer_product\n");
 	print_matrix(M, n, n);
 }
 
