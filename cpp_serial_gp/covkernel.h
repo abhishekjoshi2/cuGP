@@ -1,3 +1,4 @@
+#include <eigen3/Eigen/Dense>
 class Covsum{
         private:
 
@@ -29,5 +30,8 @@ class Covsum{
                 void set_loghyperparam(double *);
 	
 		void compute_test_means_and_variances(double **, double *, double **, double *, double *, int numtest);
+		void set_loghyper_eigen(Eigen::VectorXd );
+		void cg_solve(double **, double *, bool);
+
 };
 
