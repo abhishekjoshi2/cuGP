@@ -42,7 +42,7 @@ int main()
 		for (int j = 0; j < dim; j++)
 			fscanf(input_file, "%lf", &X[i][j]);
 	
-	for(int i = 0 ; i < n ; i++){
+	for (int i = 0; i < n; i++) {
 		fscanf(label_file, "%lf", &y[i]);
 	}
 
@@ -56,14 +56,15 @@ int main()
 	double ans = kernelobj.compute_loglikelihood(X, y);
 
 	double *grad = kernelobj.compute_gradient_loghyperparam(X, y);
-	std::cout << grad[0] << std::endl;
+
+	/*std::cout << grad[0] << std::endl;
 	std::cout << grad[1] << std::endl;
 	std::cout << grad[2] << std::endl;
-	std::cout << ans << std::endl;
+	std::cout << ans << std::endl;*/
 
 	std::cout << "Invoking cg_solve" << std::endl;
 
-	kernelobj.cg_solve(X, y, true);
+	kernelobj.cg_solve(X, y, false);
 	
 	std::cout << "Done with cg_solve" << std::endl;
 
@@ -98,16 +99,28 @@ int main()
 //	print_vector(tmeanvec, numtest);
 //	printf("\n\n Now priting the covariances\n");
 //	print_vector(tvarvec, numtest);
+
 	printf("Now printing the mean and var for the test set\n");
-	for(int i = 0; i < numtest; i++){
+	for (int i = 0; i < numtest; i++) {
 		printf("%lf %lf %lf\n", tmeanvec[i], tvarvec[i], y[numtest + i]);
 	}
+
 	printf("Call kar NLPP\n\n");
-	double dsfd = kernelobj.get_negative_log_predprob(y + numtrain, tmeanvec, tvarvec, numtest);
-	std::cout << "NLPP = "  << dsfd << "\n";
-		
+
+	double nlpp = kernelobj.get_negative_log_predprob(y + numtrain, tmeanvec, tvarvec, numtest);
+	std::cout << "NLPP = " << nlpp << "\n";
+
 	delete tmeanvec;
 	delete tvarvec;
+
+	for (int i = 0; i < n; i++)
+		delete X[i];
+
+	delete []X;
+	delete y;
+
+	fclose(input_file);
+	fclose(label_file);
 	
 	return 0;	
-}		
+}

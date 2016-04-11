@@ -1,6 +1,6 @@
-#include<cstdlib>
-#include<utility>
-#include<cstdio>
+#include <cstdlib>
+#include <utility>
+#include <cstdio>
 
 void vector_matrix_multiply(double *, double **, int , double *);
 void matrix_vector_multiply(double **, double *, int , double *);

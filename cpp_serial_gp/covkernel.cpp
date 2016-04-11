@@ -8,19 +8,19 @@
 Covsum::Covsum(){ }
 
 // Initializing the values of the number of dimensions (d) and inputsize (n)
-Covsum::Covsum(int n, int d){
+Covsum::Covsum(int n, int d) {
 	this->numdim = d;
 	this->inputdatasize = n;
 	this->loghyper = new double[3];
-	
-	this->tempKinv = new double* [n];
-	this->tempKmatrix = new double* [n];
-	this->tempWmatrix = new double* [n];
-	this->tempAlphamatrix = new double* [n];
-	this->tempmatrix2 = new double* [n];
-	this->tempmatrix3 = new double* [n];
-	this->tempmatrix4 = new double* [n];
-	for (int i = 0 ; i < n ;i++){
+
+	this->tempKinv = new double *[n];
+	this->tempKmatrix = new double *[n];
+	this->tempWmatrix = new double *[n];
+	this->tempAlphamatrix = new double *[n];
+	this->tempmatrix2 = new double *[n];
+	this->tempmatrix3 = new double *[n];
+	this->tempmatrix4 = new double *[n];
+	for (int i = 0; i < n; i++) {
 		tempKinv[i] = new double[n];
 		tempKmatrix[i] = new double[n];
 		tempWmatrix[i] = new double[n];
@@ -32,12 +32,14 @@ Covsum::Covsum(int n, int d){
 	this->temp1dvec = new double[n];
 	this->covtempvec = new double[n];
 }
-Covsum::~Covsum(){
+
+Covsum::~Covsum() {
+
 	delete this->loghyper;
 	delete this->temp1dvec;
 	delete this->covtempvec;
 
-	for (int i = 0 ; i < this->inputdatasize ;i++){
+	for (int i = 0; i < this->inputdatasize; i++) {
 		delete this->tempKinv[i];
 		delete this->tempKmatrix[i];
 		delete this->tempWmatrix[i];
@@ -56,7 +58,7 @@ Covsum::~Covsum(){
 }
 
 // Computes the n x n covariance matrix based on training inputs: CURRENTLY - only implements SE + NOISE
-void Covsum::compute_K_train(double **X, double **output){
+void Covsum::compute_K_train(double **X, double **output) {
 	double ell_sq = exp(this->loghyper[0] * 2); //l^2 after coverting back from the log form
 	double signal_var = exp(this->loghyper[1] * 2); // signal variance
 	double noise_var = exp(this->loghyper[2] * 2); //noise variance
@@ -69,16 +71,18 @@ void Covsum::compute_K_train(double **X, double **output){
 		std::cout << "SIGNAL_VAR: " << signal_var << std::endl;
 		std::cout << "NOISE_VAR: " << noise_var << std::endl;	
 	}
-	
-	
-	for (int i = 0 ; i < n ;i++)
+
+	for (int i = 0; i < n; i++)
 	{
-		for(int j = i; j < n;j++)
+		for(int j = i; j < n; j++)
 		{
 			if (debug)
 				printf("i = %d, j = %d \n", i, j);
+
 			subtract_vec(X[i], X[j], this->temp1dvec, this->numdim);
+
 			double val = dotproduct_vec(this->temp1dvec, this->temp1dvec, this->numdim);
+
 			val = signal_var * exp(-val * 0.5 / ell_sq); 	//for SE kernel
 			output[i][j] = val;
 			output[j][i] = val;				// exploting symmetry
@@ -88,35 +92,27 @@ void Covsum::compute_K_train(double **X, double **output){
 		}
 	}
 	if (debug)
-	{
-		for (int i = 0; i < n; i++)
-		{
-			for (int j = 0; j < n; j++)
-			{
-				std::cout << output[i][j] << " ";
-			}
-			std::cout << std::endl;
-		}
-	}
+		print_matrix(output, n, n);
+
 	if (debug)
 		printf("Sahi ho gaya\n");
 }
 
 // computes the 1 x n covariance vector for a given test point (xtest): CURRENTLY - only implements SE + noise
-void Covsum::compute_k_test(double **X, double *xtest, double *output){
+void Covsum::compute_k_test(double **X, double *xtest, double *output) {
 	double ell_sq = exp(this->loghyper[0] * 2); //l^2 after coverting back from the log form
 	double signal_var = exp(this->loghyper[1] * 2); // signal variance
 	double noise_var = exp(this->loghyper[2] * 2); //noise variance
 	int n = this->inputdatasize;
 	int d = this->numdim;
-	for (int i = 0 ; i < n ; i++){
+	for (int i = 0 ; i < n ; i++) {
 		subtract_vec(X[i], xtest, covtempvec, d);
 		double val = dotproduct_vec(covtempvec, covtempvec, d);
 		output[i] = signal_var * exp(-val * 0.5 / ell_sq);
 	}
 }
 
-double Covsum::compute_loglikelihood(double **X, double *y){
+double Covsum::compute_loglikelihood(double **X, double *y) {
 	double ans = 0.0;
 	int n = this->inputdatasize;
 
@@ -127,21 +123,22 @@ double Covsum::compute_loglikelihood(double **X, double *y){
 		std::cout << "Product: " << pp.first << " log Determinant: " << pp.second << std::endl;
 
 	return -0.5 * ( pp.first + pp.second + n * 1.83787);  // log (2 * pi) = 1.8378770664093453
-	
+
 }
-void Covsum::compute_squared_dist(double **X, double c){
+void Covsum::compute_squared_dist(double **X, double c) {
 	int n = this->inputdatasize;
 	int d = this->numdim;
-	int i,j;
-	
+	int i, j;
+
 	if (debug)
 		std::cout << "inside the squared dist function";
 
-	for(i = 0 ; i < n ; i++){
-		for(j = i ; j< n ;j++){
+	for(i = 0; i < n; i++) {
+		for(j = i; j < n; j++) {
 			if (debug)
 				printf("i = %d, j = %d\n", i,j);
-			if (i == j){
+
+			if (i == j) {
 				tempmatrix2[i][j] = 0.0;
 				continue;
 			}
@@ -153,37 +150,39 @@ void Covsum::compute_squared_dist(double **X, double c){
 	}
 	if (debug)
 		printf("Okay boyy: Now printing the squared distance matrix\n");
-	print_matrix(tempmatrix2, n , n);	
-
+	if (debug)
+		print_matrix(tempmatrix2, n , n);	
 }
 
 
 
 //returns the array of gradients (size = num of hyperparameters)
-double* Covsum::compute_gradient_loghyperparam(double **X, double *y){
-	
+double* Covsum::compute_gradient_loghyperparam(double **X, double *y) {
+
 	int n = this->inputdatasize;
 	double ell_sq = exp(this->loghyper[0] * 2); //l^2 after coverting back from the log form
 	double noise_var = exp(this->loghyper[2] * 2); //noise variance
-	double *ans = new double[3]; // return 3 gradients
+	static double ans[3]; // = new double[3]; // return 3 gradients
 
 	if (debug)
 		printf("Yahhan tak aya");
+
 	compute_K_train(X, this->tempKmatrix); //required by all
 
 	//for length scale	
-	
 	if (debug)
 	{
 		printf("compute_K_train ka calll ho gaya\n");
 		printf("Now squred dist me\n");
 	}
+
 	compute_squared_dist(X, ell_sq);	 			   //tempmatrix2 will be populated
 
 	if (debug)
 		printf("\n\n Now calling elementwise matrix multiply\n");
+
 	elementwise_matrixmultiply(this->tempKmatrix, this->tempmatrix2, this->tempmatrix3, n ,n ); //tempmatrix3 will be populated	
-	
+
 	//for signal variance
 	//elementwise_constantmultiply(tempKmatrix, 2.0, tempmatrix4, n, n);  //not needed in current implementation, as will do this in later loop
 
@@ -192,54 +191,60 @@ double* Covsum::compute_gradient_loghyperparam(double **X, double *y){
 
 	//--------------------------------
 	// Now the common parts
-		
+
 	// computing inverse of K: tempKinv = K^{-1}
 
 	if (debug)
 		printf("Now calling compute_K_inverse\n");
+
 	compute_K_inverse(this->tempKmatrix, this->tempKinv, n); // fill the value in tempKinv;	
-	
 
 	if (debug)
 		printf("now Kinvy using cholesky to save some flops\n");
+
 	vector_Kinvy_using_cholesky(this->tempKmatrix, y, this->temp1dvec, n); //fill the vector in temp1dvec = alpha
-	
+
 	// now computing: tempAlphamatrix =  alpha * alpha.transpose()
-	
+
 	if (debug)
-	printf("now getting outer product of the 2 vectors\n");
+		printf("now getting outer product of the 2 vectors\n");
+
 	get_outer_product(this->temp1dvec, this->temp1dvec, this->tempAlphamatrix, n); //fill in the matrix tempAlphamatrix = t1 * t1.transpose()
-	
+
 	// now computing: tempWmatrix = K^{-1} - alpha * alpha.transpose() = tempKinv - tempAlphamatrix;
-	
+
 	if (debug)
 		printf("now in subtract matrices\n");
+
 	subtract_matrices(this->tempKinv, this->tempAlphamatrix, this->tempWmatrix, n , n);
-	
+
 	double psum1 = 0.0, psum2 = 0.0, psum3 = 0.0; //partial sum variables for ell, sigma_var, noise_var respectively
 
 
 	if (debug)
 		printf("Please check the W matrix\n");
-	print_matrix(tempWmatrix, n, n);
-	
+
+	if (debug)
+		print_matrix(tempWmatrix, n, n);
+
 	if (debug)
 		printf("\n\n");
 
 	if (debug)
 		printf("now check K matrix\n");
 
-	print_matrix(tempKmatrix, n, n);
+	if (debug)
+		print_matrix(tempKmatrix, n, n);
 
 	if (debug)
 		printf("\n\n");
-	
-	for(int i = 0 ; i < n ; i++){
-		for(int j = 0 ; j < n ; j++){
+
+	for(int i = 0; i < n; i++) {
+		for(int j = 0; j < n; j++) {
 			double curele = this->tempWmatrix[i][j];
 			psum1 += curele * this->tempmatrix3[i][j]; //tempmatrix3 has the stuff of ell 
-			psum2 += curele * 2.0 * this->tempKmatrix[i][j] ; // for sigma_var we need 2 * K
-			if(i == j){
+			psum2 += curele * 2.0 * this->tempKmatrix[i][j]; // for sigma_var we need 2 * K
+			if (i == j) {
 				psum3 += curele * noise_var * 2;
 				psum2 -= curele * 2.0 * noise_var;
 			}
@@ -247,7 +252,8 @@ double* Covsum::compute_gradient_loghyperparam(double **X, double *y){
 	}
 
 	if (debug)
-		printf(" KKKKKKKKKKKKKKKKKKKKKKKKK \n");
+		printf("KKKKKKKKKKKKKKKKKKKKKKKKK\n");
+
 	ans[0] = psum1/2.0;
 	ans[1] = psum2/2.0;
 	ans[2] = psum3/2.0;
@@ -255,24 +261,23 @@ double* Covsum::compute_gradient_loghyperparam(double **X, double *y){
 }
 
 
-double* Covsum::get_loghyperparam(){
+double* Covsum::get_loghyperparam() {
 	return this->loghyper;
 }
 
-void Covsum::set_loghyperparam(double *initval){
+void Covsum::set_loghyperparam(double *initval) {
 	for(int i = 0 ; i < 3; i++) { //specific hardcoding for SE + NOISE -> REMVOVE 3
 		this->loghyper[i] = initval[i];
 	}
 }
 
 
-void Covsum::compute_test_means_and_variances(double **X, double *y, double **Xtest, double *tmeanvec, double *tvarvec, int numtest){
-	
+void Covsum::compute_test_means_and_variances(double **X, double *y, double **Xtest, double *tmeanvec, double *tvarvec, int numtest) {
 	int n = this->inputdatasize;
 	double ell_sq = exp(this->loghyper[0] * 2); //l^2 after coverting back from the log form
-        double signal_var = exp(this->loghyper[1] * 2); // signal variance
-        double noise_var = exp(this->loghyper[2] * 2); //noise variance
-	
+	double signal_var = exp(this->loghyper[1] * 2); // signal variance
+	double noise_var = exp(this->loghyper[2] * 2); //noise variance
+
 	double *testK = new double[n];
 	double *singlevec = new double[n];
 
@@ -280,31 +285,31 @@ void Covsum::compute_test_means_and_variances(double **X, double *y, double **Xt
 	// For test variance: var = k** - transpose(K*) x K x K* 
 
 	compute_K_train(X, tempKmatrix);
-	vector_Kinvy_using_cholesky( tempKmatrix, y, temp1dvec, n); // so temp1dvec has inv(K) * y which is required for mean
-	compute_K_inverse( tempKmatrix, tempKinv, n);   // tempKinv will have inv(K) only
+	vector_Kinvy_using_cholesky(tempKmatrix, y, temp1dvec, n); // so temp1dvec has inv(K) * y which is required for mean
+	compute_K_inverse(tempKmatrix, tempKinv, n);   // tempKinv will have inv(K) only
 
-		
-	for(int i = 0 ; i < numtest;i++){
-		
+	for(int i = 0; i < numtest; i++) {
 		// i'th test sample: Xtest[i]
 		compute_k_test(X, Xtest[i], testK);  
 
 		tmeanvec[i] = vector_vector_multiply(testK, temp1dvec, n); 	// testK * ( inv(K) * y) = testK * temp1dvec;
-		
+
 		tvarvec[i] = signal_var + noise_var; //k** term
 		vector_matrix_multiply(testK, tempKinv, n, singlevec); 		// singlevec = testK * tempKinv;
 		double tempans = vector_vector_multiply(singlevec, testK, n); 	// tempans = singlevec * testK
 		tvarvec[i] -= tempans;
 	}
+	delete testK;
+	delete singlevec;
 }
-void Covsum::set_loghyper_eigen(Eigen::VectorXd initval){
+void Covsum::set_loghyper_eigen(Eigen::VectorXd initval) {
 	for(int i = 0 ; i < 3; i++) { //specific hardcoding for SE + NOISE -> REMVOVE 3
 		this->loghyper[i] = initval[i];
 	}
 }
 
 void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
-	
+
 	const double INT = 0.1; // don't reevaluate within 0.1 of the limit of the current bracket
 	const double EXT = 3.0; // extrapolate maximum 3 times the current step-size
 	const int MAX = 20;		// max 20 function evaluations per line search
@@ -319,8 +324,8 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 	   RHO is the minimum allowed fraction of the expected (from the slope at the
 	   initial point in the linesearch). Constants must satisfy 0 < RHO < SIG < 1.
 	   Tuning of SIG (depending on the nature of the function to be optimized) may
-	  speed up the minimization; it is probably not worth playing much with RHO.
-	*/
+	   speed up the minimization; it is probably not worth playing much with RHO.
+	 */
 
 	/* The code falls naturally into 3 parts, after the initial line search is
 	   started in the direction of steepest descent. 1) we first enter a while loop
@@ -336,14 +341,9 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 	   evaluations or line-searches. During extrapolation, the "f" function may fail
 	   either with an error or returning Nan or Inf, and maxmize should handle this
 	   gracefully.
-	*/
-
+	 */
 
 	bool ls_failed = false;									//prev line-search failed
-	// abj1 changing here
-	// double f0 = -gp->log_likelihood();						//initial negative marginal log likelihood
-	// Eigen::VectorXd df0 = -gp->log_likelihood_gradient();	//initial gradient
-	// Eigen::VectorXd X = gp->covf().get_loghyper();			//hyper parameters
 
 	double f0 = -1.0 * compute_loglikelihood(X_mat, y_vec);
 	double *gradient_loghp = compute_gradient_loghyperparam(X_mat, y_vec);
@@ -359,7 +359,7 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 	X[1] = log_hyper_param[1];
 	X[2] = log_hyper_param[2];
 
-	if(verbose) std::cout << f0 << std::endl;
+	if (verbose) std::cout << f0 << std::endl;
 
 	Eigen::VectorXd s = -df0;								//initial search direction
 	double d0 = -s.dot(s);									//initial slope
@@ -396,8 +396,8 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 				i++;
 
 				/* gp->covf().set_loghyper(X+s*x3);
-				f3 = -gp->log_likelihood();
-				df3 = -gp->log_likelihood_gradient(); */
+				   f3 = -gp->log_likelihood();
+				   df3 = -gp->log_likelihood_gradient(); */
 
 				set_loghyper_eigen((X+s*x3));
 				f3 = -1.0 * compute_loglikelihood(X_mat, y_vec);
@@ -482,8 +482,8 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 			x3 = std::max(std::min(x3, x4-INT*(x4-x2)), x2+INT*(x4-x2));
 
 			/*gp->covf().set_loghyper(X+s*x3);
-			f3 = -gp->log_likelihood();
-			df3 = -gp->log_likelihood_gradient();*/
+			  f3 = -gp->log_likelihood();
+			  df3 = -gp->log_likelihood_gradient();*/
 
 			set_loghyper_eigen((X+s*x3));
 			f3 = -1.0 * compute_loglikelihood(X_mat, y_vec);
@@ -546,14 +546,13 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 	set_loghyper_eigen(X);
 }
 
-double Covsum::get_negative_log_predprob(double *actual, double *predmean, double *predvar, int TS){
-	
+double Covsum::get_negative_log_predprob(double *actual, double *predmean, double *predvar, int TS) {
+
 	double ans = 0.0;
-	for(int i = 0; i < TS; i++){	
-		//val = 0.5 * log(2*pi*variances(i)) + (predictedy(i) - actualy(i))^2/(2*variances(i));	
+	for(int i = 0; i < TS; i++) {
 		double val = 0.5 * log(6.283185 * predvar[i]) + pow( (predmean[i] - actual[i]) , 2) / (2 * predvar[i]);
 		std::cout << val << std::endl;
-		ans += val ;
+		ans += val;
 	}
 	return ans / TS;
 }
