@@ -52,13 +52,27 @@ int main()
 	kernelobj.set_loghyperparam(inithypervalues);
 	double ans = kernelobj.compute_loglikelihood(X, y);
 
-		
-
 	double *grad = kernelobj.compute_gradient_loghyperparam(X, y);
 	std::cout << grad[0] << std::endl;
 	std::cout << grad[1] << std::endl;
 	std::cout << grad[2] << std::endl;
-	// 
 	std::cout << ans << std::endl;
+
+	std::cout << "Invoking cg_solve" << std::endl;
+
+	kernelobj.cg_solve(X, y, true);
+	
+	std::cout << "Done with cg_solve" << std::endl;
+
+	double *new_hyper_params = kernelobj.get_loghyperparam();
+
+	std::cout << "New hyper params: " << std::endl;
+	std::cout << new_hyper_params[0] << std::endl;
+	std::cout << new_hyper_params[1] << std::endl;
+	std::cout << new_hyper_params[2] << std::endl;
+
+	// ans = kernelobj.compute_loglikelihood(X, y);
+
+	std::cout << "Final answer is : " << ans << std::endl;
 	return 0;	
 }		

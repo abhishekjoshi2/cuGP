@@ -1,8 +1,10 @@
 #include <cmath>
 #include <utility>
 #include <cstdio>
+#include "debug.h"
 
 void print_matrix(double **M , int r, int c){
+	if (debug)
         for(int i = 0 ; i < r; i++){
                 for(int j = 0 ; j< c ;j++){
                         printf("%lf ", M[i][j]);
@@ -13,11 +15,11 @@ void print_matrix(double **M , int r, int c){
 
 void print_vector(double *M, int n){
 
+	if (debug)
 	for(int i = 0 ; i < n ;i++){
 		printf("%lf\n", M[i]);
 	}
 }
-
 
 void vector_matrix_multiply(double *vector, double **matrix, int n, double *out_vector)
 {
@@ -206,7 +208,8 @@ void subtract_matrices(double **A, double **B, double **C, int n1, int n2){
 			C[i][j] = A[i][j] - B[i][j];		
 		}
 	}
-	printf("inside matrix subtraction\n");
+	if (debug)
+		printf("inside matrix subtraction\n");
 	print_matrix(C, n1, n2);
 }
 
@@ -217,6 +220,7 @@ void get_outer_product(double *a, double *b, double **M, int n){
 			M[i][j] = a[i] * b[j];
 		}
 	}
+	if (debug)
 	printf("Inside outer_product\n");
 	print_matrix(M, n, n);
 }
@@ -266,7 +270,8 @@ void vector_Kinvy_using_cholesky(double **K, double *y, double *ans, int n){
 	}
 	delete L;
 	delete U;
-	printf("kinvy using chol ho gaya, now see the output\n");
+	if (debug)
+		printf("kinvy using chol ho gaya, now see the output\n");
 	print_vector(ans, n);
 }
 
@@ -348,7 +353,8 @@ void compute_K_inverse(double **K, double **outputK, int n){
 	//	- Now MBS
 	matrix_backward_substitution(temp1, T, outputK, n); // should make L' * outputK = T
 	
-	printf("Now seeing the inv(K) matrix only\n");
+	if (debug)
+		printf("Now seeing the inv(K) matrix only\n");
 
 	print_matrix(outputK, n, n);
 	
@@ -360,6 +366,7 @@ void elementwise_matrixmultiply(double ** inp1, double ** inp2, double ** output
 			output[i][j] = inp1[i][j] * inp2[i][j];
 		}
 	}
-	printf("Now printing the output matrix from EEM\n");
+	if (debug)
+		printf("Now printing the output matrix from EEM\n");
 	print_matrix(output, n1, n2);
 }
