@@ -12,7 +12,6 @@ int main()
 	FILE *input_file, *label_file;
 	int n, dim;
 	double **X;
-	double **k_mat;
 	double *y;
 	
 	input_file = fopen(INPUT_FILE, "r");
@@ -62,11 +61,11 @@ int main()
 	std::cout << grad[2] << std::endl;
 	std::cout << ans << std::endl;*/
 
-	std::cout << "Invoking cg_solve" << std::endl;
+	std::cout << "Invoking solver" << std::endl;
 
 	kernelobj.rprop_solve(X, y, true);
 	
-	std::cout << "Done with cg_solve" << std::endl;
+	std::cout << "Done with solver" << std::endl;
 
 	double *new_hyper_params = kernelobj.get_loghyperparam();
 
