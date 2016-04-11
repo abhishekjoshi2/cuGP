@@ -103,7 +103,7 @@ void Covsum::compute_K_train(double **X, double **output) {
 void Covsum::compute_k_test(double **X, double *xtest, double *output) {
 	double ell_sq = exp(this->loghyper[0] * 2); //l^2 after coverting back from the log form
 	double signal_var = exp(this->loghyper[1] * 2); // signal variance
-	double noise_var = exp(this->loghyper[2] * 2); //noise variance
+	// double noise_var = exp(this->loghyper[2] * 2); //noise variance
 	int n = this->inputdatasize;
 	int d = this->numdim;
 	for (int i = 0 ; i < n ; i++) {
@@ -114,7 +114,6 @@ void Covsum::compute_k_test(double **X, double *xtest, double *output) {
 }
 
 double Covsum::compute_loglikelihood(double **X, double *y) {
-	double ans = 0.0;
 	int n = this->inputdatasize;
 
 	compute_K_train(X, this->tempKmatrix);
@@ -275,7 +274,7 @@ void Covsum::set_loghyperparam(double *initval) {
 
 void Covsum::compute_test_means_and_variances(double **X, double *y, double **Xtest, double *tmeanvec, double *tvarvec, int numtest) {
 	int n = this->inputdatasize;
-	double ell_sq = exp(this->loghyper[0] * 2); //l^2 after coverting back from the log form
+	// double ell_sq = exp(this->loghyper[0] * 2); //l^2 after coverting back from the log form
 	double signal_var = exp(this->loghyper[1] * 2); // signal variance
 	double noise_var = exp(this->loghyper[2] * 2); //noise variance
 
@@ -346,7 +345,7 @@ void Covsum::rprop_solve(double **X_mat, double *y_vec, bool verbose=true)
 
 	double best = log(0);
 
-	for (size_t i=0; i<n; ++i) {
+	for (int i = 0; i < n; ++i) {
 		// Eigen::VectorXd grad = -gp->log_likelihood_gradient();
 		double *gradient_loghp = compute_gradient_loghyperparam(X_mat, y_vec);
 
@@ -449,7 +448,7 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 	double f2 = 0, f4 = 0;
 	double d2 = 0, d4 = 0;
 
-	for (unsigned int i = 0; i < n; ++i)
+	for (int i = 0; i < n; ++i)
 	{
 		//copy current values
 		Eigen::VectorXd X0 = X;
