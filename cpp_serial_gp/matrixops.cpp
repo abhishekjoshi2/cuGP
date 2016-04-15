@@ -68,20 +68,37 @@ void get_cholesky(double **input, double **output, int dim)
 
 	for (int col = 0; col < dim; col++)
 	{
+		//printf("Begin new iteration: col: %d\n", col);
 		output[col][col] = std::sqrt(output[col][col]);
+		printf("output[%d][%d] = sqrt(output[%d][%d])\n", col, col, col, col);
 
+		//printf("Divide all elements below the diagonal element by diagonal element\n");
 		for (int row = col + 1; row < dim; row++)
+		{
+			printf("output[%d][%d] = output[%d][%d] / output[%d][%d]\n", row, col, row, col, col, col);
 			output[row][col] = output[row][col] / output[col][col];
+		}
 
 		for (int col2 = col + 1; col2 < dim; col2++)
+		{
+		//	printf("Begin new internal iteration: col2: %d\n", col2);
 			for (int row2 = col2; row2 < dim; row2++)
+			{
 				output[row2][col2] = output[row2][col2] - output[row2][col] * output[col2][col];
+				printf("output[%d][%d] = output[%d][%d] - output[%d][%d] * output[%d][%d]\n", row2, col2, row2, col2, row2, col, col2, col);
+			}
+		}
+
+		//printf("Done with this iteration!\n");
 	}
 
 	for (int row = 0; row < dim; row++)
 	{
 		for (int col = row + 1; col < dim; col++)
+		{
 			output[row][col] = 0.0;
+			printf("output[%d][%d] = 0\n", row, col);
+		}
 	}
 }
 
@@ -307,6 +324,22 @@ void matrix_forward_substitution(double **A, double **B, double **output, int DI
 		for (int i = 0 ; i < DIM; i++) {
 			output[i][k] = B[i][k];
 			for(int j = 0; j < i; j++) {
+				output[i][k] = output[i][k] - A[i][j] * output[j][k];
+			}
+			output[i][k] = output[i][k] / A[i][i];
+		}
+	}
+}
+
+// Computes output for satisfying A * output = B, using forward substitution (columnwise, for each column of B)
+//	INVARIANT for correct result: A is lower triangular
+// This is for the case where B and output and are not square matrix. But, A has to be symmetric!
+void matrix_forward_substitution_rectangular(double **A, double **B, double **output, int dim1, int dim2)
+{
+	for (int k = 0; k < dim2; k++) { // this is looping over columns of B matrix
+		for (int i = 0; i < dim1; i++) {
+			output[i][k] = B[i][k];	
+			for (int j = 0; j < i; j++) {
 				output[i][k] = output[i][k] - A[i][j] * output[j][k];
 			}
 			output[i][k] = output[i][k] / A[i][i];

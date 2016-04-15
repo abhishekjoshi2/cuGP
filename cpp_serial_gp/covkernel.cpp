@@ -133,8 +133,8 @@ void Covsum::compute_squared_dist(double **X, double c) {
 	if (debug)
 		std::cout << "inside the squared dist function";
 
-	for(i = 0; i < n; i++) {
-		for(j = i; j < n; j++) {
+	for (i = 0; i < n; i++) {
+		for (j = i; j < n; j++) {
 			if (debug)
 				printf("i = %d, j = %d\n", i,j);
 

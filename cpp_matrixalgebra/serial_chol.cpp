@@ -67,8 +67,8 @@ def main():
 #include <cstdlib>
 #include <iostream>
 #include <cmath>
-#include <armadillo>
-#define dim 4
+//#include <armadillo>
+#define dim 6
 
 void print_matrix(double m[][dim] ,int rows, int cols){
 	for (int i = 0 ; i < rows; i++){
@@ -102,6 +102,17 @@ int main()
 	{ 0.844401118832, 1.08535041197, 1.33038976826, 0.801101913691},
 	{ 0.884913338131, 1.11402077305, 0.801101913691, 0.922611446652} };
 */
+
+
+/*double matrix3[dim][dim] = 
+{
+{ 5329.000000, 4818.000000, 2190.000000, 4234.000000, 2628.000000, 2482.000000 },
+{ 4818.000000, 4356.000000, 1980.000000, 3828.000000, 2376.000000, 2244.000000 },
+{ 2190.000000, 1980.000000, 900.000000, 1740.000000, 1080.000000, 1020.000000 },
+{ 4234.000000, 3828.000000, 1740.000000, 3364.000000, 2088.000000, 1972.000000 },
+{ 2628.000000, 2376.000000, 1080.000000, 2088.000000, 1296.000000, 1224.000000 },
+{ 2482.000000, 2244.000000, 1020.000000, 1972.000000, 1224.000000, 1156.000000 }
+};*/
 	int sum = 0;
 
 	srand(time(NULL));
@@ -112,12 +123,6 @@ int main()
 		}
 	}
 
-	//matrix2: transpose of matrix1
-	//for (int i = 0; i < dim; i++)
-	//	for (int j = 0; j < dim; j++)
-	//		matrix2[j][i] = matrix1[i][j];
-
-
 	//multiplyting matrix1 and matrix2 to generate matrix3 (which will be symmetric)
 	for (int i = 0; i < dim; i++){
 		for(int j = 0; j < dim; j++){
@@ -125,10 +130,23 @@ int main()
 				matrix3[i][j] += matrix1[i][k]*matrix2[k][j];
 			}
 		}
-	}		
+	}	
 		
 
 	std::cout << "Original matrix is" << std::endl;	
+
+	// if want to read from file, uncomment this
+	/* FILE *fp = fopen("input.txt", "r");
+	if (fp == NULL)
+	{
+		printf("Couldn't open file. Abort.\n");
+		return 0;
+	}
+
+	for (int i = 0; i < dim; i++)
+		for (int j = 0; j < dim; j++)
+			fscanf(fp, "%lf", &matrix3[i][j]); */
+
 	print_matrix(matrix3, dim, dim);
 	
 	// cholesky for matrix3

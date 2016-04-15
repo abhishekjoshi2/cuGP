@@ -3,12 +3,21 @@
 #include<cmath>
 #include<cstdlib>
 
-#define DIM 4
-
+#define DIM 10
 void print_matrix(double m[][DIM], int rows, int cols) {
 	for (int i = 0 ; i < rows; i++) {
 		for(int j = 0; j < cols; j++) {
 			printf("%lf\t", m[i][j]);
+		}
+		printf("\n");
+	}
+}
+
+void print_matrix_rect(double **mat, int rows, int cols)
+{
+	for (int i = 0 ; i < rows; i++) {
+		for(int j = 0; j < cols; j++) {
+			printf("%lf\t", mat[i][j]);
 		}
 		printf("\n");
 	}
@@ -26,6 +35,24 @@ void check_ans(double M[][DIM], double y[DIM], double b[DIM]) {
 	}
 
 }
+
+
+void check_matrixans_rect(double **arr1, double **arr2, double **arr3, int dim1, int dim2)
+{
+	printf("Checking correctness for rect matrix\n");
+	int i, j, k;
+	for(i = 0; i < dim1; i++) {
+		for(j = 0; j < dim2; j++) {
+			double temp = 0.0;
+			for(k = 0; k < dim1; k++) {
+				temp += arr1[i][k] * arr2[k][j];
+			}
+			printf("%lf - %lf = %lf\n", temp, arr3[i][j], temp - arr3[i][j]);
+		}
+	}
+}
+
+
 void check_matrixans(double M[][DIM], double y[][DIM], double b[][DIM]) {
 	printf("Checking correctness for matrix\n");
 	int i, j, k;
@@ -60,95 +87,97 @@ void backward_sub_vector(double arr2[][DIM], double b[DIM], double y2[DIM]) {
 	}
 }
 
-int main(){
+void matrix_forward_substitution_rectangular(double **, double **, double **, int, int);
 
+int main(){
 	srand(time(NULL));
-	double arr1[DIM][DIM]; //lower triangular
-	double arr2[DIM][DIM]; //upper triangular
+
 	int i,j;
+	int dim1 = 8, dim2 = 16;
+	double **arr1, **arr2, **arr3;
+
+	// first generate dim1xdim1 square matrix
+	arr1 = new double*[dim1];
+	for (int i = 0; i < dim1; i++)
+		arr1[i] = new double[dim1];
+
+	// now generate dim1xdim2 rectangular matrix
+	arr2 = new double*[dim1];
+	for (int i = 0; i < dim1; i++)
+		arr2[i] = new double[dim2];
+
+	// now generate dim1xdim2 rectangular matrix for answer
+	arr3 = new double*[dim1];
+	for (int i = 0; i < dim1; i++)
+		arr3[i] = new double[dim2];
 
 	int MOD = 10;
+	int setter = 1;
 
-	//initialize
-	for(i = 0; i < DIM; i++) {
-		for(j = 0; j < DIM; j++) {
-			if (i == j) {
-				arr1[i][j] = rand() % MOD + 1;
-				arr2[i][j] = rand() % MOD + 1;
-			}
-			else if (i > j) { // for lower triangular matrix
-				arr1[i][j] = rand() % MOD + 1;
-				arr2[i][j] = 0.0;
-			}
-			else { //for upper triangular matrix
-				arr1[i][j] = 0.0;
-				arr2[i][j] = rand() % MOD  + 1;
-			}
+	//initialize the first square matrix
+	for (i = 0; i < dim1; i++)
+	{
+		for (j = 0; j < dim1; j++)
+		{
+			arr1[i][j] = 1.0 * setter;
+			setter++;
 		}
 	}
-	//print_matrix(arr1, DIM, DIM);
-	//printf("\n");
-	//print_matrix(arr2, DIM, DIM);
 
-	double b[DIM];	
-	for(i = 0; i < DIM; i++) {
-		b[i] = rand() % MOD + 1;
+	for (i = 0; i < dim1; i++)
+		for (j = 0; j < dim1; j++)
+			if (i < j)
+				arr1[i][j] = 0.0;
+
+	// initialize the second dim1, dim2 matrix
+	for (i = 0; i < dim1; i++)
+	{
+		for (j = 0; j < dim2; j++)
+		{
+			arr2[i][j] = 1.0 * setter;
+			setter++;
+		}
 	}
 
-	double y1[DIM], y2[DIM];
+	printf("Matrix 1:\n");
+	print_matrix_rect(arr1, dim1, dim1);
+	printf("\n");
 
-	/*
-	 * Basic forward and backward substitution based on vectors
-	 */
-
-	// forward substitution 
-	// doing for arr1 and b to get y1: [arr1 * y1 = b]
-
-	forward_sub_vector(arr1, b, y1);
-	check_ans(arr1, y1, b);
-
-	// backward substitution
-	backward_sub_vector(arr2, b, y2);
-	check_ans(arr2, y2, b);
+	printf("Matrix 2:\n");
+	print_matrix_rect(arr2, dim1, dim2);
 
 	/*
 	 * Now forward and backward substitution based on matrices	
 	 */	
 
-	double B1[DIM][DIM];
-	double output1[DIM][DIM];
-	double output2[DIM][DIM];
-
-	for (i = 0; i < DIM; i++) {
-		for (j = 0; j < DIM; j++) {
-			B1[i][j] = rand() % MOD + 1;
-		}
-	}
-
 	// First trying forward substitution for matrix
-	for (int k = 0; k < DIM; k++) { // this is looping over columns of B matrix
-		for (int i = 0; i < DIM; i++) {
-			output1[i][k] = B1[i][k];	
-			for(int j = 0; j < i; j++) {
-				output1[i][k] = output1[i][k] - arr1[i][j] * output1[j][k];
+	/* for (int k = 0; k < dim2; k++) { // this is looping over columns of B matrix
+		for (int i = 0; i < dim1; i++) {
+			arr3[i][k] = arr2[i][k];	
+			for (int j = 0; j < i; j++) {
+				arr3[i][k] = arr3[i][k] - arr1[i][j] * arr3[j][k];
 			}
-			output1[i][k] = output1[i][k] / arr1[i][i];
+			arr3[i][k] = arr3[i][k] / arr1[i][i];
 		}
-	}
+	} */
+	matrix_forward_substitution_rectangular(arr1, arr2, arr3, dim1, dim2);
 
-	check_matrixans(arr1, output1, B1);
+	printf("Matrix 3:\n");
+	print_matrix_rect(arr3, dim1, dim2);
+
+	check_matrixans_rect(arr1, arr3, arr2, dim1, dim2);
 
 	// Now trying backward substitution for matrix
-	for (int k = 0; k < DIM; k++) {
-		for (int i = DIM - 1; i >= 0 ; i--) {
-			output2[i][k] = B1[i][k];
+	/*for (int k = 0; k < dim2; k++) {
+		for (int i = dim1 - 1; i >= 0 ; i--) {
+			arr3[i][k] = B1[i][k];
 			for(int j = i + 1; j < DIM; j++) {
 				output2[i][k] = output2[i][k] - arr2[i][j] * output2[j][k];
 			}
 			output2[i][k] = output2[i][k] / arr2[i][i];
 		}
 	}
-	check_matrixans(arr2, output2, B1);
+	check_matrixans(arr2, output2, B1);*/
 
 	return 0;
 }
