@@ -8,6 +8,8 @@ double *M;
 double *a11;
 double *a21_transpose;
 double *l21_transpose_from_fs;
+double *l21;
+double *l22_temp;  //This is for updating a22
 
 #define cudacall(call) \
 { \
@@ -150,8 +152,7 @@ check_l21_kernel(double *M1, double *M2, double* targetoutput, int d1, int d2, i
 	printf("The error for l21_transpose_from_fs is %lf\n", totaldiff);
 }
 __global__ void
-matrixmultiply_kernel(double *M1, double *M2, double* targetoutput, int d1, int d2, int d3){
-	
+singlethread_temp_matmult_kernel(double *M1, double *M2, double* targetoutput, int d1, int d2, int d3){	
 	for(int i = 0; i < d1; i++){
 		for(int j = 0; j < d3 ;j++){ 
 			double tempval = 0.0;
@@ -159,10 +160,27 @@ matrixmultiply_kernel(double *M1, double *M2, double* targetoutput, int d1, int 
 				tempval += M1[i*d2 + k] * M2[k * d3 + j];
 			}
 			targetoutput[i * d3 + j] = tempval;
-
 		}
 	}
 }
+
+__global__ void
+generic_matrix_transpose(double *input, double *output, int d1, int d2){
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	if (i_index >= d1 * d2)
+		return;
+
+	// DESIRED: output[j][i] = input[i][j];
+	//	    output: d2 x d1
+	// 	    input : d1 x d2
+	
+	// int input_row = index / d2;
+	// int input_col = index % d2;
+	output[ (i_index % d2) * d1 + (i_index / d2)]  = input[i_index];
+}
+
 
 void get_symmetric_matrix_1d(double *M, double **matrix1, double **matrix2, int dim) {
 
@@ -273,7 +291,19 @@ void setup(int dim, int b)
 
 	 cudacall(cudaMalloc(&l21_transpose_from_fs, sizeof(double) * b * (dim - b)));
 	 cudacall(cudaMemset((void *)l21_transpose_from_fs, 0, sizeof(double) * b * (dim - b)));
+	
+	/*
+	 * Now malloc the l21 matrix, which will be useful for populating a22 (via matrix mult).
+	 */
 
+	 cudacall(cudaMalloc(&l21, sizeof(double) * b * (dim - b)));
+
+	/*
+	 * Now malloc the l22_temp matrix, which will be useful for elementwise subtraction for a22 (after matrix mult).
+	 */
+
+	 cudacall(cudaMalloc(&l22_temp, sizeof(double) * (dim - b) * (dim - b)));
+	 
 	/*GlobalConstants params;
 	  params.sceneName = sceneName;
 	  params.numCircles = numCircles;
@@ -380,18 +410,28 @@ void run_kernel()
 		print_matrix_kernel<<<1,1>>>(a21_transpose, b, dim - b - start_id);
 		cudaThreadSynchronize();
 		printf(" ---------------------------------------- \n");
-		matrixmultiply_kernel<<<1, 1>>>(a11, a21_transpose, l21_transpose_from_fs, b, b, dim - b - start_id);
+		singlethread_temp_matmult_kernel<<<1, 1>>>(a11, a21_transpose, l21_transpose_from_fs, b, b, dim - b - start_id);
 		cudaThreadSynchronize();
 		print_matrix_kernel<<<1,1>>>(l21_transpose_from_fs, b, dim - b - start_id);
 		cudaThreadSynchronize();
 		printf("\n\n");
 		*/
 			
-		printf("\nNow printing entire M matrix\n");
-		print_matrix_kernel<<<1, 1>>>(M, dim, dim);
-		cudaThreadSynchronize();
-	
+		//printf("\nNow printing entire M matrix\n");
+		//print_matrix_kernel<<<1, 1>>>(M, dim, dim);
+		//cudaThreadSynchronize();
 		
+		// TODO: Can include this tranpose in the forward_substitution_rectangular_a22 call!!!!
+		// Now taking transpose of l21_transpose_from_fs
+		 
+		threads_per_block = 256;
+		number_of_blocks = upit((dim - b - start_id) * b, threads_per_block);
+		generic_matrix_transpose<<<number_of_blocks, threads_per_block>>>(l21_transpose_from_fs, l21, b, dim - b - start_id);
+		cudaThreadSynchronize();
+		
+		printf("\nNow checking the transpose => \n");	
+		print_matrix_kernel<<<1,1>>>(l21, dim - b - start_id, b);
+		cudaThreadSynchronize();
 
 		check_l21_kernel<<<1, 1>>>(a11, l21_transpose_from_fs, a21_transpose, b, b, dim - b - start_id);
 		cudaThreadSynchronize();
