@@ -115,6 +115,7 @@ forward_substitution_rectangular_a21(double *a11, double *a21_transpose, double 
 		}
 	} */
 	int k = i_index;
+	// TODO experiment with #pragma unroll
 	for (int i = 0; i < b; i++)
 	{
 		l21_from_fs[i * (dim - b - start_id) + k] = a21_transpose[i * (dim - b - start_id) + k];
@@ -131,7 +132,8 @@ forward_substitution_rectangular_a21(double *a11, double *a21_transpose, double 
 void get_symmetric_matrix_1d(double *M, double **matrix1, double **matrix2, int dim) {
 
 	srand(time(NULL));
-	for (int i = 0; i < dim; i++){
+	for (int i = 0; i < dim; i++)
+	{
 		for (int j = 0; j < dim; j++){
 			matrix1[i][j] = rand() % 100 + 1;
 			matrix2[j][i] = matrix1[i][j];
