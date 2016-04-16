@@ -162,6 +162,28 @@ matrixmultiply_kernel(double *M1, double *M2, double* targetoutput, int d1, int 
 	}
 }
 
+
+__global__ void kernelMatMult(double *a, int rowsA, int colsA,
+		double *b, int rowsB, int colsB, double *c)
+{
+
+	int col = blockIdx.y * blockDim.y + threadIdx.y;
+	int row = blockIdx.x * blockDim.x + threadIdx.x;
+
+	if (row >= rowsA || col >= colsB)
+		return;
+
+	float sum = 0.0f;
+	for (int i = 0; i < colsA; i++)
+	{
+		sum += a[row * colsA + i] * b[i * colsB + col]; 
+	}
+
+	c[row * colsB + col] = sum;
+}
+
+
+
 void get_symmetric_matrix_1d(double *M, double **matrix1, double **matrix2, int dim) {
 
 	srand(time(NULL));
@@ -356,10 +378,6 @@ void run_kernel()
 		printf("number_of_blocks is %d, threads_per_block is %d\n", number_of_blocks, threads_per_block);
 		take_a21_transpose<<<number_of_blocks, threads_per_block>>>(M, a21_transpose, dim, b, start_id);
 		cudaThreadSynchronize();
-
-		/* printf("Call transpose_a21 print\n");
-		print_matrix_kernel<<<1, 1>>>(a21_transpose, b, dim - b - start_id);
-		cudaThreadSynchronize(); */
 
 		threads_per_block = 256;
 		number_of_blocks = upit((dim - b - start_id), threads_per_block);
