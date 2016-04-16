@@ -7,7 +7,7 @@
 double *M;
 double *a11;
 double *a21_transpose;
-double *l21_from_fs;
+double *l21_transpose_from_fs;
 
 #define cudacall(call) \
 { \
@@ -97,7 +97,7 @@ take_a21_transpose(double *M, double *a21_transpose, int dim, int b, int start_i
 }
 
 __global__ void
-forward_substitution_rectangular_a21(double *a11, double *a21_transpose, double *l21_from_fs, int dim, int b, int start_id)
+forward_substitution_rectangular_a21(double *M, double *a11, double *a21_transpose, double *l21_transpose_from_fs, int dim, int b, int start_id)
 {
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
 	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
@@ -117,12 +117,15 @@ forward_substitution_rectangular_a21(double *a11, double *a21_transpose, double 
 	int k = i_index;
 	for (int i = 0; i < b; i++)
 	{
-		l21_from_fs[i * (dim - b - start_id) + k] = a21_transpose[i * (dim - b - start_id) + k];
+		l21_transpose_from_fs[i * (dim - b - start_id) + k] = a21_transpose[i * (dim - b - start_id) + k];
 		for (int j = 0; j < i; j++)
 		{
-			l21_from_fs[i * (dim - b - start_id) + k] -= a11[i * b + j] * l21_from_fs[j * (dim - b - start_id) + k];
+			l21_transpose_from_fs[i * (dim - b - start_id) + k] -= a11[i * b + j] * l21_transpose_from_fs[j * (dim - b - start_id) + k];
 		}
-		l21_from_fs[i * (dim - b - start_id) + k] /= a11[i * b + i];
+		l21_transpose_from_fs[i * (dim - b - start_id) + k] /= a11[i * b + i];
+		
+		//Updating M too!	
+		M[ (start_id + b + k) * dim + start_id + i ] = l21_transpose_from_fs[i * (dim - b - start_id) + k];
 	}
 }
 
@@ -144,7 +147,7 @@ check_l21_kernel(double *M1, double *M2, double* targetoutput, int d1, int d2, i
 			//printf("Diff = %lf\n", diff);
 		}
 	}
-	printf("The error for l21_from_fs is %lf\n", totaldiff);
+	printf("The error for l21_transpose_from_fs is %lf\n", totaldiff);
 }
 __global__ void
 matrixmultiply_kernel(double *M1, double *M2, double* targetoutput, int d1, int d2, int d3){
@@ -265,11 +268,11 @@ void setup(int dim, int b)
 	 cudacall(cudaMemset((void *)a21_transpose, 0, sizeof(double) * b * (dim - b)));
 
 	/*
-	 * Now malloc the l21_from_fs matrix to insert the output of forward substitution. Is retained here for generating a22.
+	 * Now malloc the l21_transpose_from_fs matrix to insert the output of forward substitution. Is retained here for generating a22.
 	 */
 
-	 cudacall(cudaMalloc(&l21_from_fs, sizeof(double) * b * (dim - b)));
-	 cudacall(cudaMemset((void *)l21_from_fs, 0, sizeof(double) * b * (dim - b)));
+	 cudacall(cudaMalloc(&l21_transpose_from_fs, sizeof(double) * b * (dim - b)));
+	 cudacall(cudaMemset((void *)l21_transpose_from_fs, 0, sizeof(double) * b * (dim - b)));
 
 	/*GlobalConstants params;
 	  params.sceneName = sceneName;
@@ -361,11 +364,11 @@ void run_kernel()
 
 		threads_per_block = 256;
 		number_of_blocks = upit((dim - b - start_id), threads_per_block);
-		forward_substitution_rectangular_a21<<<number_of_blocks, threads_per_block>>>(a11, a21_transpose, l21_from_fs, dim, b, start_id);
+		forward_substitution_rectangular_a21<<<number_of_blocks, threads_per_block>>>(M, a11, a21_transpose, l21_transpose_from_fs, dim, b, start_id);
 		cudaThreadSynchronize();
 
-		printf("Printing l21_from_fs\n");
-		print_matrix_kernel<<<1, 1>>>(l21_from_fs, b, dim - b - start_id);
+		printf("Printing l21_transpose_from_fs\n");
+		print_matrix_kernel<<<1, 1>>>(l21_transpose_from_fs, b, dim - b - start_id);
 		cudaThreadSynchronize();
 
 		/*		
@@ -373,18 +376,24 @@ void run_kernel()
 		printf(" ---------------------------------------- \n");	
 		print_matrix_kernel<<<1, 1>>>(a11, b, b);
 		cudaThreadSynchronize();
-		printf(" --------------------------------------- \n");
+		printf(" ---------------------------------------- \n");
 		print_matrix_kernel<<<1,1>>>(a21_transpose, b, dim - b - start_id);
 		cudaThreadSynchronize();
-		printf(" --------------------------------------- \n");
-		matrixmultiply_kernel<<<1, 1>>>(a11, a21_transpose, l21_from_fs, b, b, dim - b - start_id);
+		printf(" ---------------------------------------- \n");
+		matrixmultiply_kernel<<<1, 1>>>(a11, a21_transpose, l21_transpose_from_fs, b, b, dim - b - start_id);
 		cudaThreadSynchronize();
-		print_matrix_kernel<<<1,1>>>(l21_from_fs, b, dim - b - start_id);
+		print_matrix_kernel<<<1,1>>>(l21_transpose_from_fs, b, dim - b - start_id);
 		cudaThreadSynchronize();
 		printf("\n\n");
 		*/
+			
+		printf("\nNow printing entire M matrix\n");
+		print_matrix_kernel<<<1, 1>>>(M, dim, dim);
+		cudaThreadSynchronize();
+	
+		
 
-		check_l21_kernel<<<1, 1>>>(a11, l21_from_fs, a21_transpose, b, b, dim - b - start_id);
+		check_l21_kernel<<<1, 1>>>(a11, l21_transpose_from_fs, a21_transpose, b, b, dim - b - start_id);
 		cudaThreadSynchronize();
 
 		start_id += b;
