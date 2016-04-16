@@ -170,7 +170,7 @@ void a22_update(double **M, double **a21, double **a21_transpose, int start_idx,
 
 int main() {
 	
-	int dim = 5000;
+	int dim = 2000;
 	double **M, **matrix1, **matrix2;
 	double **M_orig, **M_trans;
 	double **temp_a21_transpose, **temp_output;
