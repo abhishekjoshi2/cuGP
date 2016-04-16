@@ -126,7 +126,40 @@ forward_substitution_rectangular_a21(double *a11, double *a21_transpose, double 
 	}
 }
 
+__global__ void
+check_l21_kernel(double *M1, double *M2, double* targetoutput, int d1, int d2, int d3){
+	
+	double totaldiff = 0.0, diff = 0;
+	for(int i = 0; i < d1; i++){
+		for(int j = 0; j < d3 ;j++){ 
+			double tempval = 0.0;
+			for(int k = 0; k < d2; k++){
+				//tempval += M1[i][k] + M2[k][j];
+				tempval += M1[i*d2 + k] * M2[k * d3 + j];
+			}
+			//diff = tempval - targetoutput[i][j];
+			diff = tempval - targetoutput[i * d3 + j];
 
+			totaldiff += diff * diff;
+			printf("Diff = %lf\n", diff);
+		}
+	}
+	printf("Okay the error is %lf\n", totaldiff);
+}
+__global__ void
+matrixmultiply_kernel(double *M1, double *M2, double* targetoutput, int d1, int d2, int d3){
+	
+	for(int i = 0; i < d1; i++){
+		for(int j = 0; j < d3 ;j++){ 
+			double tempval = 0.0;
+			for(int k = 0; k < d2; k++){
+				tempval += M1[i*d2 + k] * M2[k * d3 + j];
+			}
+			targetoutput[i * d3 + j] = tempval;
+
+		}
+	}
+}
 
 void get_symmetric_matrix_1d(double *M, double **matrix1, double **matrix2, int dim) {
 
@@ -307,6 +340,8 @@ void run_kernel()
 	num_iters = dim / b;
 	for (int i = 0; i < num_iters; i++)
 	{
+		printf("\n\n");
+		printf("Iteration number is %d\n", i + 1);
 		hardcoded_cholesky_2x2<<<1, 1>>>(M, a11, dim, b, start_id);
 		cudaThreadSynchronize();
 
@@ -331,6 +366,25 @@ void run_kernel()
 
 		printf("Printing l21_from_fs\n");
 		print_matrix_kernel<<<1, 1>>>(l21_from_fs, b, dim - b - start_id);
+		cudaThreadSynchronize();
+
+		/*		
+		printf("\n\n");
+		printf(" ---------------------------------------- \n");	
+		print_matrix_kernel<<<1, 1>>>(a11, b, b);
+		cudaThreadSynchronize();
+		printf(" --------------------------------------- \n");
+		print_matrix_kernel<<<1,1>>>(a21_transpose, b, dim - b - start_id);
+		cudaThreadSynchronize();
+		printf(" --------------------------------------- \n");
+		matrixmultiply_kernel<<<1, 1>>>(a11, a21_transpose, l21_from_fs, b, b, dim - b - start_id);
+		cudaThreadSynchronize();
+		print_matrix_kernel<<<1,1>>>(l21_from_fs, b, dim - b - start_id);
+		cudaThreadSynchronize();
+		printf("\n\n");
+		*/
+
+		check_l21_kernel<<<1, 1>>>(a11, l21_from_fs, a21_transpose, b, b, dim - b - start_id);
 		cudaThreadSynchronize();
 
 		start_id += b;
