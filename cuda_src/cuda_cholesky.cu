@@ -141,10 +141,10 @@ check_l21_kernel(double *M1, double *M2, double* targetoutput, int d1, int d2, i
 			diff = tempval - targetoutput[i * d3 + j];
 
 			totaldiff += diff * diff;
-			printf("Diff = %lf\n", diff);
+			//printf("Diff = %lf\n", diff);
 		}
 	}
-	printf("Okay the error is %lf\n", totaldiff);
+	printf("The error for l21_from_fs is %lf\n", totaldiff);
 }
 __global__ void
 matrixmultiply_kernel(double *M1, double *M2, double* targetoutput, int d1, int d2, int d3){
