@@ -5,9 +5,10 @@
 #include <driver_functions.h>
 
 double *M;
+double *a11;
 
 #define cudacall(call) \
-	{ \
+{ \
 	cudaError_t err = (call);                                                                                               \
 	if(cudaSuccess != err)                                                                                                  \
 	{                                                                                                                       \
@@ -15,26 +16,46 @@ double *M;
 		cudaDeviceReset();                                                                                                  \
 		exit(EXIT_FAILURE);                                                                                                 \
 	}                                                                                                                       \
-	} \
+} \
+
+
+
 
 
 	__global__ void
-hardcoded_cholesky_2x2(double *M, int dim, int start_id)
+hardcoded_cholesky_1x1(double *M, double *a11, int dim, int b, int start_id)
+{
+	// TODO
+	/* M[idx][idx] = sqrt(M[idx][idx]);
+	a11[0][0] = M[idx][idx]; */
+}
+
+	__global__ void
+hardcoded_cholesky_2x2(double *M, double *a11, int dim, int b, int start_id)
 {
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
 	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
 
 	printf("In kernel\n");
-	printf("dim is %d, i_index is %d, j_index is %d\n", dim, i_index, j_index);
+	printf("dim is %d, i_index is %d, j_index is %d, b is %d, start_id is %d\n", dim, i_index, j_index, b, start_id);
 
-	for (int i = 0; i < dim; i++)
+	printf("Now the 2x2 matrix is:\n");
+	for (int i = 0; i < b; i++)
 	{
-		for (int j = 0; j < dim; j++)
+		for (int j = 0; j < b; j++)
 		{
-			printf("%lf ", M[i * dim + j]);
+			printf("%lf ", M[(i + start_id) * dim + j + start_id]);
 		}
 		printf("\n");
 	}
+
+	a11[0] = M[start_id * dim + start_id] = sqrt(M[start_id * dim + start_id]);
+	a11[1] = M[start_id * dim + start_id + 1] = 0.0;
+	a11[2] = M[(start_id + 1) * dim + start_id] = M[(start_id + 1) * dim + start_id] / M[start_id * dim + start_id];
+	a11[3] = M[(start_id + 1) * dim + start_id + 1] = sqrt(M[(start_id + 1) * dim + start_id + 1] - M[(start_id + 1) * dim + start_id] * M[(start_id + 1) * dim + start_id]);
+
+	printf("printing a11 matrix\n");
+	printf("%lf %lf %lf %lf\n", a11[0], a11[1], a11[2], a11[3]);
 }
 
 
@@ -93,13 +114,9 @@ void setup(int dim)
 		printf("---------------------------------------------------------\n");
 	}
 
-	// By this time the scene should be loaded.  Now copy all the key
-	// data structures into device memory so they are accessible to
-	// CUDA kernels
-	//
-	// See the CUDA Programmer's Guide for descriptions of
-	// cudaMalloc and cudaMemcpy
-
+	/*
+	 * First generate the M matrix
+	 */
 	double *temp_m, **m1, **m2;
 
 	temp_m = new double[dim * dim];
@@ -126,16 +143,13 @@ void setup(int dim)
 	}
 
 	cudacall(cudaMalloc(&M, sizeof(double) * dim * dim));
-
 	cudacall(cudaMemcpy(M, temp_m, sizeof(double) * dim * dim, cudaMemcpyHostToDevice));
 
-	// Initialize parameters in constant memory.  We didn't talk about
-	// constant memory in class, but the use of read-only constant
-	// memory here is an optimization over just sticking these values
-	// in device global memory.  NVIDIA GPUs have a few special tricks
-	// for optimizing access to constant memory.  Using global memory
-	// here would have worked just as well.  See the Programmer's
-	// Guide for more information about constant memory.
+	/*
+	 * Now malloc the a11 matrix
+	 */
+
+	cudacall(cudaMalloc(&a11, sizeof(double) * 4));
 
 	/*GlobalConstants params;
 	  params.sceneName = sceneName;
@@ -160,8 +174,7 @@ void setup(int dim)
 	cudaMemcpyToSymbol(cuConstNoiseYPermutationTable, permY, sizeof(int) * 256);
 	cudaMemcpyToSymbol(cuConstNoise1DValueTable, value1D, sizeof(float) * 256);
 
-	// last, copy over the color table that's used by the shading
-	// function for circles in the snowflake demo
+	// last, copy over the color table that's used by the shading // function for circles in the snowflake demo
 
 	float lookupTable[COLOR_MAP_SIZE][3] = {
 	{1.f, 1.f, 1.f},
@@ -188,14 +201,20 @@ void setup(int dim)
 
 void run_kernel()
 {
-	int dim = 8, start_id;
-	setup(dim);
-	printf("Call kernel\n");
-	// hardcoded_cholesky_2x2<<<1,1>>>();
-	
+	int dim, start_id, b;
+
+	start_id = 0;
+	dim = 8;
+	b = 2;
 	start_id = 0;
 
-	hardcoded_cholesky_2x2<<<1, 1>>>(M, dim, start_id);
-	cudaThreadSynchronize();
+	setup(dim);
+
+	for (int i = 0; i < dim / b; i++)
+	{
+		hardcoded_cholesky_2x2<<<1, 1>>>(M, a11, dim, b, start_id);
+		cudaThreadSynchronize();
+		start_id += b;
+	}
 	printf("Kernel call done\n");
 }
