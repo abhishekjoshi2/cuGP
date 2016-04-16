@@ -67,6 +67,7 @@ def main():
 #include <cstdlib>
 #include <iostream>
 #include <cmath>
+#include <cstdio>
 //#include <armadillo>
 #define dim 6
 

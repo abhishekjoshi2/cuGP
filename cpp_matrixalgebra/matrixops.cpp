@@ -4,12 +4,14 @@
 #include "debug.h"
 
 void print_matrix(double **M, int r, int c) {
+	/*
 	for (int i = 0; i < r; i++) {
 		for (int j = 0; j < c; j++) {
 			printf("%lf ", M[i][j]);
 		}
 		printf("\n");
 	}
+	*/
 }
 
 void print_vector(double *M, int n) {

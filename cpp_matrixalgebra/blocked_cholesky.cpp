@@ -6,6 +6,8 @@
 
 void matrix_forward_substitution_rectangular(double **, double **, double **temp_output, int b, int dim);
 
+void matrix_transpose(double **, double**, int);
+
 void get_symmetric_matrix(double **M, double **matrix1, double **matrix2, int dim){
 
 	srand(time(NULL));
@@ -30,6 +32,24 @@ void get_symmetric_matrix(double **M, double **matrix1, double **matrix2, int di
 			M[i][j] = setter++;
 			M[j][i] = M[i][j];
 		}*/
+}
+
+void check_matrixans_rect(double **arr1, double **arr2, double **arr3, int dim1, int dim2)
+{
+	printf("Checking correctness for rect matrix\n");
+	int i, j, k;
+	double total_sum = 0.0;
+	for(i = 0; i < dim1; i++) {
+		for(j = 0; j < dim2; j++) {
+			double temp = 0.0;
+			for(k = 0; k < dim1; k++) {
+				temp += arr1[i][k] * arr2[k][j];
+			}
+			// printf("%lf - %lf = %lf\n", temp, arr3[i][j], temp - arr3[i][j]);
+			total_sum += (temp - arr3[i][j]) * (temp - arr3[i][j]);
+		}
+	}
+	printf("Final error is %lf\n", total_sum);
 }
 
 // this is a special type of transpose for the A21 matrix, since it is within the actual M matrix
@@ -150,15 +170,16 @@ void a22_update(double **M, double **a21, double **a21_transpose, int start_idx,
 
 int main() {
 	
-	int dim = 6;
+	int dim = 5000;
 	double **M, **matrix1, **matrix2;
+	double **M_orig, **M_trans;
 	double **temp_a21_transpose, **temp_output;
 	double **a11;
 	double **a21;
 	temp_a21_transpose = new double *[dim];
 	temp_output = new double *[dim];
 
-	int b = 1;
+	int b = 2;
 	
 	a11 = new double *[b];
 	for (int i = 0; i < b; i++)
@@ -170,6 +191,8 @@ int main() {
 	M = new double*[dim];	
 	matrix1 = new double*[dim];	
 	matrix2 = new double*[dim];	
+	M_orig = new double*[dim];
+	M_trans = new double*[dim];
 	for (int i = 0; i < dim; i++) {
 		M[i] = new double[dim];
 		temp_a21_transpose[i] = new double[dim];
@@ -177,6 +200,8 @@ int main() {
 		a21[i] = new double[dim];
 		matrix1[i] = new double[dim];
 		matrix2[i] = new double[dim];
+		M_orig[i] = new double[dim];
+		M_trans[i] = new double[dim];
 	}
 
 	for (int i = 0; i < dim; i++)
@@ -184,6 +209,10 @@ int main() {
 			M[i][j] = 0;
 		
 	get_symmetric_matrix(M, matrix1, matrix2, dim);
+
+	for (int i = 0; i < dim; i++)
+		for (int j = 0; j < dim; j++)
+			M_orig[i][j] = M[i][j];
 
 	printf("Got matrix as \n");
 	print_matrix(M, dim, dim);
@@ -221,8 +250,21 @@ int main() {
 		printf("\n\n");
 	}
 
+	for (int i = 0; i < dim; i++)
+	{
+		for (int j = 0; j < dim; j++)
+		{
+			if (j > i)
+				M[i][j] = 0.0;
+		}
+	}
+
 	printf("Final matrix is:\n");
 	print_matrix(M, dim, dim);
+
+	matrix_transpose(M, M_trans, dim);
+
+	check_matrixans_rect(M, M_trans, M_orig, dim, dim);
 
 	return 0;
 }
