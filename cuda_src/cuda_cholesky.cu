@@ -6,6 +6,8 @@
 
 double *M;
 double *a11;
+double *a21_transpose;
+double *l21_from_fs;
 
 #define cudacall(call) \
 { \
@@ -17,9 +19,6 @@ double *a11;
 		exit(EXIT_FAILURE);                                                                                                 \
 	}                                                                                                                       \
 } \
-
-
-
 
 
 	__global__ void
@@ -58,6 +57,76 @@ hardcoded_cholesky_2x2(double *M, double *a11, int dim, int b, int start_id)
 	printf("%lf %lf %lf %lf\n", a11[0], a11[1], a11[2], a11[3]);
 }
 
+__global__ void
+print_matrix_kernel(double *arr, int dim1, int dim2)
+{
+	printf("Printing matrix:\n");
+	for (int i = 0; i < dim1; i++)
+	{
+		for (int j = 0; j < dim2; j++)
+		{
+			printf("%lf ", arr[i * dim2 + j]);
+		}
+		printf("\n");
+	}
+}
+
+__global__ void
+take_a21_transpose(double *M, double *a21_transpose, int dim, int b, int start_id) {
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	if (i_index >= (dim - b - start_id) * b)
+		return;
+
+	printf("In a21_transpose, i_index is %d, j_index is %d\n", i_index, j_index);
+
+	int input_row, input_col, target_row, target_col, row_offset_by_thread, col_offset_by_thread;
+
+	// TODO replace i_index by a generic construct because it may involve blocks and grids
+	row_offset_by_thread = i_index / b;
+	input_row = start_id + b + row_offset_by_thread;
+
+	col_offset_by_thread = i_index % b;
+	input_col = start_id + col_offset_by_thread;
+
+	target_row = i_index % b;
+	target_col = i_index / b;
+
+	a21_transpose[target_row * (dim - b - start_id) + target_col] = M[input_row * dim + input_col];
+}
+
+__global__ void
+forward_substitution_rectangular_a21(double *a11, double *a21_transpose, double *l21_from_fs, int dim, int b, int start_id)
+{
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	if (i_index >= (dim - b - start_id))
+		return;
+
+	/* for (int k = 0; k < dim2; k++) { // this is looping over columns of B matrix
+		for (int i = 0; i < dim1; i++) {
+			output[i][k] = B[i][k];
+			for (int j = 0; j < i; j++) {
+				output[i][k] = output[i][k] - A[i][j] * output[j][k];
+			}
+			output[i][k] = output[i][k] / A[i][i];
+		}
+	} */
+	int k = i_index;
+	for (int i = 0; i < b; i++)
+	{
+		l21_from_fs[i * (dim - b - start_id) + k] = a21_transpose[i * (dim - b - start_id) + k];
+		for (int j = 0; j < i; j++)
+		{
+			l21_from_fs[i * (dim - b - start_id) + k] -= a11[i * b + j] * l21_from_fs[j * (dim - b - start_id) + k];
+		}
+		l21_from_fs[i * (dim - b - start_id) + k] /= a11[i * b + i];
+	}
+}
+
+
 
 void get_symmetric_matrix_1d(double *M, double **matrix1, double **matrix2, int dim) {
 
@@ -78,7 +147,7 @@ void get_symmetric_matrix_1d(double *M, double **matrix1, double **matrix2, int 
 	}
 }
 
-void setup(int dim)
+void init_and_print()
 {
 	int deviceCount = 0;
 	bool isFastGPU = false;
@@ -113,12 +182,15 @@ void setup(int dim)
 				"NVIDIA GTX 480, 670 or 780.\n");
 		printf("---------------------------------------------------------\n");
 	}
+}
+
+void setup(int dim, int b)
+{
+	double *temp_m, **m1, **m2;
 
 	/*
 	 * First generate the M matrix
 	 */
-	double *temp_m, **m1, **m2;
-
 	temp_m = new double[dim * dim];
 
 	m1 = new double *[dim];
@@ -150,6 +222,21 @@ void setup(int dim)
 	 */
 
 	cudacall(cudaMalloc(&a11, sizeof(double) * 4));
+
+	/*
+	 * Now malloc the a21_transpose matrix by overprovisioning. This can be of maximum size bx(dim-b). But, we allocate
+	 * a bx(dim-b) vector even for the latter stages.
+	 */
+
+	 cudacall(cudaMalloc(&a21_transpose, sizeof(double) * b * (dim - b)));
+	 cudacall(cudaMemset((void *)a21_transpose, 0, sizeof(double) * b * (dim - b)));
+
+	/*
+	 * Now malloc the l21_from_fs matrix to insert the output of forward substitution. Is retained here for generating a22.
+	 */
+
+	 cudacall(cudaMalloc(&l21_from_fs, sizeof(double) * b * (dim - b)));
+	 cudacall(cudaMemset((void *)l21_from_fs, 0, sizeof(double) * b * (dim - b)));
 
 	/*GlobalConstants params;
 	  params.sceneName = sceneName;
@@ -198,22 +285,54 @@ void setup(int dim)
 	cudaMemset((void *)flagarray, 0, sizeof(int) * numCircles); */
 }
 
+__inline__ int upit(int x, int y) {
+	return (x + y - 1) / y;
+}
 
 void run_kernel()
 {
 	int dim, start_id, b;
+	int threads_per_block;
+	int number_of_blocks;
+	int num_iters;
 
 	start_id = 0;
 	dim = 8;
 	b = 2;
 	start_id = 0;
 
-	setup(dim);
+	init_and_print();
+	setup(dim, b);
 
-	for (int i = 0; i < dim / b; i++)
+	num_iters = dim / b;
+	for (int i = 0; i < num_iters; i++)
 	{
 		hardcoded_cholesky_2x2<<<1, 1>>>(M, a11, dim, b, start_id);
 		cudaThreadSynchronize();
+
+		if (i == num_iters - 1)
+			break;
+
+		// TODO optimize a21_transpose, by bypassing it perhaps? Can avoid transpose and manipulate indices inside next kernel
+		threads_per_block = 256;
+		number_of_blocks = upit((dim - b - start_id) * b, threads_per_block);
+		printf("number_of_blocks is %d, threads_per_block is %d\n", number_of_blocks, threads_per_block);
+		take_a21_transpose<<<number_of_blocks, threads_per_block>>>(M, a21_transpose, dim, b, start_id);
+		cudaThreadSynchronize();
+
+		/* printf("Call transpose_a21 print\n");
+		print_matrix_kernel<<<1, 1>>>(a21_transpose, b, dim - b - start_id);
+		cudaThreadSynchronize(); */
+
+		threads_per_block = 256;
+		number_of_blocks = upit((dim - b - start_id), threads_per_block);
+		forward_substitution_rectangular_a21<<<number_of_blocks, threads_per_block>>>(a11, a21_transpose, l21_from_fs, dim, b, start_id);
+		cudaThreadSynchronize();
+
+		printf("Printing l21_from_fs\n");
+		print_matrix_kernel<<<1, 1>>>(l21_from_fs, b, dim - b - start_id);
+		cudaThreadSynchronize();
+
 		start_id += b;
 	}
 	printf("Kernel call done\n");
