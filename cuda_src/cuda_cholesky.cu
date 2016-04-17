@@ -5,8 +5,15 @@
 #include <driver_functions.h>
 #include <cstdlib>
 #include "cycleTimer.h"
+#include <fstream>
 
-double *temp_m; //Original matrix for reference
+#define filename "sym5000_1.txt"
+
+double *temp_m; 
+double *orig_sym; //orig matrix for reference
+ 
+double *mt;
+double *mt_transpose;
 
 double *M;
 double *a11;
@@ -209,8 +216,8 @@ generic_matrix_transpose(double *input, double *output, int d1, int d2){
 __global__ void matrixmultiply_noshare(double *a, int rowsA, int colsA, double *b, int rowsB, int colsB, double *c)
 {
 
-	int col = blockIdx.y * blockDim.y + threadIdx.y;
-	int row = blockIdx.x * blockDim.x + threadIdx.x;
+	long long int col = blockIdx.y * blockDim.y + threadIdx.y;
+	long long int row = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if (row >= rowsA || col >= colsB)
 		return;
@@ -303,9 +310,12 @@ void init_and_print()
 
 void setup(int dim, int b)
 {
+	
 
 	cudacall(cudaMalloc(&M, sizeof(double) * dim * dim));
-	cudacall(cudaMemcpy(M, temp_m, sizeof(double) * dim * dim, cudaMemcpyHostToDevice));
+	cudacall(cudaMalloc(&mt, sizeof(double)*dim * dim));
+	cudacall(cudaMalloc(&mt_transpose, sizeof(double)*dim * dim));
+	cudacall(cudaMemcpy(mt, temp_m, sizeof(double) * dim * dim, cudaMemcpyHostToDevice));
 
 	/*
 	 * Now malloc the a11 matrix
@@ -448,6 +458,19 @@ void get_input(int dim){
 	delete m2;
 
 }
+void initialize_random(int dim){
+	temp_m = new double[dim * dim];
+	srand(time(NULL));
+        for (int i = 0; i < dim; i++)
+        {
+                for (int j = 0; j < dim; j++){
+                        temp_m[i*dim + j] = ((double) rand() / (RAND_MAX));
+                        //temp_m[i*dim + j] = rand() % 10;
+		}
+	}
+	
+}
+
 void run_kernel()
 {
 	int dim, start_id, b;
@@ -455,16 +478,61 @@ void run_kernel()
 	int number_of_blocks;
 	int num_iters;
 
+	double startime, endtime ;
 	start_id = 0;
-	dim = 1000;
+	dim = 4500;
 	b = 2;
 	start_id = 0;
 
 	init_and_print();
-	get_input(dim);
+//	get_input(dim);
+	initialize_random(dim);
+	printf("okay random bhar gaya\n");
 	setup(dim, b);
-	double startime = CycleTimer::currentSeconds();	
+	
+	// Input generation
+	//	1. taking transpose of mt in mt_transpose
+	threads_per_block = 256;
+	number_of_blocks = upit(dim * dim, threads_per_block);
+	generic_matrix_transpose<<<number_of_blocks, threads_per_block>>>(mt, mt_transpose, dim, dim);
+	cudaThreadSynchronize();
+	printf("ab jakar transpose hua\n");
 
+	/*
+	print_matrix_kernel<<<1, 1>>>(mt, dim, dim);
+	cudaThreadSynchronize();
+	print_matrix_kernel<<<1, 1>>>(mt_transpose, dim, dim);
+	cudaThreadSynchronize();
+	*/
+	
+	startime = CycleTimer::currentSeconds();	
+	dim3 blockDimTemp(32,32);
+	dim3 gridDimTemp( upit(dim, blockDimTemp.x), upit(dim, blockDimTemp.y));
+	//matrixmultiply_noshare(double *a, int rowsA, int colsA, double *b, int rowsB, int colsB, double *c)
+	matrixmultiply_noshare<<<gridDimTemp, blockDimTemp >>>(mt, dim, dim,  mt_transpose, dim, dim, M);
+	cudaThreadSynchronize();
+	endtime = CycleTimer::currentSeconds();	
+	printf("Now multiplication got over, total time taken for dim = %d, is %lf\n", dim, endtime - startime);
+
+	// Now copying the symmetric matrix from CUDA to host
+	orig_sym = new double[dim * dim];
+	cudacall(cudaMemcpy(orig_sym, M,  sizeof(double) * dim * dim, cudaMemcpyDeviceToHost));
+	
+	printf("Host me aya kyaa??\n");
+	std::ofstream out(filename);
+	for(int i = 0; i < dim ; i++){
+		for(int j = 0; j < dim ; j++){
+			out << orig_sym[i*dim + j] << " ";
+	//		printf("%lf ", orig_sym[i*dim + j]);
+		}
+		out << "\n";
+	//	printf("\n");
+	}
+	
+	out.close();
+	return;
+	
+	startime = CycleTimer::currentSeconds();
 	num_iters = dim / b;
 	for (int i = 0; i < num_iters; i++)
 	{
@@ -526,7 +594,6 @@ void run_kernel()
 
 		//matrixmultiply_noshare<<<(double *a, int rowsA, int colsA, double *b, int rowsB, int colsB, double *c)
 		int rowA = (dim - b - start_id) , colA = b, rowB = b , colB = (dim - b - start_id) ;
-		
 		dim3 blockDim(2,2);
 		dim3 gridDim( upit(colB, blockDim.x), upit(rowA, blockDim.y));
 		matrixmultiply_noshare<<<gridDim, blockDim >>>(l21, (dim - b - start_id), b,  l21_transpose_from_fs, b, dim - b - start_id, l22_temp);
@@ -544,13 +611,13 @@ void run_kernel()
 	number_of_blocks = upit( (dim * dim), threads_per_block);
 	set_upper_zero<<<number_of_blocks, threads_per_block>>>(M, dim);
 	cudaThreadSynchronize();
-	double endtime = CycleTimer::currentSeconds();	
+	endtime = CycleTimer::currentSeconds();	
 	printf("Totat time taken = %lf s\n", endtime - startime);	
 	// Now checking!
 	
 	double *finalans = new double[dim * dim];
 	cudacall(cudaMemcpy(finalans, M,  sizeof(double) * dim * dim, cudaMemcpyDeviceToHost));
-	check_cholesky(finalans, temp_m, dim);	
+	check_cholesky(finalans, orig_sym, dim);	
 	
 	/*for(int i = 0; i < dim ; i++){
 		for(int j = 0; j < dim ; j++){
@@ -558,4 +625,5 @@ void run_kernel()
 		}
 		printf("\n");
 	}*/
+	
 }
