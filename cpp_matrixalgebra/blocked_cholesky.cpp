@@ -1,8 +1,9 @@
 #include<iostream>
 #include<cmath>
 #include <cstdlib>
-#include "matrixops.h"
+#include "../common/matrixops.h"
 #include <cstdio>
+#include "../common/cycleTimer.h"
 
 void matrix_forward_substitution_rectangular(double **, double **, double **temp_output, int b, int dim);
 
@@ -59,7 +60,7 @@ void get_offseted_transpose(double **M, int start_idx, int dim, int b, double **
 	rows = dim - start_idx - b;
 	cols = b;
 
-	printf("In offseted_transpose, have to take transpose of %dx%d matrix\n", rows, cols);
+	//printf("In offseted_transpose, have to take transpose of %dx%d matrix\n", rows, cols);
 	for (int i = 0; i < rows; i++)
 	{
 		for (int j = 0; j < cols; j++)
@@ -70,7 +71,7 @@ void get_offseted_transpose(double **M, int start_idx, int dim, int b, double **
 }
 
 void hardcoded_cholesky_inplace_and_a11(double **M , int idx, int dim, int b, double **a11) {
-	printf("In hardcoded cholesky, idx: %d, dim: %d, b: %d\n", idx, dim, b);
+	//printf("In hardcoded cholesky, idx: %d, dim: %d, b: %d\n", idx, dim, b);
 	if (b == 1) {
 		M[idx][idx] = sqrt(M[idx][idx]);
 		a11[0][0] = M[idx][idx];
@@ -95,7 +96,7 @@ void update_A21_temp_and_inplace(double **M, double**temp_a21_transpose, double 
 	// first make changes in temp_a21_transpose, and then copy those back into M
 	// temp_a21_transpose can potentially be a small matrix, but for simplicity, we make it a dimxdim matrix before passing
 
-	printf("In update A21, start_idx: %d, dim: %d, b: %d\n", start_idx, dim, b);
+	//printf("In update A21, start_idx: %d, dim: %d, b: %d\n", start_idx, dim, b);
 
 	// first get offsetted transpose
 	get_offseted_transpose(M, start_idx, dim, b, temp_a21_transpose);
@@ -118,7 +119,7 @@ void update_A21_temp_and_inplace(double **M, double**temp_a21_transpose, double 
 void matrix_transpose_rectangular(double **input, double **a21, int rows, int cols)
 {
 	int i, j;
-	printf("In matrix transpose rectangular with rows: %d, cols: %d\n", rows, cols);
+	//printf("In matrix transpose rectangular with rows: %d, cols: %d\n", rows, cols);
 
 	for (i = 0; i < rows; i++)
 		for (j = 0; j < cols; j++)
@@ -129,7 +130,7 @@ void matrix_multiply_for_a22(double **mat1, double **mat2, double **product, int
 {
 	double ans;
 
-	printf("In matrix multiply, rows is %d, cols is %d\n", rows, cols);
+	//printf("In matrix multiply, rows is %d, cols is %d\n", rows, cols);
 
 	for (int i = 0; i < rows; i++)
 	{
@@ -145,7 +146,7 @@ void matrix_multiply_for_a22(double **mat1, double **mat2, double **product, int
 
 void a22_update(double **M, double **a21, double **a21_transpose, int start_idx, int dim, int b)
 {
-	printf("In a22_update, start_idx is %d, dim is %d, b is %d\n", start_idx, dim, b);
+	//printf("In a22_update, start_idx is %d, dim is %d, b is %d\n", start_idx, dim, b);
 	double **temp_product;
 	int new_dim = dim - b - start_idx;
 
@@ -154,14 +155,14 @@ void a22_update(double **M, double **a21, double **a21_transpose, int start_idx,
 	for (int i = 0; i < new_dim; i++)
 		temp_product[i] = new double[new_dim];
 
-	printf("a21: \n");
-	print_matrix(a21, new_dim, b);
-	printf("a21_transpose:\n");
-	print_matrix(a21_transpose, b, new_dim);
+	//printf("a21: \n");
+	//print_matrix(a21, new_dim, b);
+	//printf("a21_transpose:\n");
+	//print_matrix(a21_transpose, b, new_dim);
 	matrix_multiply_for_a22(a21, a21_transpose, temp_product, new_dim, b);
-	printf("temp_product is: \n");
+	//printf("temp_product is: \n");
 
-	print_matrix(temp_product, new_dim, new_dim);
+	//print_matrix(temp_product, new_dim, new_dim);
 
 	for (int i = 0; i < new_dim; i++)
 		for (int j = 0; j < new_dim; j++)
@@ -170,7 +171,7 @@ void a22_update(double **M, double **a21, double **a21_transpose, int start_idx,
 
 int main() {
 	
-	int dim = 2000;
+	int dim = 1000;
 	double **M, **matrix1, **matrix2;
 	double **M_orig, **M_trans;
 	double **temp_a21_transpose, **temp_output;
@@ -214,40 +215,41 @@ int main() {
 		for (int j = 0; j < dim; j++)
 			M_orig[i][j] = M[i][j];
 
-	printf("Got matrix as \n");
-	print_matrix(M, dim, dim);
+	//printf("Got matrix as \n");
+	//print_matrix(M, dim, dim);
 
+	double startime = CycleTimer::currentSeconds();
 	int iter = dim / b;
 	int start_idx = 0;
 	for (int i = 0; i < iter; i++) {
-		printf("Doing hardcoded cholesky\n");
+		//printf("Doing hardcoded cholesky\n");
 		hardcoded_cholesky_inplace_and_a11(M, start_idx, dim, b, a11);
-		printf("Hardcoded cholesky done\n");
-		printf("Matrix is: \n");
-		print_matrix(M, dim, dim);
+		//printf("Hardcoded cholesky done\n");
+		//printf("Matrix is: \n");
+		//print_matrix(M, dim, dim);
 
-		printf("Trying to update A21\n");
+		//printf("Trying to update A21\n");
 		update_A21_temp_and_inplace(M, temp_a21_transpose, temp_output, a11, start_idx, dim, b);
-		printf("Updating A21 done\n");
-		printf("Matrix is: \n");
-		print_matrix(M, dim, dim);
+		//printf("Updating A21 done\n");
+		//printf("Matrix is: \n");
+		//print_matrix(M, dim, dim);
 
-		printf("Trying to get matrix transpose rectangular\n");
+		//printf("Trying to get matrix transpose rectangular\n");
 		matrix_transpose_rectangular(temp_a21_transpose, a21, b, dim - start_idx - b);
-		printf("Get matrix transpose rectangular\n");
-		printf("Matrix is: \n");
-		print_matrix(M, dim, dim);
+		//printf("Get matrix transpose rectangular\n");
+		//printf("Matrix is: \n");
+		//print_matrix(M, dim, dim);
 		
-		printf("Trying to update a22\n");
+		//printf("Trying to update a22\n");
 		a22_update(M, a21, temp_a21_transpose, start_idx, dim, b);
-		printf("Update A22 done\n");
-		printf("Matrix is: \n");
-		print_matrix(M, dim, dim);
+		//printf("Update A22 done\n");
+		//printf("Matrix is: \n");
+		//print_matrix(M, dim, dim);
 
-		printf("After round %d, matrix is:\n", i);
-		print_matrix(M, dim, dim);
+		//printf("After round %d, matrix is:\n", i);
+		//print_matrix(M, dim, dim);
 		start_idx += b;
-		printf("\n\n");
+		//printf("\n\n");
 	}
 
 	for (int i = 0; i < dim; i++)
@@ -259,12 +261,14 @@ int main() {
 		}
 	}
 
-	printf("Final matrix is:\n");
-	print_matrix(M, dim, dim);
-
+	double endtime = CycleTimer::currentSeconds();
+	
+	//printf("Final matrix is:\n");
+	//print_matrix(M, dim, dim);
+	printf("Totat time taken = %lf s\n", endtime - startime);
 	matrix_transpose(M, M_trans, dim);
 
 	check_matrixans_rect(M, M_trans, M_orig, dim, dim);
-
+	
 	return 0;
 }

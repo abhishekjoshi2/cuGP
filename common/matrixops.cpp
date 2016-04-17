@@ -339,7 +339,7 @@ void matrix_forward_substitution(double **A, double **B, double **output, int DI
 // This is for the case where B and output and are not square matrix. But, A has to be symmetric!
 void matrix_forward_substitution_rectangular(double **A, double **B, double **output, int dim1, int dim2)
 {
-	printf("In matrix forward substitution rectangular, dim1: %d, dim2: %d\n", dim1, dim2);
+	//printf("In matrix forward substitution rectangular, dim1: %d, dim2: %d\n", dim1, dim2);
 	for (int k = 0; k < dim2; k++) { // this is looping over columns of B matrix
 		for (int i = 0; i < dim1; i++) {
 			output[i][k] = B[i][k];	

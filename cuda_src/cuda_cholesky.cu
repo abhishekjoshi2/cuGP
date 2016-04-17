@@ -3,6 +3,10 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <driver_functions.h>
+#include <cstdlib>
+#include "cycleTimer.h"
+
+double *temp_m; //Original matrix for reference
 
 double *M;
 double *a11;
@@ -23,6 +27,22 @@ double *l22_temp;  //This is for updating a22
 } \
 
 
+__global__ void set_upper_zero(double *M, int dim){
+	
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	if (i_index >= (dim * dim))
+		return;
+	
+	int rowN = i_index / dim;
+	int colN = i_index % dim;
+		
+	if(rowN >= colN) return;
+	
+	M[rowN * dim + colN] = 0.0;
+}
+
 	__global__ void
 hardcoded_cholesky_1x1(double *M, double *a11, int dim, int b, int start_id)
 {
@@ -37,6 +57,7 @@ hardcoded_cholesky_2x2(double *M, double *a11, int dim, int b, int start_id)
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
 	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
 
+	/*
 	printf("In kernel\n");
 	printf("dim is %d, i_index is %d, j_index is %d, b is %d, start_id is %d\n", dim, i_index, j_index, b, start_id);
 
@@ -49,14 +70,15 @@ hardcoded_cholesky_2x2(double *M, double *a11, int dim, int b, int start_id)
 		}
 		printf("\n");
 	}
+	*/
 
 	a11[0] = M[start_id * dim + start_id] = sqrt(M[start_id * dim + start_id]);
 	a11[1] = M[start_id * dim + start_id + 1] = 0.0;
 	a11[2] = M[(start_id + 1) * dim + start_id] = M[(start_id + 1) * dim + start_id] / M[start_id * dim + start_id];
 	a11[3] = M[(start_id + 1) * dim + start_id + 1] = sqrt(M[(start_id + 1) * dim + start_id + 1] - M[(start_id + 1) * dim + start_id] * M[(start_id + 1) * dim + start_id]);
 
-	printf("printing a11 matrix\n");
-	printf("%lf %lf %lf %lf\n", a11[0], a11[1], a11[2], a11[3]);
+	//printf("printing a11 matrix\n");
+	//printf("%lf %lf %lf %lf\n", a11[0], a11[1], a11[2], a11[3]);
 }
 
 __global__ void
@@ -81,7 +103,7 @@ take_a21_transpose(double *M, double *a21_transpose, int dim, int b, int start_i
 	if (i_index >= (dim - b - start_id) * b)
 		return;
 
-	printf("In a21_transpose, i_index is %d, j_index is %d\n", i_index, j_index);
+	//printf("In a21_transpose, i_index is %d, j_index is %d\n", i_index, j_index);
 
 	int input_row, input_col, target_row, target_col, row_offset_by_thread, col_offset_by_thread;
 
@@ -117,6 +139,7 @@ forward_substitution_rectangular_a21(double *M, double *a11, double *a21_transpo
 		}
 	} */
 	int k = i_index;
+	// TODO experiment with #pragma unroll
 	for (int i = 0; i < b; i++)
 	{
 		l21_transpose_from_fs[i * (dim - b - start_id) + k] = a21_transpose[i * (dim - b - start_id) + k];
@@ -182,18 +205,58 @@ generic_matrix_transpose(double *input, double *output, int d1, int d2){
 }
 
 
+
+__global__ void matrixmultiply_noshare(double *a, int rowsA, int colsA, double *b, int rowsB, int colsB, double *c)
+{
+
+	int col = blockIdx.y * blockDim.y + threadIdx.y;
+	int row = blockIdx.x * blockDim.x + threadIdx.x;
+
+	if (row >= rowsA || col >= colsB)
+		return;
+
+	double sum = 0.0;
+	for (int i = 0; i < colsA; i++)
+	{
+		sum += a[row * colsA + i] * b[i * colsB + col]; 
+	}
+
+	c[row * colsB + col] = sum;
+}
+
+
+
+__global__ void offseted_elementwise_subtraction(double *input, int size, double *M, int dim, int b, int start_id){
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	if (i_index >= size * size)
+		return;
+
+	// int input_row = i_index / size;
+	// int input_col = i_index % size;
+	// we want M[ input_row + start_id + b, input_col + start_id + b ] -= input[i_index];
+	
+	int input_row = i_index / size;
+	int input_col = i_index % size;
+	M[ (input_row + start_id + b) * dim + (input_col + start_id + b) ] -= input[i_index];
+	
+}
+
 void get_symmetric_matrix_1d(double *M, double **matrix1, double **matrix2, int dim) {
 
 	srand(time(NULL));
-	for (int i = 0; i < dim; i++){
+	int setter = 1;
+	for (int i = 0; i < dim; i++)
+	{
 		for (int j = 0; j < dim; j++){
 			matrix1[i][j] = rand() % 100 + 1;
 			matrix2[j][i] = matrix1[i][j];
 		}
 	}
-
 	for (int i = 0; i < dim; i++){
 		for(int j = 0; j < dim; j++){
+	M[i * dim + j ] = 0.0;
 			for(int k = 0; k < dim; k++){
 				M[i * dim + j] += matrix1[i][k]*matrix2[k][j];
 			}
@@ -240,33 +303,6 @@ void init_and_print()
 
 void setup(int dim, int b)
 {
-	double *temp_m, **m1, **m2;
-
-	/*
-	 * First generate the M matrix
-	 */
-	temp_m = new double[dim * dim];
-
-	m1 = new double *[dim];
-	m2 = new double *[dim];
-
-	for (int i = 0; i < dim; i++)
-	{
-		m1[i] = new double[dim];
-		m2[i] = new double[dim];
-	}
-
-	get_symmetric_matrix_1d(temp_m, m1, m2, dim);
-
-	printf("Generated matrix in host is \n");
-	for (int i = 0; i < dim; i++)
-	{
-		for (int j = 0; j < dim; j++)
-		{
-			printf("%lf ", temp_m[i * dim + j]);
-		}
-		printf("\n");
-	}
 
 	cudacall(cudaMalloc(&M, sizeof(double) * dim * dim));
 	cudacall(cudaMemcpy(M, temp_m, sizeof(double) * dim * dim, cudaMemcpyHostToDevice));
@@ -303,6 +339,8 @@ void setup(int dim, int b)
 	 */
 
 	 cudacall(cudaMalloc(&l22_temp, sizeof(double) * (dim - b) * (dim - b)));
+		
+	
 	 
 	/*GlobalConstants params;
 	  params.sceneName = sceneName;
@@ -355,6 +393,61 @@ __inline__ int upit(int x, int y) {
 	return (x + y - 1) / y;
 }
 
+
+void check_cholesky(double *M1, double* targetoutput, int d){
+	double diff = 0.0, totaldiff = 0.0;	
+	for(int i = 0; i < d; i++){
+		for(int j = 0; j < d ;j++){ 
+			double tempval = 0.0;
+			for(int k = 0; k < d; k++){
+				//tempval += M1[i*d + k] * M2[k * d + j];
+				tempval += M1[i*d + k] * M1[j * d + k];
+			}
+			diff = tempval - targetoutput[i * d + j];
+			totaldiff += abs(diff);
+		}
+	}
+	printf("FINAL ERROR = %lf\n", totaldiff);
+}
+
+void get_input(int dim){
+
+	double **m1, **m2;
+
+	temp_m = new double[dim * dim];
+
+	m1 = new double *[dim];
+	m2 = new double *[dim];
+
+	for (int i = 0; i < dim; i++)
+	{
+		m1[i] = new double[dim];
+		m2[i] = new double[dim];
+	}
+
+	get_symmetric_matrix_1d(temp_m, m1, m2, dim);
+	
+	printf("Abhi input hua\n");
+	/*
+	printf("Generated matrix in host is \n");
+	for (int i = 0; i < dim; i++)
+	{
+		for (int j = 0; j < dim; j++)
+		{
+			printf("%lf ", temp_m[i * dim + j]);
+		}
+		printf("\n");
+	}
+	*/
+	
+	for(int i = 0 ; i < dim ; i++){
+		delete m1[i];
+		delete m2[i];
+	}
+	delete m1;
+	delete m2;
+
+}
 void run_kernel()
 {
 	int dim, start_id, b;
@@ -363,18 +456,18 @@ void run_kernel()
 	int num_iters;
 
 	start_id = 0;
-	dim = 8;
+	dim = 1000;
 	b = 2;
 	start_id = 0;
 
 	init_and_print();
+	get_input(dim);
 	setup(dim, b);
+	double startime = CycleTimer::currentSeconds();	
 
 	num_iters = dim / b;
 	for (int i = 0; i < num_iters; i++)
 	{
-		printf("\n\n");
-		printf("Iteration number is %d\n", i + 1);
 		hardcoded_cholesky_2x2<<<1, 1>>>(M, a11, dim, b, start_id);
 		cudaThreadSynchronize();
 
@@ -384,22 +477,17 @@ void run_kernel()
 		// TODO optimize a21_transpose, by bypassing it perhaps? Can avoid transpose and manipulate indices inside next kernel
 		threads_per_block = 256;
 		number_of_blocks = upit((dim - b - start_id) * b, threads_per_block);
-		printf("number_of_blocks is %d, threads_per_block is %d\n", number_of_blocks, threads_per_block);
 		take_a21_transpose<<<number_of_blocks, threads_per_block>>>(M, a21_transpose, dim, b, start_id);
 		cudaThreadSynchronize();
-
-		/* printf("Call transpose_a21 print\n");
-		print_matrix_kernel<<<1, 1>>>(a21_transpose, b, dim - b - start_id);
-		cudaThreadSynchronize(); */
 
 		threads_per_block = 256;
 		number_of_blocks = upit((dim - b - start_id), threads_per_block);
 		forward_substitution_rectangular_a21<<<number_of_blocks, threads_per_block>>>(M, a11, a21_transpose, l21_transpose_from_fs, dim, b, start_id);
 		cudaThreadSynchronize();
 
-		printf("Printing l21_transpose_from_fs\n");
-		print_matrix_kernel<<<1, 1>>>(l21_transpose_from_fs, b, dim - b - start_id);
-		cudaThreadSynchronize();
+	//	printf("Printing l21_transpose_from_fs\n");
+	//	print_matrix_kernel<<<1, 1>>>(l21_transpose_from_fs, b, dim - b - start_id);
+	//	cudaThreadSynchronize();
 
 		/*		
 		printf("\n\n");
@@ -429,14 +517,45 @@ void run_kernel()
 		generic_matrix_transpose<<<number_of_blocks, threads_per_block>>>(l21_transpose_from_fs, l21, b, dim - b - start_id);
 		cudaThreadSynchronize();
 		
-		printf("\nNow checking the transpose => \n");	
-		print_matrix_kernel<<<1,1>>>(l21, dim - b - start_id, b);
+//		printf("\nNow checking the transpose => \n");	
+//		print_matrix_kernel<<<1,1>>>(l21, dim - b - start_id, b);
+//		cudaThreadSynchronize();
+//		printf("Checking the l21_transpose_from_fs matrix\n");
+//		check_l21_kernel<<<1, 1>>>(a11, l21_transpose_from_fs, a21_transpose, b, b, dim - b - start_id);
+//		cudaThreadSynchronize();
+
+		//matrixmultiply_noshare<<<(double *a, int rowsA, int colsA, double *b, int rowsB, int colsB, double *c)
+		int rowA = (dim - b - start_id) , colA = b, rowB = b , colB = (dim - b - start_id) ;
+		
+		dim3 blockDim(2,2);
+		dim3 gridDim( upit(colB, blockDim.x), upit(rowA, blockDim.y));
+		matrixmultiply_noshare<<<gridDim, blockDim >>>(l21, (dim - b - start_id), b,  l21_transpose_from_fs, b, dim - b - start_id, l22_temp);
 		cudaThreadSynchronize();
 
-		check_l21_kernel<<<1, 1>>>(a11, l21_transpose_from_fs, a21_transpose, b, b, dim - b - start_id);
+		threads_per_block = 256;
+		number_of_blocks = upit((dim - b - start_id) * (dim - b - start_id), threads_per_block);
+		offseted_elementwise_subtraction<<<number_of_blocks, threads_per_block >>>(l22_temp, dim - b - start_id, M, dim, b, start_id);
 		cudaThreadSynchronize();
 
 		start_id += b;
 	}
-	printf("Kernel call done\n");
+	// Fire a kernel for making upper-triangular as 0.0
+	threads_per_block = 256;
+	number_of_blocks = upit( (dim * dim), threads_per_block);
+	set_upper_zero<<<number_of_blocks, threads_per_block>>>(M, dim);
+	cudaThreadSynchronize();
+	double endtime = CycleTimer::currentSeconds();	
+	printf("Totat time taken = %lf s\n", endtime - startime);	
+	// Now checking!
+	
+	double *finalans = new double[dim * dim];
+	cudacall(cudaMemcpy(finalans, M,  sizeof(double) * dim * dim, cudaMemcpyDeviceToHost));
+	check_cholesky(finalans, temp_m, dim);	
+	
+	/*for(int i = 0; i < dim ; i++){
+		for(int j = 0; j < dim ; j++){
+			printf("%lf ", finalans[i*dim + j]);
+		}
+		printf("\n");
+	}*/
 }
