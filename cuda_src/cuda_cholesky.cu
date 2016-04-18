@@ -34,6 +34,96 @@ double *l22_temp;  //This is for updating a22
 } \
 
 
+__global__ void check_forward_sub_vector(double *L, double *x, double *b, int N){
+
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+	if (i_index >= 1)
+		return;
+	
+	for(int i = 0; i < N; i++) {
+                double temp = 0.0;
+                for(int j = 0; j < N; j++) {
+                        temp += L[i*N + j] * x[j];
+                }
+                printf("%lf - %lf = %lf\n", temp, b[i], temp - b[i]);
+        }
+}
+__global__ void check_backward_sub_vector(double *L, double *y, double *b, int N){
+
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+	if (i_index >= 1)
+		return;
+	
+	for(int i = 0; i < N; i++) {
+                double temp = 0.0;
+                for(int j = 0; j < N; j++) {
+                        temp += L[j * N + i] * y[j];
+                }
+                printf("%lf - %lf = %lf\n", temp, b[i], temp - b[i]);
+        }
+}
+
+
+// We want to solve for "output", such that 
+//	 lowert_mat * output = b;
+__global__ void forward_substitution_vector(double *lowert_mat, double *b, double *output, int N){
+
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+	if (i_index >= 1)
+		return;
+	
+	/*
+	// Forward solve L * temp = y
+        for (int i = 0; i < n; i++){
+                temp[i] = y[i];
+                for (int j = 0; j < i; j++)
+                {
+                        temp[i] -= L[i][j] * temp[j];
+                }
+                temp[i] /= L[i][i];
+        }
+	*/
+	for(int i = 0 ; i < N ; i++){
+		output[i] = b[i];	
+		for (int j = 0 ; j < i; j++){
+			output[i] -= lowert_mat[i * N + j] * output[j];
+		}
+		output[i] /= lowert_mat[i*N + i];
+	}
+}
+
+
+// We want lower_mat.transpose() * output = b;
+// NOTE: WE ARE NOT PASSING AN UPPER TRIANGULAR MATRIX (which would have been the case in a general implementation)
+__global__ void backward_substitution_vector(double *lowert_mat, double *b, double *output, int N){
+
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+	if (i_index >= 1)
+		return;
+	
+	/*
+	// backward solve arr2 * y2 = b
+	for(int i = DIM - 1; i >= 0 ; i--) {
+                y2[i] = b[i];
+                for(int j = i + 1; j < DIM; j++) {
+                        y2[i] = y2[i] - arr2[i][j] * y2[j];
+                }
+                y2[i] = y2[i] / arr2[i][i];
+        }
+	*/
+
+	for(int i = N - 1; i >= 0 ; i--) {
+                output[i] = b[i];
+                for(int j = i + 1; j < N; j++) {
+                        output[i] = output[i] - lowert_mat[j * N + i] * output[j];
+                }
+                output[i] /= lowert_mat[i*N + i];
+        }
+}
 __global__ void set_upper_zero(double *M, int dim){
 	
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
@@ -308,7 +398,7 @@ void init_and_print()
 	}
 }
 
-void setup(int dim, int b)
+void setup_cholesky(int dim, int b)
 {
 	
 
@@ -471,16 +561,16 @@ void initialize_random(int dim){
 	
 }
 
-void run_kernel()
+void run_kernel_cholesky(int dim)
 {
-	int dim, start_id, b;
+	int start_id, b;
 	int threads_per_block;
 	int number_of_blocks;
 	int num_iters;
 
 	double startime, endtime ;
 	start_id = 0;
-	dim = 5000;
+//	dim = 5000;
 	b = 2;
 	start_id = 0;
 
@@ -488,7 +578,7 @@ void run_kernel()
 //	get_input(dim);
 	initialize_random(dim);
 	printf("okay random bhar gaya\n");
-	setup(dim, b);
+	setup_cholesky(dim, b);
 	
 	// Input generation
 	//	1. taking transpose of mt in mt_transpose
@@ -518,6 +608,9 @@ void run_kernel()
 	cudacall(cudaMemcpy(orig_sym, M,  sizeof(double) * dim * dim, cudaMemcpyDeviceToHost));
 	
 	printf("Host me aya kyaa??\n");
+	
+	// WRITING TO FILE
+	/*
 	std::ofstream out(filename);
 	for(int i = 0; i < dim ; i++){
 		for(int j = 0; j < dim ; j++){
@@ -527,9 +620,9 @@ void run_kernel()
 		out << "\n";
 	//	printf("\n");
 	}
-	
 	out.close();
-	
+	*/	
+
 	startime = CycleTimer::currentSeconds();
 	num_iters = dim / b;
 	for (int i = 0; i < num_iters; i++)
@@ -616,7 +709,7 @@ void run_kernel()
 	double *finalans = new double[dim * dim];
 	cudacall(cudaMemcpy(finalans, M,  sizeof(double) * dim * dim, cudaMemcpyDeviceToHost));
 	check_cholesky(finalans, orig_sym, dim);	
-	
+
 	/*for(int i = 0; i < dim ; i++){
 		for(int j = 0; j < dim ; j++){
 			printf("%lf ", finalans[i*dim + j]);
@@ -624,4 +717,64 @@ void run_kernel()
 		printf("\n");
 	}*/
 	
+}
+
+void generate_random_vector(double *b, int dim){
+	for(int i = 0 ; i < dim ; i++){
+		b[i] = rand() % 10;	
+	}
+}
+
+void run_kernel(){
+
+	printf("Abey yahan toh aya\n");	
+	int N = 10;	 //Total number of training samples
+	run_kernel_cholesky(N);
+	printf("Call to cholesky khatam hua\n");	
+
+	int threads_per_block;
+	int number_of_blocks;
+
+	//NOTE: M will now have a lower triangular matrix
+	print_matrix_kernel<<<1,1>>>(M, N, N);
+	cudaThreadSynchronize();
+
+	// FORWARD SUBSTITUTION 
+	//	
+	//	generating random targets!!	
+	double *b = new double[N];
+
+	double *labels_vec; //This is the array with the target values in the dataset, it is vector for CUDA
+			    // Next, we will have to load the values from the file instead of copying from b	
+
+	double *fsvec; // This is the array that will contain the result of ForwardSubstitutionVector call
+	
+	generate_random_vector(b, N);	
+	//	Allocating appropriate memory chunks.
+	cudacall(cudaMalloc(&labels_vec, sizeof(double) * N));
+	cudacall(cudaMemcpy(labels_vec, b, sizeof(double) * N , cudaMemcpyHostToDevice));	
+	cudacall(cudaMalloc(&fsvec, sizeof(double) * N));
+	
+	threads_per_block = 512;
+	number_of_blocks = upit(N, threads_per_block);
+	forward_substitution_vector<<<1, 1>>>(M, labels_vec, fsvec, N);
+	cudaThreadSynchronize();
+
+	// Checking for forwardSubstitutionVector
+	check_forward_sub_vector<<<1, 1>>>(M, fsvec, labels_vec, N);
+	cudaThreadSynchronize();
+
+	
+	// BACKWARD SUBSTITUTION
+	
+	double *bsvec;
+	//	Allocating appropriate memory chunks
+	cudacall(cudaMalloc(&bsvec, sizeof(double) * N));
+	backward_substitution_vector<<<1, 1>>>(M, fsvec, bsvec, N); // Will use M.transpose() inside!!
+	cudaThreadSynchronize();
+	
+	// Checking for backwardSubstitutionVector
+	check_backward_sub_vector<<<1, 1>>>(M, bsvec, fsvec, N);
+	cudaThreadSynchronize();
+			
 }
