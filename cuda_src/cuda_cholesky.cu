@@ -358,7 +358,7 @@ elementwise_matrix_mult(double *mat1, double *mat2, double *mat3, int rows, int 
 	double dot_product = 0.0;
 
 	target_row = i_index / cols;
-	target_col = j_index % cols;
+	target_col = i_index % cols;
 
 	if (target_row >= rows || target_col >= cols)
 		return;
@@ -379,7 +379,7 @@ compute_K_train(double *M, double *K_output, double *loghyper, int dim, int b, i
 	double dot_product = 0.0;
 
 	M_row = i_index / dim;
-	M_col = j_index % dim;
+	M_col = i_index % dim;
 
 	if (M_row < M_col) // lower triangular bye bye
 		return;
@@ -404,7 +404,7 @@ compute_squared_distances(double *M, double *compute_squared_distances_matrix, d
 	double dot_product = 0.0;
 
 	M_row = i_index / dim;
-	M_col = j_index % dim;
+	M_col = i_index % dim;
 
 	if (M_row < M_col) // lower triangular bye bye
 		return;
@@ -420,27 +420,6 @@ compute_squared_distances(double *M, double *compute_squared_distances_matrix, d
 
 	compute_squared_distances_matrix[M_row * dim + M_col] = compute_squared_distances_matrix[M_col * dim + M_row] = dot_product;
 }
-
-/* void Covsum::compute_K_train(double **X, double **output) {
-
-	for (int i = 0; i < n; i++)
-	{
-		for(int j = i; j < n; j++)
-		{
-			subtract_vec(X[i], X[j], this->temp1dvec, this->numdim);
-
-			double val = dotproduct_vec(this->temp1dvec, this->temp1dvec, this->numdim);
-
-			val = signal_var * exp(-val * 0.5 / ell_sq);    //for SE kernel
-			output[i][j] = val;
-			output[j][i] = val;                             // exploting symmetry
-
-			if (i == j)
-				output[i][j] += noise_var;              // for the noise covariance kernel
-		}
-	}
-} */
-
 
 void get_symmetric_matrix_1d(double *M, double **matrix1, double **matrix2, int dim) {
 
@@ -841,6 +820,40 @@ void run_kernel(){
 	print_matrix_kernel<<<1,1>>>(M, N, N);
 	cudaThreadSynchronize();
 
+	double *mat1, *mat2, *mat3;
+	double mat1_host[16], mat2_host[16], mat3_host[16];
+
+	N = 16; // 4x4 matrices
+	cudacall(cudaMalloc(&mat1, sizeof(double) * N));
+	cudacall(cudaMalloc(&mat2, sizeof(double) * N));
+	cudacall(cudaMalloc(&mat3, sizeof(double) * N));
+
+	for (int i = 0; i < 16; i++)
+		mat1_host[i] = i;
+
+	for (int j = 16; j < 32; j++)
+		mat2_host[j - 16] = j;
+
+	cudacall(cudaMemcpy(mat1, mat1_host, sizeof(double) * N , cudaMemcpyHostToDevice));	
+	cudacall(cudaMemcpy(mat2, mat2_host, sizeof(double) * N , cudaMemcpyHostToDevice));	
+
+	printf("mat1:\n");
+	print_matrix_kernel<<<1, 1>>>(mat1, 4, 4);
+	cudaThreadSynchronize();
+
+	printf("mat2:\n");
+	print_matrix_kernel<<<1, 1>>>(mat2, 4, 4);
+	cudaThreadSynchronize();
+
+	elementwise_matrix_mult<<<1, 256>>>(mat1, mat2, mat3, 4, 4);
+	cudaThreadSynchronize();
+
+	printf("mat3:\n");
+	print_matrix_kernel<<<1, 1>>>(mat3, 4, 4);
+	cudaThreadSynchronize();
+
+
+	return ;
 	// FORWARD SUBSTITUTION 
 	//	
 	//	generating random targets!!	
