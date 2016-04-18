@@ -7,6 +7,8 @@
 #include "../common/cycleTimer.h"
 #include <fstream>
 
+
+#define INPUT_FILE "../cpp_serial_gp/input_10.txt"
 #define filename "sym5000.txt"
 
 double *temp_m; 
@@ -368,9 +370,11 @@ elementwise_matrix_mult(double *mat1, double *mat2, double *mat3, int rows, int 
 }
 
 __global__ void
-compute_K_train(double *M, double *K_output, double *loghyper, int dim, int b, int start_id) {
+compute_K_train(double *M, double *K_output, double *loghyper, int n, int dim) {
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
 	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	if(i_index >= n * n) return;
 
 	double ell_sq = exp(loghyper[0] * 2); //l^2 after coverting back from the log form
 	double signal_var = exp(loghyper[1] * 2); // signal variance
@@ -379,14 +383,14 @@ compute_K_train(double *M, double *K_output, double *loghyper, int dim, int b, i
 	int M_row, M_col;
 	double dot_product = 0.0;
 
-	M_row = i_index / dim;
-	M_col = i_index % dim;
+	M_row = i_index / n;
+	M_col = i_index % n;
 
-	if (M_row < M_col) // lower triangular bye bye
+	if (M_row < M_col) // upper triangular bye bye
 		return;
 
 	if (M_row == M_col){
-		K_output[M_row * dim + M_col] = signal_var +  noise_var;
+		K_output[M_row * n + M_col] = signal_var +  noise_var;
 		return;
 	}
 
@@ -395,34 +399,35 @@ compute_K_train(double *M, double *K_output, double *loghyper, int dim, int b, i
 
 	dot_product = signal_var * exp(-dot_product * 0.5 / ell_sq);
 
-	K_output[M_row * dim + M_col] = K_output[M_col * dim + M_row] = dot_product;
+	K_output[M_row * n + M_col] = K_output[M_col * n + M_row] = dot_product;
 
 }
 
 __global__ void
-compute_squared_distances(double *M, double *compute_squared_distances_matrix, double c, int dim) {
+compute_squared_distances(double *M, double *compute_squared_distances_matrix, double c, int n, int dim) {
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
 	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+	
+	if(i_index >= n * n) return;
 
 	int M_row, M_col;
-	double dot_product = 0.0;
 
-	M_row = i_index / dim;
-	M_col = i_index % dim;
+	M_row = i_index / n;
+	M_col = i_index % n;
 
-	if (M_row < M_col) // lower triangular bye bye
+	if (M_row < M_col) // upper triangular bye bye
 		return;
 	
 	if (M_row == M_col)
 	{
-		M[M_row * dim + M_col] = 0.0;
+		compute_squared_distances_matrix[M_row * n + M_col] = 0.0;
 		return;
 	}
-
+	double dot_product = 0.0;
 	for (int i = 0; i < dim; i++)
 		dot_product += (M[M_row * dim + i] - M[M_col * dim + i]) * (M[M_row * dim + i] - M[M_col * dim + i]);
 
-	compute_squared_distances_matrix[M_row * dim + M_col] = compute_squared_distances_matrix[M_col * dim + M_row] = dot_product;
+	compute_squared_distances_matrix[M_row * n + M_col] = compute_squared_distances_matrix[M_col * n + M_row] = dot_product / c;
 }
 
 void get_symmetric_matrix_1d(double *M, double **matrix1, double **matrix2, int dim) {
@@ -811,14 +816,63 @@ void generate_random_vector(double *b, int dim){
 }
 
 void run_kernel(){
+	//Now checking matrix 
 
+	printf("Okay called at least\n");
+	int threads_per_block;
+	int number_of_blocks;
+	
+	FILE *input_file, *label_file;
+	input_file = fopen(INPUT_FILE, "r");
+	int n, dim;
+
+	fscanf(input_file, "%d%d", &n, &dim);
+
+	double *X; //input dataset in host!
+	double *lh_host = new double[3];
+	for(int i = 0 ; i < 3 ; i++){
+		lh_host[i] = 0.5;	
+	}
+        X = new double[n*dim];
+
+        for (int i = 0; i < n; i++)
+                for (int j = 0; j < dim; j++)
+                        fscanf(input_file, "%lf", &X[i*dim + j]);
+	
+	double *inputdata;
+	double *loghyper;
+	double *K_output; //for storing the n x n matrix
+
+	cudacall(cudaMalloc(&inputdata, sizeof(double) * dim * n));
+	cudacall(cudaMemcpy(inputdata, X, sizeof(double) * dim * n , cudaMemcpyHostToDevice));	
+	
+	cudacall(cudaMalloc(&loghyper, sizeof(double) * 3));
+	cudacall(cudaMemcpy(loghyper, lh_host, sizeof(double) * 3 , cudaMemcpyHostToDevice));	
+	
+	cudacall(cudaMalloc(&K_output, sizeof(double) * n * n));	
+	printf("n = %d, dim = %d\n", n, dim);	
+	threads_per_block = 512;
+	number_of_blocks = upit( (n * n), threads_per_block);
+	compute_K_train<<<number_of_blocks, threads_per_block >>>(inputdata, K_output, loghyper, n,  dim);	
+	cudaThreadSynchronize();
+	print_matrix_kernel<<<1,1>>>(K_output, n, n);
+	cudaThreadSynchronize();
+
+	printf("\nNow printing the squared distance matrix\n");	
+			
+	double c = exp(lh_host[0] * 2); 
+	threads_per_block = 512;
+	number_of_blocks = upit( (n * n), threads_per_block);
+	compute_squared_distances<<<number_of_blocks, threads_per_block>>>(inputdata,  K_output,  c,  n, dim);
+	cudaThreadSynchronize();
+	print_matrix_kernel<<<1,1>>>(K_output, n, n);
+	cudaThreadSynchronize();
+	return ;
 	printf("Abey yahan toh aya\n");	
 	int N = 10;	 //Total number of training samples
 	run_kernel_cholesky(N);
 	printf("Call to cholesky khatam hua\n");	
 
-	int threads_per_block;
-	int number_of_blocks;
 
 	//NOTE: M will now have a lower triangular matrix
 	print_matrix_kernel<<<1,1>>>(M, N, N);
