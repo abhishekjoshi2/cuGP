@@ -4,7 +4,7 @@
 #include <cuda_runtime.h>
 #include <driver_functions.h>
 #include <cstdlib>
-#include "cycleTimer.h"
+#include "../common/cycleTimer.h"
 #include <fstream>
 
 #define filename "sym5000.txt"
@@ -211,8 +211,6 @@ generic_matrix_transpose(double *input, double *output, int d1, int d2){
 	output[ (i_index % d2) * d1 + (i_index / d2)]  = input[i_index];
 }
 
-
-
 __global__ void matrixmultiply_noshare(double *a, int rowsA, int colsA, double *b, int rowsB, int colsB, double *c)
 {
 
@@ -231,8 +229,6 @@ __global__ void matrixmultiply_noshare(double *a, int rowsA, int colsA, double *
 	c[row * colsB + col] = sum;
 }
 
-
-
 __global__ void offseted_elementwise_subtraction(double *input, int size, double *M, int dim, int b, int start_id){
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
 	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
@@ -249,6 +245,112 @@ __global__ void offseted_elementwise_subtraction(double *input, int size, double
 	M[ (input_row + start_id + b) * dim + (input_col + start_id + b) ] -= input[i_index];
 	
 }
+
+__global__ void
+get_determinant_from_LU(double *M, int dim, double *log_det)
+{
+	// single thread
+
+	double ans = 0.0;
+	for (int i = 0; i < dim; i++)
+		ans += log(M[i * dim + i]);
+	ans *= 2;
+	*log_det = ans;
+}
+
+__global__ void
+elementwise_matrix_mult(double *mat1, double *mat2, double *mat3, int rows, int cols)
+{
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	int target_row, target_col;
+	double dot_product = 0.0;
+
+	target_row = i_index / cols;
+	target_col = j_index % cols;
+
+	if (target_row >= rows || target_col >= cols)
+		return;
+
+	mat3[target_row * cols + target_col] = mat1[target_row * cols + target_col] * mat2[target_row * cols + target_col];
+}
+
+__global__ void
+compute_K_train(double *M, double *K_output, double *loghyper, int dim, int b, int start_id) {
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	double ell_sq = exp(loghyper[0] * 2); //l^2 after coverting back from the log form
+	double signal_var = exp(loghyper[1] * 2); // signal variance
+	double noise_var = exp(loghyper[2] * 2); //noise variance
+
+	int M_row, M_col;
+	double dot_product = 0.0;
+
+	M_row = i_index / dim;
+	M_col = j_index % dim;
+
+	if (M_row < M_col) // lower triangular bye bye
+		return;
+
+	for (int i = 0; i < dim; i++)
+		dot_product += (M[M_row * dim + i] - M[M_col * dim + i]) * (M[M_row * dim + i] - M[M_col * dim + i]);
+
+	dot_product = signal_var * exp(-dot_product * 0.5 / ell_sq);
+
+	K_output[M_row * dim + M_col] = K_output[M_col * dim + M_row] = dot_product;
+
+	if (M_row == M_col)
+		K_output[M_row * dim + M_col] += noise_var;
+}
+
+__global__ void
+compute_squared_distances(double *M, double *compute_squared_distances_matrix, double c, int dim) {
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	int M_row, M_col;
+	double dot_product = 0.0;
+
+	M_row = i_index / dim;
+	M_col = j_index % dim;
+
+	if (M_row < M_col) // lower triangular bye bye
+		return;
+	
+	if (M_row == M_col)
+	{
+		M[M_row * dim + M_col] = 0.0;
+		return;
+	}
+
+	for (int i = 0; i < dim; i++)
+		dot_product += (M[M_row * dim + i] - M[M_col * dim + i]) * (M[M_row * dim + i] - M[M_col * dim + i]);
+
+	compute_squared_distances_matrix[M_row * dim + M_col] = compute_squared_distances_matrix[M_col * dim + M_row] = dot_product;
+}
+
+/* void Covsum::compute_K_train(double **X, double **output) {
+
+	for (int i = 0; i < n; i++)
+	{
+		for(int j = i; j < n; j++)
+		{
+			subtract_vec(X[i], X[j], this->temp1dvec, this->numdim);
+
+			double val = dotproduct_vec(this->temp1dvec, this->temp1dvec, this->numdim);
+
+			val = signal_var * exp(-val * 0.5 / ell_sq);    //for SE kernel
+			output[i][j] = val;
+			output[j][i] = val;                             // exploting symmetry
+
+			if (i == j)
+				output[i][j] += noise_var;              // for the noise covariance kernel
+		}
+	}
+} */
+
 
 void get_symmetric_matrix_1d(double *M, double **matrix1, double **matrix2, int dim) {
 
