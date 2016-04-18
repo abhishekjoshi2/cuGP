@@ -7,7 +7,7 @@
 #include "cycleTimer.h"
 #include <fstream>
 
-#define filename "sym5000_1.txt"
+#define filename "sym5000.txt"
 
 double *temp_m; 
 double *orig_sym; //orig matrix for reference
@@ -480,7 +480,7 @@ void run_kernel()
 
 	double startime, endtime ;
 	start_id = 0;
-	dim = 4500;
+	dim = 5000;
 	b = 2;
 	start_id = 0;
 
@@ -492,12 +492,11 @@ void run_kernel()
 	
 	// Input generation
 	//	1. taking transpose of mt in mt_transpose
-	threads_per_block = 256;
+	threads_per_block = 1024;
 	number_of_blocks = upit(dim * dim, threads_per_block);
 	generic_matrix_transpose<<<number_of_blocks, threads_per_block>>>(mt, mt_transpose, dim, dim);
 	cudaThreadSynchronize();
 	printf("ab jakar transpose hua\n");
-
 	/*
 	print_matrix_kernel<<<1, 1>>>(mt, dim, dim);
 	cudaThreadSynchronize();
@@ -530,7 +529,6 @@ void run_kernel()
 	}
 	
 	out.close();
-	return;
 	
 	startime = CycleTimer::currentSeconds();
 	num_iters = dim / b;
@@ -543,12 +541,12 @@ void run_kernel()
 			break;
 
 		// TODO optimize a21_transpose, by bypassing it perhaps? Can avoid transpose and manipulate indices inside next kernel
-		threads_per_block = 256;
+		threads_per_block = 512;
 		number_of_blocks = upit((dim - b - start_id) * b, threads_per_block);
 		take_a21_transpose<<<number_of_blocks, threads_per_block>>>(M, a21_transpose, dim, b, start_id);
 		cudaThreadSynchronize();
 
-		threads_per_block = 256;
+		threads_per_block = 512;
 		number_of_blocks = upit((dim - b - start_id), threads_per_block);
 		forward_substitution_rectangular_a21<<<number_of_blocks, threads_per_block>>>(M, a11, a21_transpose, l21_transpose_from_fs, dim, b, start_id);
 		cudaThreadSynchronize();
@@ -580,7 +578,7 @@ void run_kernel()
 		// TODO: Can include this tranpose in the forward_substitution_rectangular_a22 call!!!!
 		// Now taking transpose of l21_transpose_from_fs
 		 
-		threads_per_block = 256;
+		threads_per_block = 512;
 		number_of_blocks = upit((dim - b - start_id) * b, threads_per_block);
 		generic_matrix_transpose<<<number_of_blocks, threads_per_block>>>(l21_transpose_from_fs, l21, b, dim - b - start_id);
 		cudaThreadSynchronize();
@@ -594,12 +592,12 @@ void run_kernel()
 
 		//matrixmultiply_noshare<<<(double *a, int rowsA, int colsA, double *b, int rowsB, int colsB, double *c)
 		int rowA = (dim - b - start_id) , colA = b, rowB = b , colB = (dim - b - start_id) ;
-		dim3 blockDim(2,2);
+		dim3 blockDim(32,32);
 		dim3 gridDim( upit(colB, blockDim.x), upit(rowA, blockDim.y));
 		matrixmultiply_noshare<<<gridDim, blockDim >>>(l21, (dim - b - start_id), b,  l21_transpose_from_fs, b, dim - b - start_id, l22_temp);
 		cudaThreadSynchronize();
 
-		threads_per_block = 256;
+		threads_per_block = 512;
 		number_of_blocks = upit((dim - b - start_id) * (dim - b - start_id), threads_per_block);
 		offseted_elementwise_subtraction<<<number_of_blocks, threads_per_block >>>(l22_temp, dim - b - start_id, M, dim, b, start_id);
 		cudaThreadSynchronize();
@@ -607,7 +605,7 @@ void run_kernel()
 		start_id += b;
 	}
 	// Fire a kernel for making upper-triangular as 0.0
-	threads_per_block = 256;
+	threads_per_block = 512;
 	number_of_blocks = upit( (dim * dim), threads_per_block);
 	set_upper_zero<<<number_of_blocks, threads_per_block>>>(M, dim);
 	cudaThreadSynchronize();
