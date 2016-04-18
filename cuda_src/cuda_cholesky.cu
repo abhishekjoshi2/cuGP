@@ -337,7 +337,7 @@ __global__ void offseted_elementwise_subtraction(double *input, int size, double
 }
 
 __global__ void
-get_determinant_from_LU(double *M, int dim, double *log_det)
+get_determinant_from_L(double *M, int dim, double *log_det)
 {
 	// single thread
 
@@ -346,6 +346,7 @@ get_determinant_from_LU(double *M, int dim, double *log_det)
 		ans += log(M[i * dim + i]);
 	ans *= 2;
 	*log_det = ans;
+	printf("Determinant is %lf\n", ans);
 }
 
 __global__ void
@@ -384,6 +385,11 @@ compute_K_train(double *M, double *K_output, double *loghyper, int dim, int b, i
 	if (M_row < M_col) // lower triangular bye bye
 		return;
 
+	if (M_row == M_col){
+		K_output[M_row * dim + M_col] = signal_var +  noise_var;
+		return;
+	}
+
 	for (int i = 0; i < dim; i++)
 		dot_product += (M[M_row * dim + i] - M[M_col * dim + i]) * (M[M_row * dim + i] - M[M_col * dim + i]);
 
@@ -391,8 +397,6 @@ compute_K_train(double *M, double *K_output, double *loghyper, int dim, int b, i
 
 	K_output[M_row * dim + M_col] = K_output[M_col * dim + M_row] = dot_product;
 
-	if (M_row == M_col)
-		K_output[M_row * dim + M_col] += noise_var;
 }
 
 __global__ void
@@ -852,8 +856,14 @@ void run_kernel(){
 	print_matrix_kernel<<<1, 1>>>(mat3, 4, 4);
 	cudaThreadSynchronize();
 
-
 	return ;
+
+	double *log_det;
+	cudacall(cudaMalloc(&log_det, sizeof(double) * 1));
+	get_determinant_from_L<<<1, 1>>>(M, N, log_det);
+	cudaThreadSynchronize();
+	return;	
+
 	// FORWARD SUBSTITUTION 
 	//	
 	//	generating random targets!!	
