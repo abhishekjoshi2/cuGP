@@ -400,7 +400,6 @@ compute_K_train(double *M, double *K_output, double *loghyper, int n, int dim) {
 	dot_product = signal_var * exp(-dot_product * 0.5 / ell_sq);
 
 	K_output[M_row * n + M_col] = K_output[M_col * n + M_row] = dot_product;
-
 }
 
 __global__ void
@@ -817,8 +816,19 @@ void generate_random_vector(double *b, int dim){
 
 void get_cholesky(int n)
 {
-	int b = 2;
-	int num_iters = n / b;
+	int start_id, b;
+	int threads_per_block;
+	int number_of_blocks;
+	int num_iters;
+	double startime, endtime;
+	int dim = n;
+
+	start_id = 0;
+	b = 2;
+
+	startime = CycleTimer::currentSeconds();	
+
+	num_iters = n / b;
 	for (int i = 0; i < num_iters; i++)
 	{
 		hardcoded_cholesky_2x2<<<1, 1>>>(M, a11, dim, b, start_id);
@@ -873,69 +883,69 @@ void get_cholesky(int n)
 
 void compute_chol_get_mul_and_det()
 {
-	get_cholesky(); // set of kernels
+	// get_cholesky(); // set of kernels
 
-	compute_determinant(); // kernel
+	// compute_determinant(); // kernel
 
-	matrix_transpose(); // kernel
+	// matrix_transpose(); // kernel
 
-	forward_solve_vector(); // kernel Ly=b
+	// forward_solve_vector(); // kernel Ly=b
 
-	backward_solve_vector(); // kernel Ux=y
+	// backward_solve_vector(); // kernel Ux=y
 
-	compute_product(); // kernel
+	// compute_product(); // kernel
 }
 
 __global__ void compute_log_likelihood()
 {
-	compute_K_train(); // kernel
+	// compute_K_train(); // kernel
 
-	compute_chol_get_mul_and_det(); // set of kernels
+	// compute_chol_get_mul_and_det(); // set of kernels
 	
-	evaluate_and_store_log_likelihood(); // kernel, or can be clubbed somewhere
+	// evaluate_and_store_log_likelihood(); // kernel, or can be clubbed somewhere
 }
 
 void compute_K_inverse()
 {
-	make_identity(); // kernel, or do once, and store
+	// make_identity(); // kernel, or do once, and store
 
-	get_cholesky(); // set of kernels
+	// get_cholesky(); // set of kernels
 
-	matrix_forward_substitution(); // kernel
+	// matrix_forward_substitution(); // kernel
 
-	matrix_transpose(); // kernel
+	// matrix_transpose(); // kernel
 
-	matrix_backward_substitution(); // kernel
+	// matrix_backward_substitution(); // kernel
 }
 
 void vector_Kinvy_using_cholesky()
 {
-	get_cholesky(); // set of kernels
+	// get_cholesky(); // set of kernels
 
-	matrix_transpose();
+	// matrix_transpose();
 
-	forward_solve_vector();
+	// forward_solve_vector();
 
-	backward_solve_vector();
+	// backward_solve_vector();
 }
 
 void compute_gradient_log_hyperparams()
 {
-	compute_K_train(); // kernel - can reuse earlier matrix?
+	// compute_K_train(); // kernel - can reuse earlier matrix?
 
-	compute_squared_distance(); // kernel
+	// compute_squared_distance(); // kernel
 
-	elementwise_matrix_mult(); // kernel
+	// elementwise_matrix_mult(); // kernel
 
-	compute_K_inverse(); // set of kernels
+	// compute_K_inverse(); // set of kernels
 
-	vector_Kinvy_using_cholesky(); // set of kernels
+	// vector_Kinvy_using_cholesky(); // set of kernels
 
-	get_outer_product(); // kernel
+	// get_outer_product(); // kernel
 
-	subtract_matrices(); // kernel
+	// subtract_matrices(); // kernel
 
-	update_log_hyperparams(); // kernel
+	// update_log_hyperparams(); // kernel
 }
 
 void run_kernel(){
