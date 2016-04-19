@@ -2,9 +2,13 @@
 
 void run_kernel();
 
+void run_gp();
+
 int main()
 {
-	// compute_log_likelihood();
+
+	run_gp();
+
 
 	// run_kernel();
 	return 0;
