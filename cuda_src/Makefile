@@ -34,7 +34,7 @@ LDFRAMEWORKS := $(addprefix -framework , $(FRAMEWORKS))
 
 NVCC=nvcc
 
-OBJS=main.o cuda_cholesky.o
+OBJS=main.o cuda_gp.o
 
 
 .PHONY: clean
@@ -42,7 +42,7 @@ OBJS=main.o cuda_cholesky.o
 default: $(EXECUTABLE)
 
 clean:
-		rm -rf $(OBJS) $(EXECUTABLE) $(LOGS)
+		rm -rf $(OBJS) $(EXECUTABLE) $(LOGS) *.o
 
 $(EXECUTABLE): $(OBJS)
 		$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LDFLAGS) $(LDLIBS) $(LDFRAMEWORKS)
@@ -50,5 +50,5 @@ $(EXECUTABLE): $(OBJS)
 main.o: main.cpp
 	$(CXX) main.cpp $(CXXFLAGS) -c -o main.o
 
-cuda_cholesky.o: cuda_cholesky.cu
-	$(NVCC) cuda_cholesky.cu $(NVCCFLAGS) -c -o cuda_cholesky.o
+cuda_gp.o: cuda_gp.cu
+	$(NVCC) cuda_gp.cu $(NVCCFLAGS) -c -o cuda_gp.o
