@@ -815,6 +815,129 @@ void generate_random_vector(double *b, int dim){
 	}
 }
 
+void get_cholesky(int n)
+{
+	int b = 2;
+	int num_iters = n / b;
+	for (int i = 0; i < num_iters; i++)
+	{
+		hardcoded_cholesky_2x2<<<1, 1>>>(M, a11, dim, b, start_id);
+		cudaThreadSynchronize();
+
+		if (i == num_iters - 1)
+			break;
+
+		// TODO optimize a21_transpose, by bypassing it perhaps? Can avoid transpose and manipulate indices inside next kernel
+		threads_per_block = 512;
+		number_of_blocks = upit((dim - b - start_id) * b, threads_per_block);
+		take_a21_transpose<<<number_of_blocks, threads_per_block>>>(M, a21_transpose, dim, b, start_id);
+		cudaThreadSynchronize();
+
+		threads_per_block = 512;
+		number_of_blocks = upit((dim - b - start_id), threads_per_block);
+		forward_substitution_rectangular_a21<<<number_of_blocks, threads_per_block>>>(M, a11, a21_transpose, l21_transpose_from_fs, dim, b, start_id);
+		cudaThreadSynchronize();
+
+		threads_per_block = 512;
+		number_of_blocks = upit((dim - b - start_id) * b, threads_per_block);
+		generic_matrix_transpose<<<number_of_blocks, threads_per_block>>>(l21_transpose_from_fs, l21, b, dim - b - start_id);
+		cudaThreadSynchronize();
+		
+		//matrixmultiply_noshare<<<(double *a, int rowsA, int colsA, double *b, int rowsB, int colsB, double *c)
+		int rowA = (dim - b - start_id) , colA = b, rowB = b , colB = (dim - b - start_id) ;
+		dim3 blockDim(32,32);
+		dim3 gridDim( upit(colB, blockDim.x), upit(rowA, blockDim.y));
+		matrixmultiply_noshare<<<gridDim, blockDim >>>(l21, (dim - b - start_id), b,  l21_transpose_from_fs, b, dim - b - start_id, l22_temp);
+		cudaThreadSynchronize();
+
+		threads_per_block = 512;
+		number_of_blocks = upit((dim - b - start_id) * (dim - b - start_id), threads_per_block);
+		offseted_elementwise_subtraction<<<number_of_blocks, threads_per_block >>>(l22_temp, dim - b - start_id, M, dim, b, start_id);
+		cudaThreadSynchronize();
+
+		start_id += b;
+	}
+	// Fire a kernel for making upper-triangular as 0.0
+	threads_per_block = 512;
+	number_of_blocks = upit( (dim * dim), threads_per_block);
+	set_upper_zero<<<number_of_blocks, threads_per_block>>>(M, dim);
+	cudaThreadSynchronize();
+	endtime = CycleTimer::currentSeconds();	
+	printf("Totat time taken = %lf s\n", endtime - startime);	
+	// Now checking!
+	
+	double *finalans = new double[dim * dim];
+	cudacall(cudaMemcpy(finalans, M,  sizeof(double) * dim * dim, cudaMemcpyDeviceToHost));
+	check_cholesky(finalans, orig_sym, dim);	
+}
+
+void compute_chol_get_mul_and_det()
+{
+	get_cholesky(); // set of kernels
+
+	compute_determinant(); // kernel
+
+	matrix_transpose(); // kernel
+
+	forward_solve_vector(); // kernel Ly=b
+
+	backward_solve_vector(); // kernel Ux=y
+
+	compute_product(); // kernel
+}
+
+__global__ void compute_log_likelihood()
+{
+	compute_K_train(); // kernel
+
+	compute_chol_get_mul_and_det(); // set of kernels
+	
+	evaluate_and_store_log_likelihood(); // kernel, or can be clubbed somewhere
+}
+
+void compute_K_inverse()
+{
+	make_identity(); // kernel, or do once, and store
+
+	get_cholesky(); // set of kernels
+
+	matrix_forward_substitution(); // kernel
+
+	matrix_transpose(); // kernel
+
+	matrix_backward_substitution(); // kernel
+}
+
+void vector_Kinvy_using_cholesky()
+{
+	get_cholesky(); // set of kernels
+
+	matrix_transpose();
+
+	forward_solve_vector();
+
+	backward_solve_vector();
+}
+
+void compute_gradient_log_hyperparams()
+{
+	compute_K_train(); // kernel - can reuse earlier matrix?
+
+	compute_squared_distance(); // kernel
+
+	elementwise_matrix_mult(); // kernel
+
+	compute_K_inverse(); // set of kernels
+
+	vector_Kinvy_using_cholesky(); // set of kernels
+
+	get_outer_product(); // kernel
+
+	subtract_matrices(); // kernel
+
+	update_log_hyperparams(); // kernel
+}
+
 void run_kernel(){
 	//Now checking matrix 
 
@@ -853,6 +976,7 @@ void run_kernel(){
 	printf("n = %d, dim = %d\n", n, dim);	
 	threads_per_block = 512;
 	number_of_blocks = upit( (n * n), threads_per_block);
+
 	compute_K_train<<<number_of_blocks, threads_per_block >>>(inputdata, K_output, loghyper, n,  dim);	
 	cudaThreadSynchronize();
 	print_matrix_kernel<<<1,1>>>(K_output, n, n);

@@ -4,8 +4,8 @@ void run_kernel();
 
 int main()
 {
-	run_kernel();
-	// run blocked inverse
+	// compute_log_likelihood();
 
+	// run_kernel();
 	return 0;
 }
