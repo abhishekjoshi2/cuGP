@@ -50,6 +50,7 @@
 <li> <b>Naively parallelizing Gaussian Process in CUDA:</b></li>
 <p> As planned, we have also successfully ported a naive version of Gaussian Process regression code in CUDA. This involved breaking down many of the steps of the computation into modular and reusable parts of code that are amenable to be run on CUDA. We will now briefly describe the different kernels that we have implemented as a part of the whole stack. For all kernels, X is the input training matrix, N is the number of training samples, and DIM is the number of parameters for each training sample:</p>
 
+<ul>
 <li> <b> compute_K_train: </b></li>
 
 <p> We launch N*N threads - one for each element in the N*N covariance matrix. Each thread picks up its required input working set from the X matrix and fills up the (i,j)th entry in the K matrix, which is the covariance matrix. This can be further improved by collaborative loading of X into shared memory.</p>
@@ -69,9 +70,54 @@
 <li> <b> determinant_lower_triangular_matrix: </b></li>
 <p> We need the determinant of the lower triangular matrix U. We thought we might have to implement a parallel version for finding the determinant, but later realized that the determinant can be naively taken by taking the square of the product of the diagonal elements! We launch one thread for taking the determinant, which sequentially walks the whole diagonal and calculates the product of all the elements.</p>
 
-<li> <b> vector_forward_substution: </b></li>
-<p> This is the most sequential part of the whole system, and is currently a major bottleneck. </p>
+<li> <b> vector_forward_substution and vector_backward_substitution: </b></li>
+<p> This is the most sequential part of the whole system, and is currently a major bottleneck. For now, we have an extremely naively parallel version in CUDA, which doesn't perform well. We had expected this, and will now implement a different algorithm for implementing these two kernels, which is more amenable to parallelizing on CUDA.</p>
+
+<li> <b> compute_squared_distance, elementwise_matrix_mult, subtract_matrices, get_outer_product: </b></li>
+<p> All these kernels have been naively parallelized by launching one thread for each element, since each of them can be done without any dependencies. </p>
+
 </ul>
+
+<li> <b> Schedule and Progress </b></li>
+Please find our progress below (at the end of the page). We would say that we are perfectly in sync with our proposed schedule :D.
+</ul>
+
+<h3><a id="updatedschedule" class="anchor" href="#updatedschedule" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>UpdatedSchedule</h3>
+
+<ul>
+
+<li>22nd April</li>
+
+<ul>
+<li>Improve performance of all kernels except vector forward and backward substitution. Use blocking and shared memory as much as possible.</li>
+<li>Start work on performance evaluation to find places where the framework takes a long time. Find bottlenecks. </li>
+</ul>
+
+<li>26th April</li>
+<ul>
+<li>Improve performance of vector forward and backward substitution</li>
+</ul>
+
+<li>30th April</li>
+<ul>Start work on distributed version of cuGP if possible. Otherwise, continue work on forward and backward substitution optimization. (This is exam week, so we don't want to go overboard on our tasks).
+<li>
+</ul>
+
+<li>4th May</li>
+<ul>
+<li>Finish all work</li>
+<li>Evaluate system performance and fine tune different parameters</li>
+</ul>
+
+<li>7th May</li>
+<ul>
+<li>Code drop in</li>
+<li>Finish writeup</li>
+</ul>
+</ul>
+
+<h3><a id="finaldemo" class="anchor" href="#finaldemo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Final Demo</h3>
+For the final demo, we will show graphs of our system's performance and show speedups as against the serial version.
 
   <h3>
 <a id="Primary Challenges" class="anchor" href="#challenges" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Checkpoint Update</h3>
@@ -175,38 +221,36 @@ We will use the C++ programming language for this project along with the Nvidia 
 <h3>
 <a id="schedule" class="anchor" href="#schedule" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Schedule</h3>
 
-
-
 <ul>
 
 <li>2nd April</li>
 
 <ul>
-<li>Install Magma, Lapack, Atlas, ACML, BLAS, CBLAS.</li>
+<li>Install Magma, Lapack, Atlas, ACML, BLAS, CBLAS. - <b>DONE (but not really needed for us)</b></li>
 </ul>
 
 <li>8th April</li>
 
 <ul>
-<li>Get a sequential code for GP working. Implement at least 2 Covariance Kernels.</li>
-<li>Test it on chosen workloads to get a fair estimate of how it performs</li>
-<li>Work on Design of the GPU version of the system, and discuss how to port the code to run on GPU</li>
+<li>Get a sequential code for GP working. Implement at least 2 Covariance Kernels - <b>DONE</b></li>
+<li>Test it on chosen workloads to get a fair estimate of how it performs - <b>DONE for sine dataset</b></li>
+<li>Work on Design of the GPU version of the system, and discuss how to port the code to run on GPU - <b>DONE</b></li>
 </ul>
 
 <li>15th April (checkpoint)</li>
 
 <ul>
-<li>Implement one more covariance kernel</li>
-<li>Should have a naively parallelized code running on GPU</li>
-<li>Keep performing regression tests to ensure that the porting of code is correct</li>
+<li>Implement one more covariance kernel - <b>PUSHED TO LOWER PRIORITY</b></li>
+<li>Should have a naively parallelized code running on GPU - <b>DONE</b></li>
+<li>Keep performing regression tests to ensure that the porting of code is correct - <b>DONE</b></li>
 </ul>
 
 <li>22nd April</li>
 
 <ul>
-<li>Reevaluate design of parallel code and optimize for performance, locality, access patterns</li>
-<li>Read research papers to extend our current design and possibly implement different strategies</li>
-<li>Start work on performance evaluation to find places where the framework takes a long time. Find bottlenecks</li>
+<li>Reevaluate design of parallel code and optimize for performance, locality, access patterns - <b>IN PROGRESS</b> </li>
+<li>Read research papers to extend our current design and possibly implement different strategies - <b>IN PROGRESS</b> </li>
+<li>Start work on performance evaluation to find places where the framework takes a long time. Find bottlenecks - <b>IN PROGRESS</b> </li>
 </ul>
 
 <li>29th April</li>
@@ -226,13 +270,7 @@ We will use the C++ programming language for this project along with the Nvidia 
 <li>Code drop in</li>
 <li>Finish writeup</li>
 </ul>
-
 </ul>
-
-
-
-
-
 
 <h3>
 <a id="references" class="anchor" href="#references" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>References</h3>
