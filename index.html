@@ -48,21 +48,23 @@
 </p>
 
 <li> <b>Naively parallelizing Gaussian Process in CUDA:</b></li>
-<p> As planned, we have also successfully ported a naive version of Gaussian Process in CUDA. This involved breaking down many of the steps of the computation into modular and reusable parts of code that are amenable to be run on CUDA. We will now briefly describe the different kernels that we have implemented as a part of the whole stack:</p>
+<p> As planned, we have also successfully ported a naive version of Gaussian Process in CUDA. This involved breaking down many of the steps of the computation into modular and reusable parts of code that are amenable to be run on CUDA. We will now briefly describe the different kernels that we have implemented as a part of the whole stack. For all kernels, X is the input training matrix, N is the number of training samples, and DIM is the number of parameters for each training sample:</p>
 
 <li> <b> compute_K_train: </b></li>
-<p> </p>
-<li> <b> compute_K_train: </b></li>
-<p> </p>
 
-<li> <b> compute_K_train: </b></li>
-<p> </p>
+<p> We launch N*N threads - one for each element in the N*N covariance matrix. Each thread picks up its required input working set from the X matrix and fills up the (i,j)th entry in the K matrix, which is the covariance matrix. This can be further improved by collaborative loading of X into shared memory.</p>
 
-<li> <b> compute_K_train: </b></li>
-<p> </p>
+<li> <b> compute_cholesky: </b></li>
+<p> We use Cholesky factorization to factorize the K matrix into a lower triangular matrix L (and its corresponding upper triangular matrix U). Cholesky factorization is further broken down into a series of kernels such as taking offsetted transpose, rectangular forward substitution, generic matrix transpose, matrix multiplication, and offsetted matrix subtraction. We implemented parallel Cholesky by referring to the algorithm given in []. Currently, for taking the pure Cholesky in the first step of the recursive process, we have fixed our <i>b</i> parameter to be 2. Going forward, we hope to try doing the same for <i>b = 3</i> and <i>b = 4</i>.</p>
 
-<li> <b> compute_K_train: </b></li>
-<p> </p>
+<li> <b> matrix_transpose: </b></li>
+<p> Matrix transpose is needed at several points during training, and therefore we have written a naive implementation of matrix transpose in CUDA.</p>
+
+<li> <b> matrix_multiplication: </b></li>
+<p> Matrix multiplication is another important piece of our implementation, and currently we have a naively parallel version of matrix multiplication where we launch one thread for every element of the output matrix. Going forward, we plan to implemented the same using shared memory and collaboratively loading data sets into shared memory.</p>
+
+<li> <b> rectangular_forward_substitution: </b></li>
+<p> Forward substitution helps us solve equations of the form <i><b>AX = B</b></i> where A, X, B are matrices, A and B are known, and X is unknown. For now, we launch one thread for each column of X, since each column is independent of each other.</p>
 
 </ul>
 
