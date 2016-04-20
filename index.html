@@ -50,6 +50,7 @@
 <li> <b>Naively parallelizing Gaussian Process in CUDA:</b></li>
 <p> As planned, we have also successfully ported a naive version of Gaussian Process in CUDA. This involved breaking down many of the steps of the computation into modular and reusable parts of code that are amenable to be run on CUDA. We will now briefly describe the different kernels that we have implemented as a part of the whole stack. For all kernels, X is the input training matrix, N is the number of training samples, and DIM is the number of parameters for each training sample:</p>
 
+<ul>
 <li> <b> compute_K_train: </b></li>
 
 <p> We launch N*N threads - one for each element in the N*N covariance matrix. Each thread picks up its required input working set from the X matrix and fills up the (i,j)th entry in the K matrix, which is the covariance matrix. This can be further improved by collaborative loading of X into shared memory.</p>
@@ -69,8 +70,9 @@
 <li> <b> determinant_lower_triangular_matrix: </b></li>
 <p> We need the determinant of the lower triangular matrix U. We thought we might have to implement a parallel version for finding the determinant, but later realized that the determinant can be naively taken by taking the square of the product of the diagonal elements! We launch one thread for taking the determinant, which sequentially walks the whole diagonal and calculates the product of all the elements.</p>
 
-<li> <b> vector_forward_substution: </b></li>
-<p> This is the most sequential part of the whole system, and is currently a major bottleneck. </p>
+<li> <b> vector_forward_substution and vector_backward_substitution: </b></li>
+<p> This is the most sequential part of the whole system, and is currently a major bottleneck. For now, we have an extremely naively parallel version in CUDA, which doesn't perform well. We had expected this, and will now implement a different algorithm for implementing these two kernels, which is more amenable to parallelizing on CUDA.</p>
+</ul>
 </ul>
 
 
