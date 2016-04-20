@@ -47,8 +47,8 @@ clean:
 $(EXECUTABLE): $(OBJS)
 		$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LDFLAGS) $(LDLIBS) $(LDFRAMEWORKS)
 
-main.o: main.cpp
-	$(CXX) main.cpp $(CXXFLAGS) -c -o main.o
-
 cuda_gp.o: cuda_gp.cu
 	$(NVCC) cuda_gp.cu $(NVCCFLAGS) -c -o cuda_gp.o
+
+main.o: main.cpp
+	$(CXX) main.cpp $(CXXFLAGS) -c -o main.o
