@@ -73,7 +73,17 @@
 <p> This is the most sequential part of the whole system, and is currently a major bottleneck. </p>
 </ul>
 
+  <h3>
+<a id="Primary Challenges" class="anchor" href="#challenges" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Checkpoint Update</h3>
 
+We have identified 2 key challenges that have to be addressed for an efficient final CUDA implementation:
+<ul>
+<li> <b> Cholesky decomposition </b> </li>
+<p> In the computation of the log marginal-likelihood we need to perform Cholesky decomposition of the covariance matrix. As of now we have implemented a blocked-recursive algorithm for computing it. However, we think that a better use of shared memory and a hybrid algorithm would surely be beneficial. </p>
+
+<li> <b> Triangular Matrix Inversion </b> </li> 
+<p> Triangular matrix inversion (TMI) basically comprises of the forward-substitution routines for both vectors as well as matrices. Due to the inherently sequential algorithm for solving forward/backward substitution for a vector, currently, our CUDA kernel implemention for it is quite naive. We have gone through some recent papers, and have found a recursive algorithm that seems to be more CUDA friendly. So one of our primary goals is to implement an efficient triangular matrix inversion module.   </p>
+  
 <h3><a id="summary" class="anchor" href="#summary" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Summary</h3>
 
 <p>We are going to parallelize the training and prediction phases of Gaussian Process Regression on a GPU.</p>
