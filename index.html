@@ -120,7 +120,7 @@ Please find our progress below (at the end of the page). We would say that we ar
 For the final demo, we will show graphs of our system's performance and show speedups as against the serial version.
 
   <h3>
-<a id="Primary Challenges" class="anchor" href="#challenges" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Checkpoint Update</h3>
+<a id="Current-Challenges" class="anchor" href="#challenges" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Current Challenges</h3>
 
 We have identified 2 key challenges that have to be addressed for an efficient final CUDA implementation:
 <ul>
@@ -130,6 +130,8 @@ We have identified 2 key challenges that have to be addressed for an efficient f
 <li> <b> Triangular Matrix Inversion </b> </li> 
 <p> Triangular matrix inversion (TMI) basically comprises of the forward-substitution routines for both vectors as well as matrices. Due to the inherently sequential algorithm for solving forward/backward substitution for a vector, currently, our CUDA kernel implemention for it is quite naive. We have gone through some recent papers, and have found a recursive algorithm that seems to be more CUDA friendly. So one of our primary goals is to implement an efficient triangular matrix inversion module.   </p>
   
+</ul>
+
 <h3><a id="summary" class="anchor" href="#summary" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Summary</h3>
 
 <p>We are going to parallelize the training and prediction phases of Gaussian Process Regression on a GPU.</p>
