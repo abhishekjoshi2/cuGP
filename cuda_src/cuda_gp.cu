@@ -9,6 +9,7 @@
 
 
 #define INPUT_FILE "../cpp_serial_gp/input_10.txt"
+#define LABEL_FILE "../cpp_serial_gp/label_10.txt"
 
 #define filename "sym5000.txt"
 
@@ -28,7 +29,11 @@ double *l21;
 double *l22_temp;  //This is for updating a22
 
 double *X; // training set
-
+double *labels; // labels of the training set (actually regression values)
+double *temp_fs; // for saving the result of forward substitution while performing compute_likelihood!!
+double *temp_bs; // for saving the result of backward substitution in compute_likelihood
+double *ll_dotprod; // for saving the result of the dot product in compute_likelihood
+ 
 double *loghyper;
 double *log_det; // log of determinant
 
@@ -48,6 +53,21 @@ int N, DIM;
 	}                                                                                                                       \
 } \
 
+//FIXME: can do a shared memory reduce
+__global__ void vector_dot_product(double *x1, double *x2, double *ans, int N){
+
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	if (i_index >= 1)
+		return;
+
+	double val = 0.0;
+	for(int i = 0; i < N; i++) {
+		val += (x1[i]*x2[i]);
+	}
+	*ans = val;
+}
 
 __global__ void check_forward_sub_vector(double *L, double *x, double *b, int N){
 
@@ -504,24 +524,42 @@ void read_input_and_copy_to_GPU()
 {
 	FILE *input_file, *label_file;
 	double *X_host; //input dataset in host!
+	double *labels_host; //labels in host!
 	double *lh_host = new double[3];
 
 	input_file = fopen(INPUT_FILE, "r");
+	label_file = fopen(LABEL_FILE, "r");
 
 	fscanf(input_file, "%d%d", &N, &DIM);
 
 	for (int i = 0 ; i < 3 ; i++)
 		lh_host[i] = 0.5;	
 
+	
 	X_host = new double[N * DIM];
+	labels_host = new double[N];
 
+	// Reading inputs
 	for (int i = 0; i < N; i++)
 		for (int j = 0; j < DIM; j++)
 			fscanf(input_file, "%lf", &X_host[i * DIM + j]);
 
+	// Reading labels (target values)
+	for (int i = 0; i < N; i++) {
+                fscanf(label_file, "%lf", &labels_host[i]);
+        }
+	
+	//Check if labels are read correctly:
+	printf("Check!!!!\n");
+	for(int i =0 ; i < N;i++){
+		printf("%lf\n", labels_host[i]);
+	}
 	cudacall(cudaMalloc(&X, sizeof(double) * N * DIM));
 	cudacall(cudaMemcpy(X, X_host, sizeof(double) * N * DIM, cudaMemcpyHostToDevice));	
 
+	cudacall(cudaMalloc(&labels, sizeof(double) * N ));
+	cudacall(cudaMemcpy(labels, labels_host, sizeof(double) * N , cudaMemcpyHostToDevice));	
+	
 	cudacall(cudaMalloc(&loghyper, sizeof(double) * 3));
 	cudacall(cudaMemcpy(loghyper, lh_host, sizeof(double) * 3 , cudaMemcpyHostToDevice));	
 }
@@ -534,9 +572,15 @@ void setup_intermediate_data()
 	// this is the log determinant
 	cudacall(cudaMalloc(&log_det, sizeof(double)));
 
+	// this is for the dot product
+	cudacall(cudaMalloc(&ll_dotprod, sizeof(double)));
+	
 	// this is the K's cholesky's transpose
 	cudacall(cudaMalloc(&L_transpose, sizeof(double) * N * N));
-
+	
+	cudacall(cudaMalloc(&temp_fs, sizeof(double) * N));
+	cudacall(cudaMalloc(&temp_bs, sizeof(double) * N));
+		
 	// just for checking cholesky correctness, delete later FIXME
 	orig_sym = new double[N * N]; // should be equal to covariance matrix
 }
@@ -803,18 +847,33 @@ void compute_chol_get_mul_and_det()
 	get_determinant_from_L<<<1, 1>>>(K, N, log_det);
 	cudaThreadSynchronize();
 
+	//threads_per_block = 512;
+	//number_of_blocks = upit(N * N, threads_per_block);
+	//generic_matrix_transpose<<<number_of_blocks, threads_per_block>>>(K, L_transpose, N, N); // FIXME lesser threads possible!
+	//cudaThreadSynchronize();
+
+ 	// forward_solve_vector(); // kernel K * y = target -> solves for y (Note K is a lower triangular matrix)
 	threads_per_block = 512;
-	number_of_blocks = upit(N * N, threads_per_block);
-	generic_matrix_transpose<<<number_of_blocks, threads_per_block>>>(K, L_transpose, N, N); // FIXME lesser threads possible!
+	number_of_blocks = upit(N, threads_per_block);
+	forward_substitution_vector<<<1, 1>>>(K, labels, temp_fs, N);
 	cudaThreadSynchronize();
 
-	// forward_solve_vector(); // kernel Ly=b
-
-	// backward_solve_vector(); // kernel Ux=y
+	// backward_solve_vector(); // kernel L_transpose * x = y -> solves for x 
+	backward_substitution_vector<<<1, 1>>>(K, temp_fs, temp_bs, N); // Since we use the K.transpose() inside we don't pass L_transpose
+	cudaThreadSynchronize();
 
 	// compute_product(); // kernel
+	vector_dot_product<<<1, 1>>>(temp_bs, labels, ll_dotprod, N);
+	cudaThreadSynchronize();
 }
 
+double evaluate_and_get_log_likelihood(){
+	double term1_ll;
+	double term2_ll;
+	cudacall(cudaMemcpy(&term1_ll, ll_dotprod,  sizeof(double), cudaMemcpyDeviceToHost));
+	cudacall(cudaMemcpy(&term2_ll, log_det ,  sizeof(double), cudaMemcpyDeviceToHost));
+	return -0.5 * ( term1_ll + term2_ll + N * 1.83787);
+}
 void compute_log_likelihood()
 {
 	int threads_per_block, number_of_blocks;
@@ -830,7 +889,9 @@ void compute_log_likelihood()
 
 	compute_chol_get_mul_and_det(); // set of kernels
 
-	// evaluate_and_store_log_likelihood(); // kernel, or can be clubbed somewhere
+	double llans = evaluate_and_get_log_likelihood(); // kernel, or can be clubbed somewhere
+	printf("The value of loglikelihood = %lf\n", llans);
+ 
 }
 
 void compute_K_inverse()
