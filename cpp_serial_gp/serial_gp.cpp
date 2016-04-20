@@ -6,8 +6,8 @@
 #include "covkernel.h"
 #include "../common/cycleTimer.h"
 
-#define INPUT_FILE "sine_500_input.txt"
-#define LABEL_FILE "sine_500_labels.txt"
+#define INPUT_FILE "sine_1000_input.txt"
+#define LABEL_FILE "sine_1000_labels.txt"
 int main()
 {
 	FILE *input_file, *label_file;
@@ -46,15 +46,20 @@ int main()
 		fscanf(label_file, "%lf", &y[i]);
 	}
 
-	double inithypervalues[] = {1.0, 1.0, 1.0};
+	double inithypervalues[] = {0.5, 0.5, 0.5};
 
-	int total = 500;
-	int numtrain = 400;
+	int total = 1000;
+	int numtrain = 1000;
 	int numtest = total - numtrain;
 	Covsum kernelobj(numtrain, dim);
 	kernelobj.set_loghyperparam(inithypervalues);
-	double ans = kernelobj.compute_loglikelihood(X, y);
 
+	double startime = CycleTimer::currentSeconds();	
+	double ans = kernelobj.compute_loglikelihood(X, y);
+	double endtime = CycleTimer::currentSeconds();	
+	
+	std::cout << ans << std::endl;
+	std::cout << "time taken the entire loglikelihood computatoin = " << endtime - startime << std::endl;
 //	double *grad = kernelobj.compute_gradient_loghyperparam(X, y);
 
 	/*std::cout << grad[0] << std::endl;
@@ -115,8 +120,8 @@ int main()
 	std::cout << "NLPP = " << nlpp << "\n";
 	*/
 
-	delete tmeanvec;
-	delete tvarvec;
+	//delete tmeanvec;
+	//delete tvarvec;
 
 	for (int i = 0; i < n; i++)
 		delete X[i];

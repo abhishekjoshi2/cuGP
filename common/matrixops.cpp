@@ -2,6 +2,7 @@
 #include <utility>
 #include <cstdio>
 #include "debug.h"
+#include "../common/cycleTimer.h"
 
 void print_matrix(double **M, int r, int c) {
 	/*
@@ -73,12 +74,12 @@ void get_cholesky(double **input, double **output, int dim)
 	{
 		//printf("Begin new iteration: col: %d\n", col);
 		output[col][col] = std::sqrt(output[col][col]);
-		printf("output[%d][%d] = sqrt(output[%d][%d])\n", col, col, col, col);
+		//printf("output[%d][%d] = sqrt(output[%d][%d])\n", col, col, col, col);
 
 		//printf("Divide all elements below the diagonal element by diagonal element\n");
 		for (int row = col + 1; row < dim; row++)
 		{
-			printf("output[%d][%d] = output[%d][%d] / output[%d][%d]\n", row, col, row, col, col, col);
+			//printf("output[%d][%d] = output[%d][%d] / output[%d][%d]\n", row, col, row, col, col, col);
 			output[row][col] = output[row][col] / output[col][col];
 		}
 
@@ -88,7 +89,7 @@ void get_cholesky(double **input, double **output, int dim)
 			for (int row2 = col2; row2 < dim; row2++)
 			{
 				output[row2][col2] = output[row2][col2] - output[row2][col] * output[col2][col];
-				printf("output[%d][%d] = output[%d][%d] - output[%d][%d] * output[%d][%d]\n", row2, col2, row2, col2, row2, col, col2, col);
+				//printf("output[%d][%d] = output[%d][%d] - output[%d][%d] * output[%d][%d]\n", row2, col2, row2, col2, row2, col, col2, col);
 			}
 		}
 
@@ -100,7 +101,7 @@ void get_cholesky(double **input, double **output, int dim)
 		for (int col = row + 1; col < dim; col++)
 		{
 			output[row][col] = 0.0;
-			printf("output[%d][%d] = 0\n", row, col);
+			//printf("output[%d][%d] = 0\n", row, col);
 		}
 	}
 }
@@ -123,7 +124,10 @@ std::pair<double, double> multiply_and_get_logdeterminant(double *yt, double **X
 		U[i] = new double[n];
 	}
 
+	double startime = CycleTimer::currentSeconds();
 	get_cholesky(X, L, n);
+	double endtime = CycleTimer::currentSeconds();
+	printf("time taken by cholesky = %lf\n\n", endtime - startime);
 
 	for (int i = 0; i < n; i++) {
 		det += log(L[i][i]);
