@@ -8,8 +8,8 @@
 #include <fstream>
 
 
-#define INPUT_FILE "../cpp_serial_gp/input_10.txt"
-#define LABEL_FILE "../cpp_serial_gp/label_10.txt"
+#define INPUT_FILE "../cpp_serial_gp/sine_1000_input.txt"
+#define LABEL_FILE "../cpp_serial_gp/sine_1000_labels.txt"
 
 #define filename "sym5000.txt"
 
@@ -549,11 +549,6 @@ void read_input_and_copy_to_GPU()
                 fscanf(label_file, "%lf", &labels_host[i]);
         }
 	
-	//Check if labels are read correctly:
-	printf("Check!!!!\n");
-	for(int i =0 ; i < N;i++){
-		printf("%lf\n", labels_host[i]);
-	}
 	cudacall(cudaMalloc(&X, sizeof(double) * N * DIM));
 	cudacall(cudaMemcpy(X, X_host, sizeof(double) * N * DIM, cudaMemcpyHostToDevice));	
 
@@ -828,7 +823,7 @@ void get_cholesky(double *M, int n)
 
 	endtime = CycleTimer::currentSeconds();	
 
-	printf("Total time taken = %lf s\n", endtime - startime);	
+	printf("Total time taken in cholesky = %lf s\n", endtime - startime);	
 	// Now checking!
 
 	double *finalans = new double[dim * dim];
@@ -1059,5 +1054,8 @@ void run_gp()
 {
 	setup();
 
+	double startime = CycleTimer::currentSeconds();
 	compute_log_likelihood();
+	double endtime = CycleTimer::currentSeconds();
+	printf("The time taken in loglikelihood computation = %lf\n", endtime - startime);
 }
