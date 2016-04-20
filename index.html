@@ -40,15 +40,31 @@
 
 <ul>
 
-<li> <b>Implementation of regression Using Gaussian Process in C++:</b></li>
+<li> <b>Implementing regression Using Gaussian Process in C++:</b></li>
 <p> As planned, we have successfully implemented Gaussian Process in C++. This proved to be harder than what we had expected, since many of the implementation intricacies cropped up as we started coding each step of solving Gaussian Process. We have tested our code against an implementation of Gaussian Process in Matlab, and we have achieved full accuracy in all stages of the computation.</p>
+
+<li> <b>Implementing 2 Covariance Kernels:</b></li>
+<p> We have implemented 2 covariance kernels: Squared Exponential Kernel and Noise Kernel. For now, we have pushed the task of implementing the third covariance kernel to a lower priority task, since we don't think it is crucial to our task of "parallelizing Gaussian Process", and would be more suited to a primarily ML-focused project. Moreover, implementing SE Kernel + Noise Kernel is sufficient for implementing the whole training and regression stacks.
+</p>
 
 <li> <b>Naively parallelizing Gaussian Process in CUDA:</b></li>
 <p> As planned, we have also successfully ported a naive version of Gaussian Process in CUDA. This involved breaking down many of the steps of the computation into modular and reusable parts of code that are amenable to be run on CUDA. We will now briefly describe the different kernels that we have implemented as a part of the whole stack:</p>
 
-<li> <b> </b></li>
-</ul>
+<li> <b> compute_K_train: </b></li>
+<p> </p>
+<li> <b> compute_K_train: </b></li>
+<p> </p>
 
+<li> <b> compute_K_train: </b></li>
+<p> </p>
+
+<li> <b> compute_K_train: </b></li>
+<p> </p>
+
+<li> <b> compute_K_train: </b></li>
+<p> </p>
+
+</ul>
 
 
 <h3><a id="summary" class="anchor" href="#summary" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Summary</h3>
