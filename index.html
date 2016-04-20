@@ -72,7 +72,12 @@
 
 <li> <b> vector_forward_substution and vector_backward_substitution: </b></li>
 <p> This is the most sequential part of the whole system, and is currently a major bottleneck. For now, we have an extremely naively parallel version in CUDA, which doesn't perform well. We had expected this, and will now implement a different algorithm for implementing these two kernels, which is more amenable to parallelizing on CUDA.</p>
+
+<li> <b> compute_squared_distance, elementwise_matrix_mult, subtract_matrices, get_outer_product: </b></li>
+<p> All these kernels have been naively parallelized by launching one thread for each element, since each of them can be done without any dependencies. </p>
+
 </ul>
+
 </ul>
 
 
