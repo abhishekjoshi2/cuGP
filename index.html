@@ -125,10 +125,8 @@ For the final demo, we will show graphs of our system's performance and show spe
 The figure below shows the time it takes to obtain the Cholesky decomposition for 2 different dataset sizes (N = 500 and N = 1000 samples) for the serial GP implementation vs the naive GPU implemnentation. We see that the speedup for N = 1000 is around 10x.
 <img src="images/compare_chol.png" alt="comparison of Cholesky">
 
-The figure below shows the time taken for computing the log marginal likelihood for the 2 implementations. The worse performance of our naive GPU implementation is as expected. This is because our forward subsitution and backward substition modules are run by a single CUDA thread (due to the inherent sequential nature of the algorithm itself).
+The figure below shows the time taken for computing the log marginal likelihood for the 2 implementations. The worse performance of our naive GPU implementation is as expected. This is because our forward subsitution and backward substition modules are run by a single CUDA thread (due to the inherent sequential nature of the algorithm itself). This time includes the time taken by the Cholesky and the forward-backward substitution routines.
 <img src="images/compare_ll.png" alt="comparison of log likelihood">
-
-
 </p>
 
 
@@ -145,6 +143,10 @@ We have identified 2 key challenges that have to be addressed for an efficient f
 <p> Triangular matrix inversion (TMI) basically comprises of the forward-substitution routines for both vectors as well as matrices. Due to the inherently sequential algorithm for solving forward/backward substitution for a vector, currently, our CUDA kernel implemention for it is quite naive. We have gone through some recent papers, and have found a recursive algorithm that seems to be more CUDA friendly. So one of our primary goals is to implement an efficient triangular matrix inversion module.   </p>
   
 </ul>
+
+<h3>
+<a id="nicetohaves" class="anchor" href="#nicetohaves" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Nice-to-have</h3>
+We are contemplating moving to a distributed enviroment once we optimize our single node performance. We would then be able to extract extremely high performance from multiple GPUs. However, this is definitely a stretch goal for us, and would be undertaken only after we feel confident about our single node performance.
 
 <hr>
 <hr>
