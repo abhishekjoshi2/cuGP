@@ -27,7 +27,6 @@
     <section class="page-header">
       <h1 class="project-name">cuGP</h1>
       <h2 class="project-tagline">GPU Accelerated Gaussian Process for Regression</h2>
-      <a href="https://abhishekjoshi2.github.io/cuGP" class="btn">Checkpoint Update</a>
       <a href="https://github.com/abhishekjoshi2/cuGP" class="btn">View on GitHub</a>
       <a href="https://github.com/abhishekjoshi2/cuGP/zipball/master" class="btn">Download .zip</a>
       <a href="https://github.com/abhishekjoshi2/cuGP/tarball/master" class="btn">Download .tar.gz</a>
@@ -35,6 +34,30 @@
 
     <section class="main-content">
       <h3>
+
+
+
+
+
+
+<a id="Checkpoint Update" class="anchor" href="#checkpoint" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Checkpoint Update</h3>
+
+
+<ul>
+
+<li> Implementation of regression Using Gaussian Process in C++:</li>
+<p> As planned, we have successfully implemented Gaussian Process in C++. This proved to be harder than what we had expected, since many of the implementation intricacies cropped up as we started coding each step of solving Gaussian Process. We have tested our code against an implementation of Gaussian Process in Matlab, and we have achieved full accuracy in all stages of the computation.</p>
+
+<li> Naively parallelizing Gaussian Process in CUDA:</li>
+<p> As planned, we have also successfully ported a naive version of Gaussian Process in CUDA. This involved breaking down many of the steps of the computation into modular and reusable parts of code that are amenable to be run on CUDA. We will now briefly describe the different kernels that we have implemented as a part of the whole stack:</p>
+
+
+</ul>
+
+
+
+
+
 <a id="summary" class="anchor" href="#summary" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Summary</h3>
 
 <p>We are going to parallelize the training and prediction phases of Gaussian Process Regression on a GPU.</p>
