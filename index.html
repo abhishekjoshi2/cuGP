@@ -56,7 +56,7 @@
 <p> We launch N*N threads - one for each element in the N*N covariance matrix. Each thread picks up its required input working set from the X matrix and fills up the (i,j)th entry in the K matrix, which is the covariance matrix. This can be further improved by collaborative loading of X into shared memory.</p>
 
 <li> <b> compute_cholesky: </b></li>
-<p> We use Cholesky factorization to factorize the K matrix into a lower triangular matrix L (and its corresponding upper triangular matrix U). Cholesky factorization is further broken down into a series of kernels such as taking offsetted transpose, rectangular forward substitution, generic matrix transpose, matrix multiplication, and offsetted matrix subtraction. We implemented parallel Cholesky by referring to the algorithm given in []. Currently, for taking the pure Cholesky in the first step of the recursive process, we have fixed our <i>b</i> parameter to be 2. Going forward, we hope to try doing the same for <i>b = 3</i> and <i>b = 4</i>.</p>
+<p> We use Cholesky factorization to factorize the K matrix into a lower triangular matrix L (and its corresponding upper triangular matrix U). Cholesky factorization is further broken down into a series of kernels such as taking offsetted transpose, rectangular forward substitution, generic matrix transpose, matrix multiplication, and offsetted matrix subtraction. We implemented parallel Cholesky by referring to the algorithm given in [DA14]. Currently, for taking the pure Cholesky in the first step of the recursive process, we have fixed our <i>b</i> parameter to be 2. Going forward, we hope to try doing the same for <i>b = 3</i> and <i>b = 4</i>.</p>
 
 <li> <b> matrix_transpose: </b></li>
 <p> Matrix transpose is needed at several points during training, and therefore we have written a naive implementation of matrix transpose in CUDA, where the (i, j)th thread fills up the (j, i)th entry in the transpose matrix. We are not sure if there are better ways to do this, and we will be on the look out for a better implementation. </p>
@@ -118,6 +118,21 @@ Please find our progress below (at the end of the page). We would say that we ar
 
 <h3><a id="finaldemo" class="anchor" href="#finaldemo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Final Demo</h3>
 For the final demo, we will show graphs of our system's performance and show speedups as against the serial version.
+
+  <h3>
+<a id="Prelim-results" class="anchor" href="#presults" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Preliminary Results</h3>
+
+<p>
+The figure below shows the time it takes to obtain the Cholesky decomposition for 2 different dataset sizes (N = 500 and N = 1000 samples) for the serial GP implementation vs the naive GPU implemnentation. We see that the speedup for N = 1000 is around 10x.
+<img src="images/compare_chol.png" alt="comparison of Cholesky">
+
+The figure below shows the time taken for computing the log marginal likelihood for the 2 implementations. The worse performance of our naive GPU implementation is as expected. This is because our forward subsitution and backward substition modules are run by a single CUDA thread (due to the inherent sequential nature of the algorithm itself).
+<img src="images/compare_ll.png" alt="comparison of log likelihood">
+
+
+</p>
+
+
 
   <h3>
 <a id="Current-Challenges" class="anchor" href="#challenges" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Current Challenges</h3>
@@ -285,6 +300,8 @@ We will use the C++ programming language for this project along with the Nvidia 
 <p>[WN15]: Wilson, Andrew Gordon, and Hannes Nickisch. "Kernel interpolation for scalable structured Gaussian processes (KISS-GP)." arXiv preprint arXiv:1503.01057 (2015).</p>
 
 <p>[DN15]: Deisenroth, Marc Peter, and Jun Wei Ng. "Distributed Gaussian Processes." arXiv preprint arXiv:1502.02843 (2015).</p>
+
+<p>[DA14]: Dong, Tingxing, et al. "A fast batched Cholesky factorization on a GPU." Parallel Processing (ICPP), 2014 43rd International Conference on. IEEE (2014)</p>
 
 <h3>
 <a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Support or Contact</h3>
