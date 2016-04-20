@@ -2,11 +2,12 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cmath>
-#include "matrixops.h"
+#include "../common/matrixops.h"
 #include "covkernel.h"
+#include "../common/cycleTimer.h"
 
-#define INPUT_FILE "input.txt"
-#define LABEL_FILE "label.txt"
+#define INPUT_FILE "sine_500_input.txt"
+#define LABEL_FILE "sine_500_labels.txt"
 int main()
 {
 	FILE *input_file, *label_file;
@@ -28,7 +29,7 @@ int main()
 		return 0;
 	}
 
-	// INput file has to have an additional line with n and d
+	// Input file has to have an additional line with n and d
 	fscanf(input_file, "%d%d", &n, &dim);
 
 	X = new double*[n];
@@ -47,41 +48,43 @@ int main()
 
 	double inithypervalues[] = {1.0, 1.0, 1.0};
 
-	int total = 200;
-	int numtrain = 100;
+	int total = 500;
+	int numtrain = 400;
 	int numtest = total - numtrain;
 	Covsum kernelobj(numtrain, dim);
 	kernelobj.set_loghyperparam(inithypervalues);
 	double ans = kernelobj.compute_loglikelihood(X, y);
 
-	double *grad = kernelobj.compute_gradient_loghyperparam(X, y);
+//	double *grad = kernelobj.compute_gradient_loghyperparam(X, y);
 
 	/*std::cout << grad[0] << std::endl;
 	std::cout << grad[1] << std::endl;
 	std::cout << grad[2] << std::endl;
 	std::cout << ans << std::endl;*/
 
-	std::cout << "Invoking solver" << std::endl;
+//	std::cout << "Invoking solver" << std::endl;
 
-	kernelobj.rprop_solve(X, y, true);
+//	kernelobj.rprop_solve(X, y, true);
 	
-	std::cout << "Done with solver" << std::endl;
+//	std::cout << "Done with solver" << std::endl;
 
-	double *new_hyper_params = kernelobj.get_loghyperparam();
+//	double *new_hyper_params = kernelobj.get_loghyperparam();
 
-	std::cout << "New hyper params: " << std::endl;
-	std::cout << new_hyper_params[0] << std::endl;
-	std::cout << new_hyper_params[1] << std::endl;
-	std::cout << new_hyper_params[2] << std::endl;
-
-	ans = kernelobj.compute_loglikelihood(X, y);
-
-	std::cout << "Final answer is : " << ans << std::endl;
+//	std::cout << "New hyper params: " << std::endl;
+//	std::cout << new_hyper_params[0] << std::endl;
+//	std::cout << new_hyper_params[1] << std::endl;
+//	std::cout << new_hyper_params[2] << std::endl;
+//
+//	ans = kernelobj.compute_loglikelihood(X, y);
+//
+//	std::cout << "Final answer is : " << ans << std::endl;
 	
 	// Just to check the testing phase
 	//double acthp[] = {0.8771, 0.0786, -2.9346};
 	//kernelobj.set_loghyperparam(acthp);
 
+
+	/*
 	printf("\n Now checking the values for the correct hyperparameters\n");
 	printf("The hyperparameters are :\n");
 	grad = kernelobj.get_loghyperparam();
@@ -93,12 +96,14 @@ int main()
 	double *tmeanvec = new double[numtest];
 	double *tvarvec = new double[numtest];
 	kernelobj.compute_test_means_and_variances(X, y, X + numtrain, tmeanvec, tvarvec, numtest);
-	
+	*/
+
 //	printf("Now printing the test means\n");
 //	print_vector(tmeanvec, numtest);
 //	printf("\n\n Now priting the covariances\n");
 //	print_vector(tvarvec, numtest);
 
+	/*
 	printf("Now printing the mean and var for the test set\n");
 	for (int i = 0; i < numtest; i++) {
 		printf("%lf %lf %lf\n", tmeanvec[i], tvarvec[i], y[numtest + i]);
@@ -108,6 +113,7 @@ int main()
 
 	double nlpp = kernelobj.get_negative_log_predprob(y + numtrain, tmeanvec, tvarvec, numtest);
 	std::cout << "NLPP = " << nlpp << "\n";
+	*/
 
 	delete tmeanvec;
 	delete tvarvec;
