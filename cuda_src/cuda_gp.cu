@@ -8,8 +8,8 @@
 #include <fstream>
 
 
-#define INPUT_FILE "../cpp_serial_gp/sine_1000_input.txt"
-#define LABEL_FILE "../cpp_serial_gp/sine_1000_labels.txt"
+#define INPUT_FILE "../cpp_serial_gp/input_10.txt"
+#define LABEL_FILE "../cpp_serial_gp/label_10.txt"
 
 #define filename "sym5000.txt"
 
@@ -19,6 +19,10 @@ double *mt;
 double *mt_transpose;
 
 double *orig_sym;
+
+//For gradient
+double *Ksqdist; // for squarred distances
+double *matforell; //for gradient of ell
 
 // K is the covariance matrix (will be updated depending upon hyper params
 double *K;
@@ -436,13 +440,14 @@ compute_K_train(double *M, double *K_output, double *loghyper, int n, int dim) {
 }
 
 __global__ void
-compute_squared_distances(double *M, double *compute_squared_distances_matrix, double c, int n, int dim) {
+compute_squared_distances(double *M, double *compute_squared_distances_matrix, double *loghyper, int n, int dim) {
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
 	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
 
 	if(i_index >= n * n) return;
 
 	int M_row, M_col;
+	double ell_sq = exp(loghyper[0] * 2); //l^2 after coverting back from the log form
 
 	M_row = i_index / n;
 	M_col = i_index % n;
@@ -459,7 +464,7 @@ compute_squared_distances(double *M, double *compute_squared_distances_matrix, d
 	for (int i = 0; i < dim; i++)
 		dot_product += (M[M_row * dim + i] - M[M_col * dim + i]) * (M[M_row * dim + i] - M[M_col * dim + i]);
 
-	compute_squared_distances_matrix[M_row * n + M_col] = compute_squared_distances_matrix[M_col * n + M_row] = dot_product / c;
+	compute_squared_distances_matrix[M_row * n + M_col] = compute_squared_distances_matrix[M_col * n + M_row] = dot_product / ell_sq;
 }
 
 void get_symmetric_matrix_1d(double *M, double **matrix1, double **matrix2, int dim) {
@@ -559,7 +564,7 @@ void read_input_and_copy_to_GPU()
 	cudacall(cudaMemcpy(loghyper, lh_host, sizeof(double) * 3 , cudaMemcpyHostToDevice));	
 }
 
-void setup_intermediate_data()
+void setup_loglikelihood_data()
 {
 	// this is the covariance matrix
 	cudacall(cudaMalloc(&K, sizeof(double) * N * N));
@@ -582,13 +587,24 @@ void setup_intermediate_data()
 
 void setup_cholesky(int, int);
 
+void setup_gradienthp_data(){
+	
+	// this is the squarred distance matrix
+	cudacall(cudaMalloc(&Ksqdist, sizeof(double) * N * N));
+	
+	cudacall(cudaMalloc(&matforell, sizeof(double) * N * N));
+
+}
+
 void setup()
 {
 	read_input_and_copy_to_GPU();
 
-	setup_intermediate_data();
+	setup_loglikelihood_data();
 
 	setup_cholesky(N, 2);
+	
+	setup_gradienthp_data();	
 }
 
 void setup_cholesky(int dim, int b)
@@ -915,11 +931,28 @@ void vector_Kinvy_using_cholesky()
 
 void compute_gradient_log_hyperparams()
 {
-	// compute_K_train(); // kernel - can reuse earlier matrix?
+	int threads_per_block, number_of_blocks;
 
-	// compute_squared_distance(); // kernel
+	// compute_K_train(); // kernel - can reuse earlier matrix?
+        threads_per_block = 512;
+        number_of_blocks = upit((N * N), threads_per_block);
+        compute_K_train<<<number_of_blocks, threads_per_block>>>(X, K, loghyper, N, DIM); // kernel
+        cudaThreadSynchronize();
+	
+	//compute_squared_distance(); // kernel
+        threads_per_block = 512;
+        number_of_blocks = upit((N * N), threads_per_block);
+   	compute_squared_distances<<<number_of_blocks, threads_per_block>>>(X,  Ksqdist,  loghyper,  N, DIM);
+   	cudaThreadSynchronize();
 
 	// elementwise_matrix_mult(); // kernel
+        threads_per_block = 512;
+        number_of_blocks = upit((N * N), threads_per_block);
+	elementwise_matrix_mult<<<threads_per_block, number_of_blocks>>>(K, Ksqdist, matforell, N, N);
+	cudaThreadSynchronize();
+	
+	//print_matrix_kernel<<<1,1>>>(matforell, N, N);
+      	//cudaThreadSynchronize();
 
 	// compute_K_inverse(); // set of kernels
 
@@ -1054,8 +1087,10 @@ void run_gp()
 {
 	setup();
 
-	double startime = CycleTimer::currentSeconds();
-	compute_log_likelihood();
-	double endtime = CycleTimer::currentSeconds();
-	printf("The time taken in loglikelihood computation = %lf\n", endtime - startime);
+//	double startime = CycleTimer::currentSeconds();
+//	compute_log_likelihood();
+//	double endtime = CycleTimer::currentSeconds();
+//	printf("The time taken in loglikelihood computation = %lf\n", endtime - startime);
+
+	compute_gradient_log_hyperparams();
 }
