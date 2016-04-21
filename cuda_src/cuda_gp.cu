@@ -13,7 +13,7 @@
 
 #define filename "sym5000.txt"
 
-#define BLOCK_SIZE 16
+#define BLOCK_SIZE 32
 
 bool correct = true;
 double *temp_m; 
@@ -484,25 +484,27 @@ __global__ void kernelSharedMemMatMult(double *A, int rowsA, int colsA,
 
 	for(int m = 0; m < (BLOCK_SIZE + colsA - 1)/BLOCK_SIZE; m++) 
 	{
-		/*if(m * BLOCK_SIZE + threadIdx.x < colsA && row < rowsA) 
-		{*/
+//		if(m * BLOCK_SIZE + threadIdx.x < colsA && row < rowsA) 
+//		{
 			M_shared[threadIdx.y][threadIdx.x] =  
 				A[row * colsA + m * BLOCK_SIZE + threadIdx.x];
-		/*}
-		else 
-		{
-			M_shared[threadIdx.y][threadIdx.x] = 0.0;
-		}*/
+//		}
+//		else 
+//		{
+//			printf("In else\n");
+//			M_shared[threadIdx.y][threadIdx.x] = 0.0;
+//		}
 
-		/*if(m * BLOCK_SIZE + threadIdx.y < rowsB && col < colsB) 
-		{*/
+//		if(m * BLOCK_SIZE + threadIdx.y < rowsB && col < colsB) 
+//		{
 			N_shared[threadIdx.y][threadIdx.x] =  
 				B[(m * BLOCK_SIZE + threadIdx.y) * colsB + col];
-		/*} 
-		else 
-		{
-			N_shared[threadIdx.y][threadIdx.x] = 0.0;
-		}*/
+//		} 
+//		else 
+//		{
+//			printf("In else\n");
+//			N_shared[threadIdx.y][threadIdx.x] = 0.0;
+//		}
 		__syncthreads();
 
 
@@ -513,11 +515,11 @@ __global__ void kernelSharedMemMatMult(double *A, int rowsA, int colsA,
 		__syncthreads();
 	}
 
-	/* if(row < rowsA && col < colsB) 
-	{*/
+//	if(row < rowsA && col < colsB) 
+//	{
 		C[((blockIdx.y * blockDim.y + threadIdx.y) * colsB) + 
 			(blockIdx.x * blockDim.x) + threadIdx.x] = tmp;
-	//}
+//	}
 }
 
 
@@ -1141,14 +1143,14 @@ cudaThreadSynchronize();
 
 void run_gp()
 {
-	setup();
+	// setup();
 
 //	double startime = CycleTimer::currentSeconds();
 //	compute_log_likelihood();
 //	double endtime = CycleTimer::currentSeconds();
 //	printf("The time taken in loglikelihood computation = %lf\n", endtime - startime);
 
-	compute_gradient_log_hyperparams();
+	// compute_gradient_log_hyperparams();
 }
 
 void test_matrix_mult()
@@ -1156,8 +1158,8 @@ void test_matrix_mult()
 	double *M1_host, *M2_host, *M3_host, *M3_host_noshare, *M3_host_share, *M1, *M2, *M3_noshare, *M3_share;
 	int rows1, cols1, rows2, cols2, rows3, cols3;
 
-	rows1 = cols1 = rows2 = cols2 = 512;
-	rows3 = cols3 = 512;
+	rows1 = cols1 = rows2 = cols2 = 4096;
+	rows3 = cols3 = 4096;
 
 	M1_host = new double[rows1 * cols1];
 	M2_host = new double[rows2 * cols2];
@@ -1185,7 +1187,7 @@ void test_matrix_mult()
 	}
 
 	double startime1 = CycleTimer::currentSeconds();	
-	/* for (int i = 0; i < rows1; i++)
+	for (int i = 0; i < rows1; i++)
 	{
 		for (int j = 0; j < cols2; j++)
 		{
@@ -1194,7 +1196,7 @@ void test_matrix_mult()
 				sum += M1_host[i * cols1 + k] * M2_host[k * cols2 + j];
 			M3_host[i * cols3 + j] = sum;
 		}
-	} */
+	}
 	printf("M3 host done\n");
 	double endtime1 = CycleTimer::currentSeconds();
 
@@ -1231,7 +1233,7 @@ void test_matrix_mult()
 	double startime2 = CycleTimer::currentSeconds();	
 	matrixmultiply_noshare<<<gridDim, blockDim>>>(M1, rows1, cols1, M2, rows2, cols2, M3_noshare);
 	cudaThreadSynchronize();
-	double endtime2 = CycleTimer::currentSeconds();	
+	double endtime2 = CycleTimer::currentSeconds();
 	printf("No share done\n");
 
 	cudacall(cudaMemcpy(M3_host_noshare, M3_noshare, sizeof(double) * rows3 * cols3, cudaMemcpyDeviceToHost));	
@@ -1247,8 +1249,8 @@ void test_matrix_mult()
 
 	dim3 blockDim2(BLOCK_SIZE, BLOCK_SIZE);
     
-        dim3 gridDim2((cols2 + blockDim.x - 1) / blockDim.x, 
-	                 (rows1 + blockDim.y - 1) / blockDim.y);
+        dim3 gridDim2((cols2 + blockDim2.x - 1) / blockDim2.x, 
+	                 (rows1 + blockDim2.y - 1) / blockDim2.y);
 
 	double startime3 = CycleTimer::currentSeconds();	
 	kernelSharedMemMatMult<<<gridDim2, blockDim2>>>(M1, rows1, cols1, M2, rows2, cols2, M3_share);

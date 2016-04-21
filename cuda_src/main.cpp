@@ -13,6 +13,8 @@ int main()
 
 	// run_kernel();
 	//
-	run_gp();
+	// run_gp();
+	test_matrix_mult();
+	// run_gp();
 	return 0;
 }
