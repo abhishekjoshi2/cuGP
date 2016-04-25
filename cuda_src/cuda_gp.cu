@@ -346,12 +346,13 @@ generic_matrix_transpose(double *input, double *output, int d1, int d2){
 __global__ void matrixmultiply_noshare(double *a, int rowsA, int colsA, double *b, int rowsB, int colsB, double *c)
 {
 
-	long long int col = blockIdx.y * blockDim.y + threadIdx.y;
-	long long int row = blockIdx.x * blockDim.x + threadIdx.x;
+	long long int row = blockIdx.y * blockDim.y + threadIdx.y;
+	long long int col = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if (row >= rowsA || col >= colsB)
 		return;
 
+	printf("row: %d, col: %d\n", row, col);
 	double sum = 0.0;
 	for (int i = 0; i < colsA; i++)
 	{
@@ -484,27 +485,25 @@ __global__ void kernelSharedMemMatMult(double *A, int rowsA, int colsA,
 
 	for(int m = 0; m < (BLOCK_SIZE + colsA - 1)/BLOCK_SIZE; m++) 
 	{
-//		if(m * BLOCK_SIZE + threadIdx.x < colsA && row < rowsA) 
-//		{
+		if(m * BLOCK_SIZE + threadIdx.x < colsA && row < rowsA) 
+		{
 			M_shared[threadIdx.y][threadIdx.x] =  
 				A[row * colsA + m * BLOCK_SIZE + threadIdx.x];
-//		}
-//		else 
-//		{
-//			printf("In else\n");
-//			M_shared[threadIdx.y][threadIdx.x] = 0.0;
-//		}
+		}
+		else 
+		{
+			M_shared[threadIdx.y][threadIdx.x] = 0.0;
+		}
 
-//		if(m * BLOCK_SIZE + threadIdx.y < rowsB && col < colsB) 
-//		{
+		if(m * BLOCK_SIZE + threadIdx.y < rowsB && col < colsB) 
+		{
 			N_shared[threadIdx.y][threadIdx.x] =  
 				B[(m * BLOCK_SIZE + threadIdx.y) * colsB + col];
-//		} 
-//		else 
-//		{
-//			printf("In else\n");
-//			N_shared[threadIdx.y][threadIdx.x] = 0.0;
-//		}
+		} 
+		else 
+		{
+			N_shared[threadIdx.y][threadIdx.x] = 0.0;
+		}
 		__syncthreads();
 
 
@@ -515,11 +514,11 @@ __global__ void kernelSharedMemMatMult(double *A, int rowsA, int colsA,
 		__syncthreads();
 	}
 
-//	if(row < rowsA && col < colsB) 
-//	{
+	if(row < rowsA && col < colsB) 
+	{
 		C[((blockIdx.y * blockDim.y + threadIdx.y) * colsB) + 
 			(blockIdx.x * blockDim.x) + threadIdx.x] = tmp;
-//	}
+	}
 }
 
 
@@ -1158,8 +1157,12 @@ void test_matrix_mult()
 	double *M1_host, *M2_host, *M3_host, *M3_host_noshare, *M3_host_share, *M1, *M2, *M3_noshare, *M3_share;
 	int rows1, cols1, rows2, cols2, rows3, cols3;
 
-	rows1 = cols1 = rows2 = cols2 = 4096;
-	rows3 = cols3 = 4096;
+	rows1 = 12;
+	cols1 = 46;
+	rows2 = 46;
+	cols2 = 19;
+	rows3 = 12;
+	cols3 = 19;
 
 	M1_host = new double[rows1 * cols1];
 	M2_host = new double[rows2 * cols2];
@@ -1261,19 +1264,28 @@ void test_matrix_mult()
 	cudaThreadSynchronize();
 
 	printf("Share done\n");
-	/*printf("Matrix3 Share:\n");
-	for (int i = 0; i < rows3; i++)
+	printf("Matrix3 Share:\n");
+	/* for (int i = 0; i < rows3; i++)
 	{
 		for (int j = 0; j < cols3; j++)
 			printf("%lf ", M3_host_share[i * cols3 + j]);
 		printf("\n");
-	}*/
+	} */
 
 	for (int i = 0; i < rows3; i++)
 	{
 		for (int j = 0; j < cols3; j++)
-			//if (M3_host_share[i * cols3 + j] != M3_host[i * cols3 + j] || M3_host_noshare[i * cols3 + j] != M3_host[i * cols3 + j])
-			if (M3_host_share[i * cols3 + j] != M3_host_noshare[i * cols3 + j])//[i * cols3 + j] || M3_host_noshare[i * cols3 + j] != M3_host[i * cols3 + j])
+			if (M3_host[i * cols3 + j] != M3_host_noshare[i * cols3 + j])
+				correct = false;
+	}
+
+	printf("%s\n", correct?"CORRECT":"FALSE");
+	correct = true;
+	for (int i = 0; i < rows3; i++)
+	{
+		for (int j = 0; j < cols3; j++)
+		//	if (M3_host_share[i * cols3 + j] != M3_host[i * cols3 + j] || M3_host_noshare[i * cols3 + j] != M3_host[i * cols3 + j])
+			if (M3_host[i * cols3 + j] != M3_host_share[i * cols3 + j])
 				correct = false;
 	}
 
