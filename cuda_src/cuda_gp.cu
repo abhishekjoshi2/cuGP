@@ -6,7 +6,8 @@
 #include <cstdlib>
 #include "../common/cycleTimer.h"
 #include <fstream>
-
+#include <thrust/inner_product.h>
+#include <thrust/device_ptr.h>
 
 #define INPUT_FILE "../cpp_serial_gp/input_10.txt"
 #define LABEL_FILE "../cpp_serial_gp/label_10.txt"
@@ -26,6 +27,12 @@ double *orig_sym;
 //For gradient
 double *Ksqdist; // for squarred distances
 double *matforell; //for gradient of ell
+double *tempfsforkinv; //matrix for storing forward substitution result
+double *Kinv; //inverse of K matrix
+double *Kintact; //want to keep it
+double *temp1dvec; //for storing Kinv*y
+double *tempWmatrix; // (hard to explain, basically a intermediate step)
+double *tempdiagonal; //for storing diagonal elements of tempWmatrix: NOTE: CAN WE REUSE temp1dvec INSTEAD??? CHECK PLEASE
 
 // K is the covariance matrix (will be updated depending upon hyper params
 double *K;
@@ -44,7 +51,8 @@ double *ll_dotprod; // for saving the result of the dot product in compute_likel
 double *loghyper;
 double *log_det; // log of determinant
 
-double *L_transpose;
+
+double *identity; // for gradient of hp
 
 // N is the number of training samples, and DIM is the number of parameters
 int N, DIM;
@@ -76,6 +84,44 @@ __global__ void vector_dot_product(double *x1, double *x2, double *ans, int N){
 	*ans = val;
 }
 
+__global__ void copy_Kmatrix(double *input, double *output, int size){
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+	if (i_index >= size * size)
+		return;
+	output[i_index] = input[i_index];
+}
+__global__ void gather_diagonal(double *inputMat, double *diagvec, int size){
+	
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+	if (i_index >= size)
+		return;
+	diagvec[i_index] = inputMat[i_index * size + i_index];
+
+}
+__global__ void make_identity(double *identity, int N){
+
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+	if (i_index >= N)
+		return;
+	identity[i_index * N + i_index] = 1.0;
+}
+
+__global__ void outerprod_and_subtract(double *Mat1, double *vec, double *outputMat, int size){
+	
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+	if (i_index >= size * size)
+		return;
+	
+	int i = i_index / size;
+	int j = i_index % size;
+	
+	outputMat[i*size + j] = Mat1[i*size + j] - vec[i]*vec[j];
+
+}
 __global__ void check_forward_sub_vector(double *L, double *x, double *b, int N){
 
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
@@ -166,6 +212,40 @@ __global__ void backward_substitution_vector(double *lowert_mat, double *b, doub
 		output[i] /= lowert_mat[i*N + i];
 	}
 }
+
+// We want: A.transpose() * output = B
+// NOTE: WE ARE NOT PASSING AN UPPER TRIANGULAR MATRIX (which would have been the case in a general implementation)
+__global__ void backward_substitution_matrix(double *A, double *B, double *output, int size){
+
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+	if (i_index >= size)
+		return;
+
+	 /*
+	 for (int k = 0; k < DIM; k++) {
+                for (int i = DIM - 1; i >= 0 ; i--) {
+                        output[i][k] = B[i][k];
+                        for (int j = i + 1; j < DIM; j++) {
+                                output[i][k] = output[i][k] - A[i][j] * output[j][k];
+                        }
+                        output[i][k] = output[i][k] / A[i][i];
+                }
+        }
+	*/
+	int k = i_index;
+
+	for(int i = size - 1; i >= 0 ; i--) {
+		output[i*size + k] = B[i*size + k];
+		for(int j = i + 1; j < size; j++) {
+			// This is when A was proper: output[i*size + k] -= A[i*size + j] * output[j*size + k];  
+			// But we have to take A.transpose(), so we swap i,j 
+			output[i*size + k] -= A[j*size + i] * output[j*size + k];  
+		}
+		output[i*size + k] /= A[i*size + i]; //No need to change here, as only diagonal elements are accessed
+	}
+}
+
 __global__ void set_upper_zero(double *M, int dim){
 
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
@@ -293,6 +373,42 @@ forward_substitution_rectangular_a21(double *M, double *a11, double *a21_transpo
 	}
 }
 
+// For A * C = B, remember we are solving for C, so the third argument 
+// 	should be the output argument
+__global__ void
+forward_substitution_matrix(double *A, double *B, double *output, int size)
+{
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	if (i_index >= size)
+		return;
+
+	/* for (int k = 0; k < dim2; k++) { // this is looping over columns of B matrix
+	   	for (int i = 0; i < dim1; i++) {
+	   		output[i][k] = B[i][k];
+	   		for (int j = 0; j < i; j++) {
+	   			output[i][k] = output[i][k] - A[i][j] * output[j][k];
+	   		}
+	   		output[i][k] = output[i][k] / A[i][i];
+	   	}
+	   } */
+
+	int k = i_index;
+
+	// TODO experiment with #pragma unroll
+	for (int i = 0; i < size; i++)
+	{
+		output[i * size + k] = B[i * size + k];
+		for (int j = 0; j < i; j++)
+		{
+			output[i * size + k] -= A[i * size + j] * output[j * size + k];
+		}
+		output[i * size + k] /= A[i * size + i];
+	}
+}
+
+
 __global__ void
 check_l21_kernel(double *M1, double *M2, double* targetoutput, int d1, int d2, int d3){
 
@@ -352,7 +468,7 @@ __global__ void matrixmultiply_noshare(double *a, int rowsA, int colsA, double *
 	if (row >= rowsA || col >= colsB)
 		return;
 
-	printf("row: %d, col: %d\n", row, col);
+	//printf("row: %d, col: %d\n", row, col);
 	double sum = 0.0;
 	for (int i = 0; i < colsA; i++)
 	{
@@ -443,6 +559,20 @@ compute_K_train(double *M, double *K_output, double *loghyper, int n, int dim) {
 	K_output[M_row * n + M_col] = K_output[M_col * n + M_row] = dot_product;
 }
 
+__global__ void matrix_vector_multiply(double *M, double *x, double *output, int size) {
+	
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	if (i_index >= size) return;
+	
+	double ans = 0.0;
+	for(int i = 0; i < size; i++){
+		ans += M[i_index * size + i] * x[i];
+	}
+	output[i_index] = ans;
+}
+
 __global__ void
 compute_squared_distances(double *M, double *compute_squared_distances_matrix, double *loghyper, int n, int dim) {
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
@@ -521,7 +651,9 @@ __global__ void kernelSharedMemMatMult(double *A, int rowsA, int colsA,
 	}
 }
 
-
+__inline__ int upit(int x, int y) {
+	return (x + y - 1) / y;
+}
 
 
 void get_symmetric_matrix_1d(double *M, double **matrix1, double **matrix2, int dim) {
@@ -632,9 +764,6 @@ void setup_loglikelihood_data()
 	// this is for the dot product
 	cudacall(cudaMalloc(&ll_dotprod, sizeof(double)));
 	
-	// this is the K's cholesky's transpose
-	cudacall(cudaMalloc(&L_transpose, sizeof(double) * N * N));
-	
 	cudacall(cudaMalloc(&temp_fs, sizeof(double) * N));
 	cudacall(cudaMalloc(&temp_bs, sizeof(double) * N));
 		
@@ -645,12 +774,37 @@ void setup_loglikelihood_data()
 void setup_cholesky(int, int);
 
 void setup_gradienthp_data(){
+	int threads_per_block, number_of_blocks;
 	
 	// this is the squarred distance matrix
 	cudacall(cudaMalloc(&Ksqdist, sizeof(double) * N * N));
 	
 	cudacall(cudaMalloc(&matforell, sizeof(double) * N * N));
 
+	// CHECK: if we can get away without this
+	cudacall(cudaMalloc(&identity, sizeof(double) * N *N));
+	cudacall(cudaMemset((void *)identity, 0.0, sizeof(double)));
+
+	threads_per_block = 512;
+        number_of_blocks = upit(N , threads_per_block);
+	make_identity<<<number_of_blocks, threads_per_block>>>(identity, N);  	
+
+	//matrix for storing forward substitution result
+	cudacall(cudaMalloc(&tempfsforkinv, sizeof(double) * N *N));
+		
+	//matrix for storing K.inverse()
+	cudacall(cudaMalloc(&Kinv, sizeof(double) * N * N));
+	
+	// Kintact = K (From compute_K_train)
+	cudacall(cudaMalloc(&Kintact, sizeof(double) * N * N));
+	
+	cudacall(cudaMalloc(&temp1dvec, sizeof(double) * N));
+	
+	cudacall(cudaMalloc(&tempdiagonal, sizeof(double) * N));
+
+	cudacall(cudaMalloc(&tempWmatrix, sizeof(double) * N * N));
+
+	
 }
 
 void setup()
@@ -750,10 +904,6 @@ void setup_cholesky(int dim, int b)
 	printf("The flag array malloc failed.\n");
 
 	cudaMemset((void *)flagarray, 0, sizeof(int) * numCircles); */
-}
-
-__inline__ int upit(int x, int y) {
-	return (x + y - 1) / y;
 }
 
 
@@ -964,17 +1114,24 @@ void compute_log_likelihood()
 
 void compute_K_inverse()
 {
-	// make_identity(); // kernel, or do once, and store
+	int threads_per_block, number_of_blocks;
+	
+	// make_identity(); -> did this in setup "identity" is a double *
 
-	// get_cholesky(); // set of kernels
+	get_cholesky(K, N); //Set of kernels, the answer (a lower triangular matrix) is stored 
 
-	// matrix_forward_substitution(); // kernel
+	threads_per_block = 512;
+	number_of_blocks = upit(N, threads_per_block);
+	forward_substitution_matrix<<<number_of_blocks, threads_per_block>>>(K, identity, tempfsforkinv, N); // kernel - need N threads
+	
+	// matrix_transpose(); // kernel - Not NEEDED
 
-	// matrix_transpose(); // kernel
-
-	// matrix_backward_substitution(); // kernel
+	// matrix_backward_substitution();
+	backward_substitution_matrix<<<number_of_blocks, threads_per_block>>>(K, tempfsforkinv, Kinv, N); // kernel - need N threads
+	
 }
 
+/* We don't need this!
 void vector_Kinvy_using_cholesky()
 {
 	// get_cholesky(); // set of kernels
@@ -984,7 +1141,7 @@ void vector_Kinvy_using_cholesky()
 	// forward_solve_vector();
 
 	// backward_solve_vector();
-}
+}*/
 
 void compute_gradient_log_hyperparams()
 {
@@ -996,6 +1153,10 @@ void compute_gradient_log_hyperparams()
         compute_K_train<<<number_of_blocks, threads_per_block>>>(X, K, loghyper, N, DIM); // kernel
         cudaThreadSynchronize();
 	
+	copy_Kmatrix<<<number_of_blocks, threads_per_block>>>(K, Kintact, N);
+        cudaThreadSynchronize();
+		
+	
 	//compute_squared_distance(); // kernel
         threads_per_block = 512;
         number_of_blocks = upit((N * N), threads_per_block);
@@ -1005,21 +1166,45 @@ void compute_gradient_log_hyperparams()
 	// elementwise_matrix_mult(); // kernel
         threads_per_block = 512;
         number_of_blocks = upit((N * N), threads_per_block);
-	elementwise_matrix_mult<<<threads_per_block, number_of_blocks>>>(K, Ksqdist, matforell, N, N);
+	elementwise_matrix_mult<<<number_of_blocks, threads_per_block>>>(K, Ksqdist, matforell, N, N);
 	cudaThreadSynchronize();
 	
 	//print_matrix_kernel<<<1,1>>>(matforell, N, N);
       	//cudaThreadSynchronize();
 
-	// compute_K_inverse(); // set of kernels
+	printf("Yahi hai Kinv\n");
+	compute_K_inverse(); // set of kernels
+	print_matrix_kernel<<<1,1>>>(Kinv, N, N);
+      	cudaThreadSynchronize();
 
 	// vector_Kinvy_using_cholesky(); // set of kernels
+	// We don't need this: we already have Kinv, so we just need to multiply Kinv and y
+        threads_per_block = 512;
+        number_of_blocks = upit( N, threads_per_block);
+	matrix_vector_multiply<<<number_of_blocks, threads_per_block>>>(Kinv, labels, temp1dvec, N);
+      	cudaThreadSynchronize();
 
 	// get_outer_product(); // kernel
-
 	// subtract_matrices(); // kernel
+	// -- Combining the above 2 in a single kernel call
+        threads_per_block = 512;
+        number_of_blocks = upit( N * N, threads_per_block);
+	outerprod_and_subtract<<<number_of_blocks, threads_per_block>>>(Kinv, temp1dvec, tempWmatrix, N);
+      	cudaThreadSynchronize();
 
-	// update_log_hyperparams(); // kernel
+        threads_per_block = 512;
+        number_of_blocks = upit( N, threads_per_block);
+	gather_diagonal<<<number_of_blocks, threads_per_block>>>(tempWmatrix, tempdiagonal, N);	
+      	cudaThreadSynchronize();
+	
+	// Now update_log_hyperparams(); 
+	thrust::device_ptr<double> td1 = thrust::device_pointer_cast(matforell);
+	thrust::device_ptr<double> td2 = thrust::device_pointer_cast(Kinv);
+	thrust::device_ptr<double> td3 = thrust::device_pointer_cast();
+
+	//double dekho = thrust::inner_product(matforell, matforell + N, Kinv, 0.0);
+	double dekho = thrust::inner_product(td1, td1 + N, td3, 0.0);
+	printf("ans hai yeh: %lf\n\n", dekho);
 }
 
 /* void testing_kernels() {
@@ -1142,14 +1327,14 @@ cudaThreadSynchronize();
 
 void run_gp()
 {
-	// setup();
+	 setup();
 
-//	double startime = CycleTimer::currentSeconds();
-//	compute_log_likelihood();
-//	double endtime = CycleTimer::currentSeconds();
+	double startime = CycleTimer::currentSeconds();
+	compute_log_likelihood();
+	double endtime = CycleTimer::currentSeconds();
 //	printf("The time taken in loglikelihood computation = %lf\n", endtime - startime);
 
-	// compute_gradient_log_hyperparams();
+	compute_gradient_log_hyperparams();
 }
 
 void test_matrix_mult()
