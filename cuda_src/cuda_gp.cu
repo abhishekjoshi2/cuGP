@@ -8,6 +8,7 @@
 #include <fstream>
 #include <thrust/inner_product.h>
 #include <thrust/device_ptr.h>
+#include "./Eigen/Dense"
 
 #define INPUT_FILE "../cpp_serial_gp/input.txt"
 #define LABEL_FILE "../cpp_serial_gp/label.txt"
@@ -23,6 +24,10 @@ double *mt;
 double *mt_transpose;
 
 double *orig_sym;
+
+// HOST gloval variables
+double *lh_host; //Remember to free during cleanup
+
 
 //For gradient
 double *Ksqdist; // for squarred distances
@@ -50,8 +55,6 @@ double *ll_dotprod; // for saving the result of the dot product in compute_likel
  
 double *loghyper;
 double *log_det; // log of determinant
-
-
 double *identity; // for gradient of hp
 
 // N is the number of training samples, and DIM is the number of parameters
@@ -719,7 +722,7 @@ void read_input_and_copy_to_GPU()
 	FILE *input_file, *label_file;
 	double *X_host; //input dataset in host!
 	double *labels_host; //labels in host!
-	double *lh_host = new double[3];
+	lh_host = new double[3];
 
 	input_file = fopen(INPUT_FILE, "r");
 	label_file = fopen(LABEL_FILE, "r");
@@ -1143,12 +1146,10 @@ void vector_Kinvy_using_cholesky()
 	// backward_solve_vector();
 }*/
 
-void compute_gradient_log_hyperparams()
+void compute_gradient_log_hyperparams(double *localhp_grad)
 {
 	int threads_per_block, number_of_blocks;
-	double *localhp_grad = new double[3];
-	cudacall(cudaMemcpy(localhp_grad, loghyper,  sizeof(double) * 3, cudaMemcpyDeviceToHost));
-	double noise_var = exp(localhp_grad[2] * 2); //noise variance
+	double noise_var = exp(lh_host[2] * 2); //noise variance
 
 	// compute_K_train(); // kernel - can reuse earlier matrix?
         threads_per_block = 512;
@@ -1179,8 +1180,8 @@ void compute_gradient_log_hyperparams()
 
 	printf("Yahi hai Kinv\n");
 	compute_K_inverse(); // set of kernels
-	print_matrix_kernel<<<1,1>>>(Kinv, N, N);
-      	cudaThreadSynchronize();
+	//print_matrix_kernel<<<1,1>>>(Kinv, N, N);
+      	//cudaThreadSynchronize();
 
 	// vector_Kinvy_using_cholesky(); // set of kernels
 	// We don't need this: we already have Kinv, so we just need to multiply Kinv and y
@@ -1349,14 +1350,17 @@ cudaThreadSynchronize();
 
 void run_gp()
 {
-	 setup();
+	// setup(); moving setup to main file
 
 	double startime = CycleTimer::currentSeconds();
 	compute_log_likelihood();
 	double endtime = CycleTimer::currentSeconds();
-//	printf("The time taken in loglikelihood computation = %lf\n", endtime - startime);
+	printf("The time taken in loglikelihood computation = %lf\n", endtime - startime);
 
-	compute_gradient_log_hyperparams();
+	Eigen::VectorXd params(3);
+
+	double *localhp_grad = new double[3];
+	compute_gradient_log_hyperparams(localhp_grad);
 }
 
 void test_matrix_mult()
@@ -1499,3 +1503,22 @@ void test_matrix_mult()
 	printf("%s\n", correct?"CORRECT":"FALSE");
 	printf("CPU: %lf\nGPU NO SHARE: %lf\nGPU SHARE: %lf\n", endtime1 - startime1, endtime2 - startime2, endtime3 - startime3);
 }
+
+double *get_loghyperparam(){
+	cudacall(cudaMemcpy(lh_host, loghyper,  sizeof(double) * 3, cudaMemcpyDeviceToHost));	
+	return  lh_host;
+}
+
+void set_loghyper_eigen(Eigen::VectorXd initval) {
+        for(int i = 0 ; i < 3; i++) { 
+                lh_host[i] = initval[i];
+        }
+	printf("Dekho bhai naya value AYAA\n\n");
+	for(int i = 0 ; i < 3 ; i++){
+		printf("%lf\n", lh_host[i]);
+	}
+	//Now dump it back to loghyper
+	cudacall(cudaMemcpy(loghyper, lh_host, sizeof(double) * 3 , cudaMemcpyHostToDevice)); 
+}
+
+
