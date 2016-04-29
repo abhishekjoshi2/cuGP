@@ -9,8 +9,8 @@
 #include <thrust/inner_product.h>
 #include <thrust/device_ptr.h>
 
-#define INPUT_FILE "../cpp_serial_gp/input_10.txt"
-#define LABEL_FILE "../cpp_serial_gp/label_10.txt"
+#define INPUT_FILE "../cpp_serial_gp/input.txt"
+#define LABEL_FILE "../cpp_serial_gp/label.txt"
 
 #define filename "sym5000.txt"
 
@@ -1146,6 +1146,9 @@ void vector_Kinvy_using_cholesky()
 void compute_gradient_log_hyperparams()
 {
 	int threads_per_block, number_of_blocks;
+	double *localhp_grad = new double[3];
+	cudacall(cudaMemcpy(localhp_grad, loghyper,  sizeof(double) * 3, cudaMemcpyDeviceToHost));
+	double noise_var = exp(localhp_grad[2] * 2); //noise variance
 
 	// compute_K_train(); // kernel - can reuse earlier matrix?
         threads_per_block = 512;
@@ -1153,6 +1156,8 @@ void compute_gradient_log_hyperparams()
         compute_K_train<<<number_of_blocks, threads_per_block>>>(X, K, loghyper, N, DIM); // kernel
         cudaThreadSynchronize();
 	
+        threads_per_block = 512;
+        number_of_blocks = upit((N * N), threads_per_block);
 	copy_Kmatrix<<<number_of_blocks, threads_per_block>>>(K, Kintact, N);
         cudaThreadSynchronize();
 		
@@ -1198,14 +1203,31 @@ void compute_gradient_log_hyperparams()
       	cudaThreadSynchronize();
 	
 	// Now update_log_hyperparams(); 
-	thrust::device_ptr<double> td1 = thrust::device_pointer_cast(matforell);
-	thrust::device_ptr<double> td2 = thrust::device_pointer_cast(Kinv);
-	thrust::device_ptr<double> td3 = thrust::device_pointer_cast();
+	thrust::device_ptr<double> td1 = thrust::device_pointer_cast(tempWmatrix);
+	thrust::device_ptr<double> td2 = thrust::device_pointer_cast(matforell);
+	thrust::device_ptr<double> td3 = thrust::device_pointer_cast(Kintact);
 
-	//double dekho = thrust::inner_product(matforell, matforell + N, Kinv, 0.0);
-	double dekho = thrust::inner_product(td1, td1 + N, td3, 0.0);
-	printf("ans hai yeh: %lf\n\n", dekho);
+	thrust::device_ptr<double> td4 = thrust::device_pointer_cast(tempdiagonal);
+
+	double para1 = 0.0, para2 = 0.0, para3 = 0.0;
+
+	para1 = thrust::inner_product(td1, td1 + N*N, td2, 0.0);
+	para2 = thrust::inner_product(td1, td1 + N*N, td3, 0.0);
+	para2 = para2 * 2;
+	printf("Why yaar? para2 = %lf\n", para2);
+	double common_val = thrust::reduce(td4, td4 + N);
+	common_val *= noise_var * 2;
+
+	para3 = common_val;
+	para2 = para2 - common_val;
+
+	localhp_grad[0] = para1/2.0;
+	localhp_grad[1] = para2/2.0;
+	localhp_grad[2] = para3/2.0;
+	printf("Dekho bhai %lf\n%lf\n%lf\n", localhp_grad[0], localhp_grad[1], localhp_grad[2]);
+
 }
+
 
 /* void testing_kernels() {
    printf("Okay called at least\n");
