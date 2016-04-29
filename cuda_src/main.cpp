@@ -23,7 +23,7 @@ void cg_solve(){
 	const double RATIO = 10;	// maximum allowed slope ratio
 	const double SIG = 0.1, RHO = SIG/2;
 
-	int n = 5;
+	int n = 100;
 	bool ls_failed = false;									//prev line-search failed
 
 	double f0 = -1.0 * compute_log_likelihood();
@@ -81,7 +81,7 @@ void cg_solve(){
 				i++;
 
 				printkeliye = X + s*x3;
-				printf("\n\n PLEASE-SEE : %lf, %lf, %lf\n\n", printkeliye[0], printkeliye[1], printkeliye[2]);
+				printf("\n\n PLEASE-SEE 1 : %lf, %lf, %lf\n\n", printkeliye[0], printkeliye[1], printkeliye[2]);
 				set_loghyper_eigen((X+s*x3));
 				f3 = -1.0 * compute_log_likelihood();
 				compute_gradient_log_hyperparams(df3_temp);
@@ -165,7 +165,7 @@ void cg_solve(){
 			x3 = std::max(std::min(x3, x4-INT*(x4-x2)), x2+INT*(x4-x2));
 
 				printkeliye = X + s*x3;
-				printf("\n\n PLEASE-SEE : %lf, %lf, %lf\n\n", printkeliye[0], printkeliye[1], printkeliye[2]);
+				printf("\n\n PLEASE-SEE  2: %lf, %lf, %lf\n\n", printkeliye[0], printkeliye[1], printkeliye[2]);
 			set_loghyper_eigen((X+s*x3));
 			f3 = -1.0 * compute_log_likelihood();
 			compute_gradient_log_hyperparams(df3_temp); 
@@ -224,8 +224,8 @@ void cg_solve(){
 
 
 	}
-	printkeliye = X + s*x3;
-	printf("\n\n PLEASE-SEE : %lf, %lf, %lf\n\n", printkeliye[0], printkeliye[1], printkeliye[2]);
+	printkeliye = X;
+	printf("\n\n PLEASE-SEE  3: %lf, %lf, %lf\n\n", printkeliye[0], printkeliye[1], printkeliye[2]);
 	set_loghyper_eigen(X);
 }
 

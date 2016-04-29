@@ -71,6 +71,8 @@ int N, DIM;
 	}                                                                                                                       \
 } \
 
+double *get_loghyperparam();
+
 //FIXME: can do a shared memory reduce
 __global__ void vector_dot_product(double *x1, double *x2, double *ans, int N){
 
@@ -1095,7 +1097,7 @@ double evaluate_and_get_log_likelihood(){
 	cudacall(cudaMemcpy(&term2_ll, log_det ,  sizeof(double), cudaMemcpyDeviceToHost));
 	return -0.5 * ( term1_ll + term2_ll + N * 1.83787);
 }
-void compute_log_likelihood()
+double compute_log_likelihood()
 {
 	int threads_per_block, number_of_blocks;
 
@@ -1112,7 +1114,7 @@ void compute_log_likelihood()
 
 	double llans = evaluate_and_get_log_likelihood(); // kernel, or can be clubbed somewhere
 	printf("The value of loglikelihood = %lf\n", llans);
- 
+	return llans; 
 }
 
 void compute_K_inverse()
@@ -1149,6 +1151,8 @@ void vector_Kinvy_using_cholesky()
 void compute_gradient_log_hyperparams(double *localhp_grad)
 {
 	int threads_per_block, number_of_blocks;
+
+	double *tt = get_loghyperparam(); //just for a MEMCPY from device to host
 	double noise_var = exp(lh_host[2] * 2); //noise variance
 
 	// compute_K_train(); // kernel - can reuse earlier matrix?
@@ -1353,7 +1357,7 @@ void run_gp()
 	// setup(); moving setup to main file
 
 	double startime = CycleTimer::currentSeconds();
-	compute_log_likelihood();
+	double ans  = compute_log_likelihood();
 	double endtime = CycleTimer::currentSeconds();
 	printf("The time taken in loglikelihood computation = %lf\n", endtime - startime);
 
