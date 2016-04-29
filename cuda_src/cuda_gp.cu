@@ -1368,12 +1368,12 @@ void test_matrix_mult()
 	double *M1_host, *M2_host, *M3_host, *M3_host_noshare, *M3_host_share, *M1, *M2, *M3_noshare, *M3_share;
 	int rows1, cols1, rows2, cols2, rows3, cols3;
 
-	rows1 = 12;
-	cols1 = 46;
-	rows2 = 46;
-	cols2 = 19;
-	rows3 = 12;
-	cols3 = 19;
+	rows1 = 4096;
+	cols1 = 4096;
+	rows2 = 4096;
+	cols2 = 4096;
+	rows3 = 4096;
+	cols3 = 4096;
 
 	M1_host = new double[rows1 * cols1];
 	M2_host = new double[rows2 * cols2];
@@ -1414,7 +1414,7 @@ void test_matrix_mult()
 	printf("M3 host done\n");
 	double endtime1 = CycleTimer::currentSeconds();
 
-	/*printf("Matrix1:\n");
+	/* printf("Matrix1:\n");
 	for (int i = 0; i < rows1; i++)
 	{
 		for (int j = 0; j < cols1; j++)
@@ -1436,7 +1436,7 @@ void test_matrix_mult()
 		for (int j = 0; j < cols3; j++)
 			printf("%lf ", M3_host[i * cols3 + j]);
 		printf("\n");
-	}*/
+	} */
 
 	cudacall(cudaMemcpy(M1, M1_host, sizeof(double) * rows1 * cols1, cudaMemcpyHostToDevice));	
 	cudacall(cudaMemcpy(M2, M2_host, sizeof(double) * rows2 * cols2, cudaMemcpyHostToDevice));	
