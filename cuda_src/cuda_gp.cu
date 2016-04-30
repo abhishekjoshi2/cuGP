@@ -671,7 +671,7 @@ __global__ void inplace_lower_inverse_2x2(double *input_mat, int mat_dim) {
 	if (row >= mat_dim / 2)
 		return;
 
-	printf("row is %d and col is %d\n", row, col);
+	// printf("row is %d and col is %d\n", row, col);
 	start_row = row * 2;
 	start_col = row * 2;
 
@@ -679,11 +679,63 @@ __global__ void inplace_lower_inverse_2x2(double *input_mat, int mat_dim) {
 	m22 = input_mat[(start_row + 1) * mat_dim + start_col + 1];
 	input_mat[(start_row + 1) * mat_dim + start_col] = -input_mat[(start_row + 1) * mat_dim + start_col] / (m11 * m22);
 
-	input_mat[start_row * mat_dim + start_col] = 1 / m22;
-	input_mat[(start_row + 1) * mat_dim + start_col + 1] = 1 / m11;
+	input_mat[start_row * mat_dim + start_col] = 1 / m11;
+	input_mat[(start_row + 1) * mat_dim + start_col + 1] = 1 / m22;
 }
 
+__global__ void first_offseted_mat_mult(double *orig, int mat_size, double *tmi_playground, int ltm_dim, int total_threads) {
+	
+	int row = blockIdx.x * blockDim.x + threadIdx.x;
+	int col = blockIdx.y * blockDim.y + threadIdx.y;
 
+	if (row >= total_threads)
+		return;
+	
+	int id, mat_num, ele, row_offset, col_offset, internal_row, internal_col, cur_row, cur_col;
+
+	id = row;
+	mat_num = id / (mat_size * mat_size);
+	ele = id % (mat_size * mat_size);
+	row_offset = mat_size * (2 * mat_num + 1);
+	col_offset = row_offset - mat_size;
+	internal_row = ele / mat_size;
+	internal_col = ele % mat_size;
+	cur_row = internal_row + row_offset;
+	cur_col = internal_col + col_offset;
+
+	double ans  = 0.0;
+	for(int i = 0;i < mat_size; i++){
+		ans += orig[(row_offset + i)*ltm_dim + cur_col] * orig[cur_row * ltm_dim + col_offset + mat_size + i];
+	}
+	tmi_playground[cur_row * ltm_dim + cur_col] = ans;
+}
+
+__global__ void second_offseted_mat_mult(double *orig, int mat_size, double *tmi_playground, int ltm_dim, int total_threads) {
+	
+	int row = blockIdx.x * blockDim.x + threadIdx.x;
+	int col = blockIdx.y * blockDim.y + threadIdx.y;
+
+	if (row >= total_threads)
+		return;
+	
+	int id, mat_num, ele, row_offset, col_offset, internal_row, internal_col, cur_row, cur_col;
+
+	id = row;
+	mat_num = id / (mat_size * mat_size);
+	ele = id % (mat_size * mat_size);
+	row_offset = mat_size * (2 * mat_num + 1);
+	col_offset = row_offset - mat_size;
+	internal_row = ele / mat_size;
+	internal_col = ele % mat_size;
+	cur_row = internal_row + row_offset;
+	cur_col = internal_col + col_offset;
+
+	double ans  = 0.0;
+	for(int i = 0;i < mat_size; i++){
+		ans += tmi_playground[cur_row * ltm_dim + col_offset  + i] * orig[(row_offset - mat_size + i)*ltm_dim + cur_col];
+	}
+	orig[cur_row * ltm_dim + cur_col] = -1.0 * ans;
+}
 __inline__ int upit(int x, int y) {
 	return (x + y - 1) / y;
 }
@@ -1553,9 +1605,12 @@ void set_loghyper_eigen(Eigen::VectorXd initval) {
 	cudacall(cudaMemcpy(loghyper, lh_host, sizeof(double) * 3 , cudaMemcpyHostToDevice)); 
 }
 
+
+
 void test_tmi() {
-	int ltm_dim = 8;
+	int ltm_dim = 4096;
 	double *lower_triangular_mat_host;
+	double *final_ans;
 	int filler = 1;
 	int i, j;
 	int num_iters;
@@ -1573,35 +1628,62 @@ void test_tmi() {
 
 	cudacall(cudaMalloc(&tmi_playground, sizeof(double) * ltm_dim * ltm_dim));
 
-	print_matrix_kernel<<<1, 1>>>(lower_triangular_mat, ltm_dim, ltm_dim);
-	cudaThreadSynchronize();
+	final_ans = new double[ltm_dim * ltm_dim];
+
+	/* print_matrix_kernel<<<1, 1>>>(lower_triangular_mat, ltm_dim, ltm_dim);
+	cudaThreadSynchronize(); */
 
 	int threads_per_block = 1024;
 	int num_blocks = upit(ltm_dim / 2, threads_per_block);
 	inplace_lower_inverse_2x2<<<num_blocks, threads_per_block>>>(lower_triangular_mat, ltm_dim);
 	cudaThreadSynchronize();
 
-	print_matrix_kernel<<<1, 1>>>(lower_triangular_mat, ltm_dim, ltm_dim);
-	cudaThreadSynchronize();
+	/* print_matrix_kernel<<<1, 1>>>(lower_triangular_mat, ltm_dim, ltm_dim);
+	cudaThreadSynchronize(); */
 
 	num_iters = log2((double)ltm_dim) - 1;
 	printf("num_iters is %d\n", num_iters);
 
 	mat_size = 2;
+	double startime, endtime;
 	for (i = 0; i < num_iters; i++)
 	{
+		startime = CycleTimer::currentSeconds();	
 		total_threads = ltm_dim * mat_size / 2;
 		printf("Total threads launched: %d\n", total_threads);
 
 		threads_per_block = 1024;
 		num_blocks = upit(total_threads, threads_per_block);
 
-		/* first_offseted_mat_mult<<<num_blocks, threads_per_block>>>(lower_triangular_mat, mat_size, tmi_playground, ltm_dim, total_threads);
+		first_offseted_mat_mult<<<num_blocks, threads_per_block>>>(lower_triangular_mat, mat_size, tmi_playground, ltm_dim, total_threads);
 		cudaThreadSynchronize();
 
 		second_offseted_mat_mult<<<num_blocks, threads_per_block>>>(lower_triangular_mat, mat_size, tmi_playground, ltm_dim, total_threads);
-		cudaThreadSynchronize(); */
+		cudaThreadSynchronize();
+		endtime = CycleTimer::currentSeconds();
 
 		mat_size *= 2;
+		printf("Time for iter %d: %lf\n", i, endtime - startime);
 	}
+
+	printf("Final matrix:\n");
+	/* print_matrix_kernel<<<1, 1>>>(lower_triangular_mat, ltm_dim, ltm_dim);
+	cudaThreadSynchronize(); */
+
+	cudacall(cudaMemcpy(final_ans, lower_triangular_mat, sizeof(double) * ltm_dim * ltm_dim, cudaMemcpyDeviceToHost));	
+
+	double total_sum = 0;
+	for (int i = 0; i < ltm_dim; i++)
+	{
+		for (int j = 0; j < ltm_dim; j++)
+		{
+			double sum = 0;
+			for (int k = 0; k < ltm_dim; k++)
+				sum += lower_triangular_mat_host[i * ltm_dim + k] * final_ans[k * ltm_dim + j];
+			//printf("%lf ", sum);
+			total_sum += sum;
+		}
+		//printf("\n");
+	}
+	printf("Total sum: %lf\n", total_sum);
 }
