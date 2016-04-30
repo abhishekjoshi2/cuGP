@@ -12,8 +12,8 @@
 #include "./Eigen/src/Core/util/DisableStupidWarnings.h"
 #include <cmath>
 
-#define INPUT_FILE "../cpp_serial_gp/input.txt"
-#define LABEL_FILE "../cpp_serial_gp/label.txt"
+#define INPUT_FILE "../cpp_serial_gp/input_128.txt"
+#define LABEL_FILE "../cpp_serial_gp/label_128.txt"
 
 #define filename "sym5000.txt"
 
@@ -49,6 +49,8 @@ double *l21_transpose_from_fs;
 double *l21;
 double *l22_temp;  //This is for updating a22
 
+double *K_inv_for_ll;
+
 double *X; // training set
 double *labels; // labels of the training set (actually regression values)
 double *temp_fs; // for saving the result of forward substitution while performing compute_likelihood!!
@@ -81,6 +83,27 @@ double *tmi_playground; */
 } \
 
 double *get_loghyperparam();
+
+
+__global__ void lowertriangular_matrixmultiply_noshare(double *a, double *output, int size)
+{
+
+        long long int row = blockIdx.y * blockDim.y + threadIdx.y;
+        long long int col = blockIdx.x * blockDim.x + threadIdx.x;
+
+        if (row >= size || col >= size)
+                return;
+
+        double sum = 0.0;
+        for (int i = 0; i < size; i++)
+        {
+                //sum += a[row * colsA + i] * b[i * colsB + col]; 
+                sum += a[i * size + row] * a[i * size + col];
+        }
+
+        output[row * size + col] = sum;
+}
+
 
 //FIXME: can do a shared memory reduce
 __global__ void vector_dot_product(double *x1, double *x2, double *ans, int N){
@@ -847,6 +870,8 @@ void setup_loglikelihood_data()
 {
 	// this is the covariance matrix
 	cudacall(cudaMalloc(&K, sizeof(double) * N * N));
+	
+	cudacall(cudaMalloc(&K_inv_for_ll, sizeof(double) * N * N));
 
 	// this is the log determinant
 	cudacall(cudaMalloc(&log_det, sizeof(double)));
@@ -1212,11 +1237,16 @@ void compute_chol_get_mul_and_det()
 
 	get_inverse_by_tmi(K, N);
       	cudaThreadSynchronize();
+  	
+	dim3 blockDim(32,32);
+        dim3 gridDim( upit(N, blockDim.x), upit(N, blockDim.y));
+        lowertriangular_matrixmultiply_noshare<<<gridDim, blockDim >>>(K, K_inv_for_ll, N);
+        cudaThreadSynchronize();
 
-	threads_per_block = 512;
+        threads_per_block = 512;
         number_of_blocks = upit(N, threads_per_block);
-	matrix_vector_multiply<<<number_of_blocks, threads_per_block>>>(K, labels, temp_bs, N);
-      	cudaThreadSynchronize();
+        matrix_vector_multiply<<<number_of_blocks, threads_per_block>>>(K_inv_for_ll, labels, temp_bs, N);
+        cudaThreadSynchronize();
 
 	vector_dot_product<<<1, 1>>>(temp_bs, labels, ll_dotprod, N);
 	cudaThreadSynchronize();
