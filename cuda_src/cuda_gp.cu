@@ -9,6 +9,7 @@
 #include <thrust/inner_product.h>
 #include <thrust/device_ptr.h>
 #include "./Eigen/Dense"
+#include <cmath>
 
 #define INPUT_FILE "../cpp_serial_gp/input.txt"
 #define LABEL_FILE "../cpp_serial_gp/label.txt"
@@ -59,6 +60,10 @@ double *identity; // for gradient of hp
 
 // N is the number of training samples, and DIM is the number of parameters
 int N, DIM;
+
+// For testing TMI
+double *lower_triangular_mat;
+double *tmi_playground;
 
 #define cudacall(call) \
 { \
@@ -313,7 +318,7 @@ print_matrix_kernel(double *arr, int dim1, int dim2)
 	{
 		for (int j = 0; j < dim2; j++)
 		{
-			printf("%lf ", arr[i * dim2 + j]);
+			printf("%lf\t", arr[i * dim2 + j]);
 		}
 		printf("\n");
 	}
@@ -655,6 +660,29 @@ __global__ void kernelSharedMemMatMult(double *A, int rowsA, int colsA,
 			(blockIdx.x * blockDim.x) + threadIdx.x] = tmp;
 	}
 }
+
+
+__global__ void inplace_lower_inverse_2x2(double *input_mat, int mat_dim) {
+	int row = blockIdx.x * blockDim.x + threadIdx.x;
+	int col = blockIdx.y * blockDim.y + threadIdx.y;
+	int start_row, start_col;
+	double m11, m22;
+
+	if (row >= mat_dim / 2)
+		return;
+
+	printf("row is %d and col is %d\n", row, col);
+	start_row = row * 2;
+	start_col = row * 2;
+
+	m11 = input_mat[start_row * mat_dim + start_col];
+	m22 = input_mat[(start_row + 1) * mat_dim + start_col + 1];
+	input_mat[(start_row + 1) * mat_dim + start_col] = -input_mat[(start_row + 1) * mat_dim + start_col] / (m11 * m22);
+
+	input_mat[start_row * mat_dim + start_col] = 1 / m22;
+	input_mat[(start_row + 1) * mat_dim + start_col + 1] = 1 / m11;
+}
+
 
 __inline__ int upit(int x, int y) {
 	return (x + y - 1) / y;
@@ -1525,4 +1553,55 @@ void set_loghyper_eigen(Eigen::VectorXd initval) {
 	cudacall(cudaMemcpy(loghyper, lh_host, sizeof(double) * 3 , cudaMemcpyHostToDevice)); 
 }
 
+void test_tmi() {
+	int ltm_dim = 8;
+	double *lower_triangular_mat_host;
+	int filler = 1;
+	int i, j;
+	int num_iters;
+	int mat_size;
+	int total_threads;
 
+	lower_triangular_mat_host = new double[ltm_dim * ltm_dim];
+
+	for (i = 0; i < ltm_dim; i++)
+		for (j = 0; j <= i; j++)
+			lower_triangular_mat_host[i * ltm_dim + j] = filler++;
+
+	cudacall(cudaMalloc(&lower_triangular_mat, sizeof(double) * ltm_dim * ltm_dim));
+	cudacall(cudaMemcpy(lower_triangular_mat, lower_triangular_mat_host, sizeof(double) * ltm_dim * ltm_dim, cudaMemcpyHostToDevice));	
+
+	cudacall(cudaMalloc(&tmi_playground, sizeof(double) * ltm_dim * ltm_dim));
+
+	print_matrix_kernel<<<1, 1>>>(lower_triangular_mat, ltm_dim, ltm_dim);
+	cudaThreadSynchronize();
+
+	int threads_per_block = 1024;
+	int num_blocks = upit(ltm_dim / 2, threads_per_block);
+	inplace_lower_inverse_2x2<<<num_blocks, threads_per_block>>>(lower_triangular_mat, ltm_dim);
+	cudaThreadSynchronize();
+
+	print_matrix_kernel<<<1, 1>>>(lower_triangular_mat, ltm_dim, ltm_dim);
+	cudaThreadSynchronize();
+
+	num_iters = log2((double)ltm_dim) - 1;
+	printf("num_iters is %d\n", num_iters);
+
+	mat_size = 2;
+	for (i = 0; i < num_iters; i++)
+	{
+		total_threads = ltm_dim * mat_size / 2;
+		printf("Total threads launched: %d\n", total_threads);
+
+		threads_per_block = 1024;
+		num_blocks = upit(total_threads, threads_per_block);
+
+		/* first_offseted_mat_mult<<<num_blocks, threads_per_block>>>(lower_triangular_mat, mat_size, tmi_playground, ltm_dim, total_threads);
+		cudaThreadSynchronize();
+
+		second_offseted_mat_mult<<<num_blocks, threads_per_block>>>(lower_triangular_mat, mat_size, tmi_playground, ltm_dim, total_threads);
+		cudaThreadSynchronize(); */
+
+		mat_size *= 2;
+	}
+}
