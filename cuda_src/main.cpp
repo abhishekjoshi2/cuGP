@@ -235,12 +235,12 @@ int main()
 {
 	setup(); //setting all the hyperparameters
 
-	// run_gp();
+	run_gp();
 
 	printf("\n\nnow running\n\n");
 	
-	// cg_solve();
-	test_tmi();
+	cg_solve();
+	// test_tmi();
 	//test_matrix_mult();
 	// run_gp();
 	return 0;
