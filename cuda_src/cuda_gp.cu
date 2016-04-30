@@ -49,7 +49,6 @@ double *l21_transpose_from_fs;
 double *l21;
 double *l22_temp;  //This is for updating a22
 
-double *K_inv_for_ll;
 
 double *X; // training set
 double *labels; // labels of the training set (actually regression values)
@@ -871,7 +870,6 @@ void setup_loglikelihood_data()
 	// this is the covariance matrix
 	cudacall(cudaMalloc(&K, sizeof(double) * N * N));
 	
-	cudacall(cudaMalloc(&K_inv_for_ll, sizeof(double) * N * N));
 
 	// this is the log determinant
 	cudacall(cudaMalloc(&log_det, sizeof(double)));
@@ -1240,12 +1238,12 @@ void compute_chol_get_mul_and_det()
   	
 	dim3 blockDim(32,32);
         dim3 gridDim( upit(N, blockDim.x), upit(N, blockDim.y));
-        lowertriangular_matrixmultiply_noshare<<<gridDim, blockDim >>>(K, K_inv_for_ll, N);
+        lowertriangular_matrixmultiply_noshare<<<gridDim, blockDim >>>(K, Kinv, N);
         cudaThreadSynchronize();
 
         threads_per_block = 512;
         number_of_blocks = upit(N, threads_per_block);
-        matrix_vector_multiply<<<number_of_blocks, threads_per_block>>>(K_inv_for_ll, labels, temp_bs, N);
+        matrix_vector_multiply<<<number_of_blocks, threads_per_block>>>(Kinv, labels, temp_bs, N);
         cudaThreadSynchronize();
 
 	vector_dot_product<<<1, 1>>>(temp_bs, labels, ll_dotprod, N);
