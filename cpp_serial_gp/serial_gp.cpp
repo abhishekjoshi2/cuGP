@@ -6,8 +6,8 @@
 #include "covkernel.h"
 #include "../common/cycleTimer.h"
 
-#define INPUT_FILE "sine_1000_input.txt"
-#define LABEL_FILE "sine_1000_labels.txt"
+#define INPUT_FILE "../dataset/input.txt"
+#define LABEL_FILE "../dataset/label.txt"
 int main()
 {
 	FILE *input_file, *label_file;
@@ -48,8 +48,8 @@ int main()
 
 	double inithypervalues[] = {0.5, 0.5, 0.5};
 
-	int total = 1000;
-	int numtrain = 1000;
+	int total = 200;
+	int numtrain =100;
 	int numtest = total - numtrain;
 	Covsum kernelobj(numtrain, dim);
 	kernelobj.set_loghyperparam(inithypervalues);
@@ -67,11 +67,11 @@ int main()
 	std::cout << grad[2] << std::endl;
 	std::cout << ans << std::endl;*/
 
-//	std::cout << "Invoking solver" << std::endl;
+	std::cout << "Invoking solver" << std::endl;
 
-//	kernelobj.rprop_solve(X, y, true);
+	kernelobj.cg_solve(X, y, true);
 	
-//	std::cout << "Done with solver" << std::endl;
+	std::cout << "Done with solver" << std::endl;
 
 //	double *new_hyper_params = kernelobj.get_loghyperparam();
 
@@ -89,19 +89,9 @@ int main()
 	//kernelobj.set_loghyperparam(acthp);
 
 
-	/*
-	printf("\n Now checking the values for the correct hyperparameters\n");
-	printf("The hyperparameters are :\n");
-	grad = kernelobj.get_loghyperparam();
-	std::cout << grad[0] << std::endl;
-	std::cout << grad[1] << std::endl;
-	std::cout << grad[2] << std::endl;
-	ans = kernelobj.compute_loglikelihood(X, y);
-	printf("The NLML is: %lf\n", -ans);
 	double *tmeanvec = new double[numtest];
 	double *tvarvec = new double[numtest];
 	kernelobj.compute_test_means_and_variances(X, y, X + numtrain, tmeanvec, tvarvec, numtest);
-	*/
 
 //	printf("Now printing the test means\n");
 //	print_vector(tmeanvec, numtest);
@@ -114,11 +104,12 @@ int main()
 		printf("%lf %lf %lf\n", tmeanvec[i], tvarvec[i], y[numtest + i]);
 	}
 
+	*/
+
 	printf("Call kar NLPP\n\n");
 
 	double nlpp = kernelobj.get_negative_log_predprob(y + numtrain, tmeanvec, tvarvec, numtest);
 	std::cout << "NLPP = " << nlpp << "\n";
-	*/
 
 	//delete tmeanvec;
 	//delete tvarvec;
