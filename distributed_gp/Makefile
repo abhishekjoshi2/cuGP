@@ -1,8 +1,8 @@
-EXECUTABLE := gp
+EXECUTABLE := dgp
 
 CU_FILES   := #cudaRenderer.cu
 
-CC_FILES   := covkernel.cpp ../common/matrixops.cpp serial_gp.cpp
+CC_FILES   := covkernel.cpp ../common/matrixops.cpp distributed_ver1.cpp BCM.cpp
 
 LOGS	   := logs
 
@@ -23,7 +23,7 @@ LDFRAMEWORKS := $(addprefix -framework , $(FRAMEWORKS))
 
 NVCC=nvcc
 
-OBJS=serial_gp.o ../common/matrixops.o covkernel.o
+OBJS=distributed_ver1.o ../common/matrixops.o covkernel.o BCM.o
 
 
 .PHONY: clean
@@ -36,8 +36,11 @@ clean:
 $(EXECUTABLE): $(OBJS)
 		$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LDFLAGS) $(LDLIBS) $(LDFRAMEWORKS)
 
-serial_gp.o: serial_gp.cpp
-	$(CXX) serial_gp.cpp $(CXXFLAGS) -c -o serial_gp.o
+BCM.o: BCM.cpp
+	$(CXX) BCM.cpp $(CXXFLAGS) -c -o BCM.o
+
+distributed_ver1.o: distributed_ver1.cpp
+	$(CXX) distributed_ver1.cpp $(CXXFLAGS) -c -o distributed_ver1.o
 
 matrixops.o: matrixops.cpp
 	$(CXX) matrixops.cpp $(CXXFLAGS) -c -o matrixops.o

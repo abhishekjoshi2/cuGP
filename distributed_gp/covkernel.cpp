@@ -37,26 +37,27 @@ Covsum::Covsum(int n, int d) {
 
 Covsum::~Covsum() {
 
-	delete this->loghyper;
-	delete this->temp1dvec;
-	delete this->covtempvec;
+	delete[] this->loghyper;
+	delete[] this->temp1dvec;
+	delete[] this->covtempvec;
 
 	for (int i = 0; i < this->inputdatasize; i++) {
-		delete this->tempKinv[i];
-		delete this->tempKmatrix[i];
-		delete this->tempWmatrix[i];
-		delete this->tempAlphamatrix[i];
-		delete this->tempmatrix2[i];
-		delete this->tempmatrix3[i];
-		delete this->tempmatrix4[i];
+		delete[] this->tempKinv[i];
+		delete[] this->tempKmatrix[i];
+		delete[] this->tempWmatrix[i];
+		delete[] this->tempAlphamatrix[i];
+		delete[] this->tempmatrix2[i];
+		delete[] this->tempmatrix3[i];
+		delete[] this->tempmatrix4[i];
 	}
-	delete this->tempKinv;
-	delete this->tempKmatrix;
-	delete this->tempWmatrix;
-	delete this->tempAlphamatrix;
-	delete this->tempmatrix2;
-	delete this->tempmatrix3;
-	delete this->tempmatrix4;
+	delete[] this->tempKinv;
+	delete[] this->tempKmatrix;
+	delete[] this->tempWmatrix;
+	delete[] this->tempAlphamatrix;
+	delete[] this->tempmatrix2;
+	delete[] this->tempmatrix3;
+	delete[] this->tempmatrix4;
+	printf("Haan yarr\n");
 }
 
 // Computes the n x n covariance matrix based on training inputs: CURRENTLY - only implements SE + NOISE
