@@ -1,0 +1,248 @@
+Total time taken in cholesky = 0.006337 s
+FINAL ERROR = 0.000000
+Determinant is 167.102109
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000057
+Total threads launched: 256
+Time for iter 1: 0.000050
+Total threads launched: 512
+Time for iter 2: 0.000067
+Total threads launched: 1024
+Time for iter 3: 0.000072
+Total threads launched: 2048
+Time for iter 4: 0.000100
+Total threads launched: 4096
+Time for iter 5: 0.000156
+Total sum: 128.000000
+Dot prod is 4.423691
+The value of loglikelihood = -203.386580
+The time taken in loglikelihood computation = 0.024413
+Yahi hai Kinv
+Total time taken in cholesky = 0.006477 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = nan
+Dekho bhai nan
+nan
+nan
+
+
+now running
+
+Total time taken in cholesky = 0.006396 s
+FINAL ERROR = 0.000000
+Determinant is 167.102109
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000054
+Total threads launched: 256
+Time for iter 1: 0.000047
+Total threads launched: 512
+Time for iter 2: 0.000053
+Total threads launched: 1024
+Time for iter 3: 0.000067
+Total threads launched: 2048
+Time for iter 4: 0.000095
+Total threads launched: 4096
+Time for iter 5: 0.000155
+Total sum: 128.000000
+Dot prod is 4.423691
+The value of loglikelihood = -203.386580
+Yahi hai Kinv
+Total time taken in cholesky = 0.006421 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = nan
+Dekho bhai nan
+nan
+nan
+203.387
+
+
+ PLEASE-SEE 1 : -nan, -nan, -nan
+
+Dekho bhai naya value AYAA
+
+-nan
+-nan
+-nan
+Total time taken in cholesky = 0.006730 s
+FINAL ERROR = nan
+Determinant is -nan
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000056
+Total threads launched: 256
+Time for iter 1: 0.000050
+Total threads launched: 512
+Time for iter 2: 0.000055
+Total threads launched: 1024
+Time for iter 3: 0.000070
+Total threads launched: 2048
+Time for iter 4: 0.000098
+Total threads launched: 4096
+Time for iter 5: 0.000157
+Total sum: -nan
+Dot prod is -nan
+The value of loglikelihood = -nan
+Yahi hai Kinv
+Total time taken in cholesky = 0.006757 s
+FINAL ERROR = nan
+Why yaar? para2 = -nan
+Dekho bhai -nan
+-nan
+-nan
+nan
+
+
+ PLEASE-SEE 1 : -nan, -nan, -nan
+
+Dekho bhai naya value AYAA
+
+-nan
+-nan
+-nan
+Total time taken in cholesky = 0.006733 s
+FINAL ERROR = nan
+Determinant is -nan
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000062
+Total threads launched: 256
+Time for iter 1: 0.000050
+Total threads launched: 512
+Time for iter 2: 0.000056
+Total threads launched: 1024
+Time for iter 3: 0.000071
+Total threads launched: 2048
+Time for iter 4: 0.000099
+Total threads launched: 4096
+Time for iter 5: 0.000155
+Total sum: -nan
+Dot prod is -nan
+The value of loglikelihood = -nan
+Yahi hai Kinv
+Total time taken in cholesky = 0.006749 s
+FINAL ERROR = nan
+Why yaar? para2 = -nan
+Dekho bhai -nan
+-nan
+-nan
+nan
+
+
+ PLEASE-SEE 1 : -nan, -nan, -nan
+
+Dekho bhai naya value AYAA
+
+-nan
+-nan
+-nan
+Total time taken in cholesky = 0.006724 s
+FINAL ERROR = nan
+Determinant is -nan
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000056
+Total threads launched: 256
+Time for iter 1: 0.000049
+Total threads launched: 512
+Time for iter 2: 0.000055
+Total threads launched: 1024
+Time for iter 3: 0.000070
+Total threads launched: 2048
+Time for iter 4: 0.000098
+Total threads launched: 4096
+Time for iter 5: 0.000155
+Total sum: -nan
+Dot prod is -nan
+The value of loglikelihood = -nan
+Yahi hai Kinv
+Total time taken in cholesky = 0.006738 s
+FINAL ERROR = nan
+Why yaar? para2 = -nan
+Dekho bhai -nan
+-nan
+-nan
+nan
+
+
+ PLEASE-SEE 1 : -nan, -nan, -nan
+
+Dekho bhai naya value AYAA
+
+-nan
+-nan
+-nan
+Total time taken in cholesky = 0.006710 s
+FINAL ERROR = nan
+Determinant is -nan
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000056
+Total threads launched: 256
+Time for iter 1: 0.000049
+Total threads launched: 512
+Time for iter 2: 0.000065
+Total threads launched: 1024
+Time for iter 3: 0.000082
+Total threads launched: 2048
+Time for iter 4: 0.000099
+Total threads launched: 4096
+Time for iter 5: 0.000154
+Total sum: -nan
+Dot prod is -nan
+The value of loglikelihood = -nan
+Yahi hai Kinv
+Total time taken in cholesky = 0.006726 s
+FINAL ERROR = nan
+Why yaar? para2 = -nan
+Dekho bhai -nan
+-nan
+-nan
+nan
+
+
+ PLEASE-SEE 1 : -nan, -nan, -nan
+
+Dekho bhai naya value AYAA
+
+-nan
+-nan
+-nan
+Total time taken in cholesky = 0.006543 s
+FINAL ERROR = nan
+Determinant is -nan
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000060
+Total threads launched: 256
+Time for iter 1: 0.000052
+Total threads launched: 512
+Time for iter 2: 0.000056
+Total threads launched: 1024
+Time for iter 3: 0.000070
+Total threads launched: 2048
+Time for iter 4: 0.000099
+Total threads launched: 4096
+Time for iter 5: 0.000156
+Total sum: -nan
+Dot prod is -nan
+The value of loglikelihood = -nan
+Yahi hai Kinv
+Total time taken in cholesky = 0.006780 s
+FINAL ERROR = nan
+Why yaar? para2 = -nan
+Dekho bhai -nan
+-nan
+-nan
+nan
+203.387
+
+
+ PLEASE-SEE  3: 0.500000, 0.500000, 0.500000
+
+Dekho bhai naya value AYAA
+
+0.500000
+0.500000
+0.500000
