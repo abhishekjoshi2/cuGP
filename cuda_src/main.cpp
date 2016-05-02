@@ -231,8 +231,12 @@ void cg_solve(){
 
 void test_tmi();
 
+void setup_for_timing_cholesky(int);
 int main()
 {
+	//setup_for_timing_cholesky(2000);
+	
+	/*
 	setup(); //setting all the hyperparameters
 
 	run_gp();
@@ -240,7 +244,8 @@ int main()
 	printf("\n\nnow running\n\n");
 	
 	cg_solve();
-	// test_tmi();
+	*/
+	 test_tmi();
 	//test_matrix_mult();
 	// run_gp();
 	return 0;

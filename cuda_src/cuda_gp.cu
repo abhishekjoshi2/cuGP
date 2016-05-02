@@ -68,8 +68,8 @@ int N, DIM;
 double *tmi_intermediate_output;
 
 // For testing TMI
-/* double *lower_triangular_mat;
-double *tmi_playground; */
+ double *lower_triangular_mat;
+double *tmi_playground; 
 
 #define cudacall(call) \
 { \
@@ -1035,7 +1035,6 @@ void check_cholesky(double *M1, double* targetoutput, int d){
 		for(int j = 0; j < d ;j++){ 
 			double tempval = 0.0;
 			for(int k = 0; k < d; k++){
-				//tempval += M1[i*d + k] * M2[k * d + j];
 				tempval += M1[i*d + k] * M1[j * d + k];
 			}
 			diff = tempval - targetoutput[i * d + j];
@@ -1104,6 +1103,43 @@ void generate_random_vector(double *b, int dim){
 	}
 }
 
+void get_cholesky(double *, int);
+void setup_for_timing_cholesky(int dimp){
+	double **m1, **m2;
+	
+	setup_cholesky(dimp, 2);
+
+	temp_m = new double[dimp * dimp];
+
+	m1 = new double *[dimp];
+	m2 = new double *[dimp];
+
+	for (int i = 0; i < dimp; i++)
+	{
+		m1[i] = new double[dimp];
+		m2[i] = new double[dimp];
+	}
+
+	get_symmetric_matrix_1d(temp_m, m1, m2, dimp);
+
+	orig_sym = new double[dimp * dimp]; // should be equal to covariance matrix
+	double *devM; //device ka banda
+	cudacall(cudaMalloc(&devM, sizeof(double) * dimp * dimp));
+	cudacall(cudaMemcpy(devM, temp_m,  sizeof(double) * dimp * dimp, cudaMemcpyHostToDevice));
+	
+	get_cholesky(devM, dimp);
+	for(int i = 0 ; i < dimp ; i++){
+		delete[] m1[i];
+		delete[] m2[i];
+	}
+	delete[] m1;
+	delete[] m2;
+
+
+
+}
+
+
 void get_cholesky(double *M, int n)
 {
 	int start_id, b;
@@ -1160,13 +1196,12 @@ void get_cholesky(double *M, int n)
 
 		start_id += b;
 	}
+	endtime = CycleTimer::currentSeconds();	
 	// Fire a kernel for making upper-triangular as 0.0
 	threads_per_block = 512;
 	number_of_blocks = upit( (dim * dim), threads_per_block);
 	set_upper_zero<<<number_of_blocks, threads_per_block>>>(M, dim);
 	cudaThreadSynchronize();
-
-	endtime = CycleTimer::currentSeconds();	
 
 	printf("Total time taken in cholesky = %lf s\n", endtime - startime);	
 	// Now checking!
@@ -1762,8 +1797,8 @@ void get_inverse_by_tmi(double *lower_triangular_mat, int ltm_dim)
 	delete []final_ans;
 }
 
-/* void test_tmi() {
-	int ltm_dim = 4096;
+ void test_tmi() {
+	int ltm_dim = 2048;
 	double *lower_triangular_mat_host;
 	double *final_ans;
 	int filler = 1;
@@ -1784,9 +1819,11 @@ void get_inverse_by_tmi(double *lower_triangular_mat, int ltm_dim)
 	cudacall(cudaMalloc(&tmi_playground, sizeof(double) * ltm_dim * ltm_dim));
 
 	final_ans = new double[ltm_dim * ltm_dim];
+	double startime, endtime;
 
 	int threads_per_block = 1024;
 	int num_blocks = upit(ltm_dim / 2, threads_per_block);
+	startime = CycleTimer::currentSeconds();	
 	inplace_lower_inverse_2x2<<<num_blocks, threads_per_block>>>(lower_triangular_mat, ltm_dim);
 	cudaThreadSynchronize();
 
@@ -1794,10 +1831,8 @@ void get_inverse_by_tmi(double *lower_triangular_mat, int ltm_dim)
 	printf("num_iters is %d\n", num_iters);
 
 	mat_size = 2;
-	double startime, endtime;
 	for (i = 0; i < num_iters; i++)
 	{
-		startime = CycleTimer::currentSeconds();	
 		total_threads = ltm_dim * mat_size / 2;
 		printf("Total threads launched: %d\n", total_threads);
 
@@ -1809,13 +1844,13 @@ void get_inverse_by_tmi(double *lower_triangular_mat, int ltm_dim)
 
 		second_offseted_mat_mult<<<num_blocks, threads_per_block>>>(lower_triangular_mat, mat_size, tmi_playground, ltm_dim, total_threads);
 		cudaThreadSynchronize();
-		endtime = CycleTimer::currentSeconds();
 
 		mat_size *= 2;
-		printf("Time for iter %d: %lf\n", i, endtime - startime);
 	}
 
-	printf("Final matrix:\n");
+	endtime = CycleTimer::currentSeconds();
+	printf("Total time for LMI = %lf\n",  endtime - startime);
+	//printf("Final matrix:\n");
 	// print_matrix_kernel<<<1, 1>>>(lower_triangular_mat, ltm_dim, ltm_dim);
 	// cudaThreadSynchronize();
 
@@ -1835,4 +1870,4 @@ void get_inverse_by_tmi(double *lower_triangular_mat, int ltm_dim)
 		//printf("\n");
 	}
 	printf("Total sum: %lf\n", total_sum);
-} */
+} 
