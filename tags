@@ -1,0 +1,156 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ARCH	cpp_serial_gp/Makefile	/^ARCH=$(shell uname | sed -e 's\/-.*\/\/g')$/;"	m
+ARCH	cuda_src/Makefile	/^ARCH=$(shell uname | sed -e 's\/-.*\/\/g')$/;"	m
+CC_FILES	cpp_serial_gp/Makefile	/^CC_FILES   := covkernel.cpp matrixops.cpp serial_gp.cpp$/;"	m
+CC_FILES	cuda_src/Makefile	/^CC_FILES   := covkernel.cpp matrixops.cpp serial_gp.cpp$/;"	m
+CU_FILES	cpp_serial_gp/Makefile	/^CU_FILES   := #cudaRenderer.cu$/;"	m
+CU_FILES	cuda_src/Makefile	/^CU_FILES   := #cudaRenderer.cu$/;"	m
+CXX	cpp_serial_gp/Makefile	/^CXX=g++ -m64$/;"	m
+CXX	cuda_src/Makefile	/^CXX=\/usr\/lib64\/openmpi\/bin\/mpic++$/;"	m
+CXXFLAGS	cpp_serial_gp/Makefile	/^CXXFLAGS=-O3 -Wall -g$/;"	m
+CXXFLAGS	cuda_src/Makefile	/^CXXFLAGS=-O3 -Wall -g$/;"	m
+Covsum	cpp_serial_gp/covkernel.cpp	/^Covsum::Covsum(){ }$/;"	f	class:Covsum
+Covsum	cpp_serial_gp/covkernel.cpp	/^Covsum::Covsum(int n, int d) {$/;"	f	class:Covsum
+Covsum	cpp_serial_gp/covkernel.h	/^class Covsum{$/;"	c
+CycleTimer	common/cycleTimer.h	/^  class CycleTimer {$/;"	c
+DIM	cpp_serial_gp/forward_backward.cpp	/^#define DIM /;"	d	file:
+DIM	cpp_serial_gp/forward_backward_square_matrices.cpp	/^#define DIM /;"	d	file:
+EXECUTABLE	cpp_serial_gp/Makefile	/^EXECUTABLE := gp$/;"	m
+EXECUTABLE	cuda_src/Makefile	/^EXECUTABLE := gp$/;"	m
+FRAMEWORKS	cpp_serial_gp/Makefile	/^FRAMEWORKS := $/;"	m
+FRAMEWORKS	cuda_src/Makefile	/^FRAMEWORKS := $/;"	m
+HOSTNAME	cpp_serial_gp/Makefile	/^HOSTNAME=$(shell hostname)$/;"	m
+HOSTNAME	cuda_src/Makefile	/^HOSTNAME=$(shell hostname)$/;"	m
+INPUT_FILE	cpp_serial_gp/serial_gp.cpp	/^#define INPUT_FILE /;"	d	file:
+LABEL_FILE	cpp_serial_gp/serial_gp.cpp	/^#define LABEL_FILE /;"	d	file:
+LDFLAGS	cpp_serial_gp/Makefile	/^LDFLAGS=-L\/usr\/local\/cuda\/lib64\/ -lcudart$/;"	m
+LDFLAGS	cpp_serial_gp/Makefile	/^LDFLAGS=-L\/usr\/local\/depot\/cuda-6.5\/lib64\/ -lcudart$/;"	m
+LDFLAGS	cuda_src/Makefile	/^LDFLAGS=-L\/usr\/local\/cuda\/lib64\/ -lcudart$/;"	m
+LDFLAGS	cuda_src/Makefile	/^LDFLAGS=-L\/usr\/local\/depot\/cuda-6.5\/lib64\/ -lcudart$/;"	m
+LDFRAMEWORKS	cpp_serial_gp/Makefile	/^LDFRAMEWORKS := $(addprefix -framework , $(FRAMEWORKS))$/;"	m
+LDFRAMEWORKS	cuda_src/Makefile	/^LDFRAMEWORKS := $(addprefix -framework , $(FRAMEWORKS))$/;"	m
+LDLIBS	cpp_serial_gp/Makefile	/^LDLIBS  := $(addprefix -l, $(LIBS))$/;"	m
+LDLIBS	cuda_src/Makefile	/^LDLIBS  := $(addprefix -l, $(LIBS))$/;"	m
+LD_LIBRARY_PATH	cuda_src/Makefile	/^export LD_LIBRARY_PATH=\/usr\/local\/cuda\/lib64\/:\/usr\/local\/cuda\/lib:\/usr\/lib64\/openmpi\/lib:$(shell printenv LD_LIBRARY_PATH)$/;"	m
+LIBS	cpp_serial_gp/Makefile	/^LIBS       :=$/;"	m
+LIBS	cuda_src/Makefile	/^LIBS       :=$/;"	m
+LOGS	cpp_serial_gp/Makefile	/^LOGS	   := logs$/;"	m
+LOGS	cuda_src/Makefile	/^LOGS	   := logs$/;"	m
+MPIRUN	cuda_src/Makefile	/^MPIRUN=\/usr\/lib64\/openmpi\/bin\/mpirun$/;"	m
+MPI_LDFLAGS	cuda_src/Makefile	/^MPI_LDFLAGS=-lpthread -lmpi -lmpi_cxx$/;"	m
+NVCC	cpp_serial_gp/Makefile	/^NVCC=nvcc$/;"	m
+NVCC	cuda_src/Makefile	/^NVCC=nvcc$/;"	m
+NVCCFLAGS	cpp_serial_gp/Makefile	/^NVCCFLAGS=-O3 -m64 -arch compute_20$/;"	m
+NVCCFLAGS	cuda_src/Makefile	/^NVCCFLAGS=-O3 -m64 -arch compute_20 -G -lineinfo$/;"	m
+OBJDIR	cpp_serial_gp/Makefile	/^OBJDIR=objs$/;"	m
+OBJDIR	cuda_src/Makefile	/^OBJDIR=objs$/;"	m
+OBJS	cpp_serial_gp/Makefile	/^OBJS=serial_gp.o matrixops.o covkernel.o$/;"	m
+OBJS	cuda_src/Makefile	/^OBJS=main.o cuda_gp.o$/;"	m
+SysClock	common/cycleTimer.h	/^    typedef unsigned long long SysClock;$/;"	t	class:CycleTimer
+_SYRAH_CYCLE_TIMER_H_	common/cycleTimer.h	/^#define _SYRAH_CYCLE_TIMER_H_$/;"	d
+a22_update	cpp_matrixalgebra/blocked_cholesky.cpp	/^void a22_update(double **M, double **a21, double **a21_transpose, int start_idx, int dim, int b)$/;"	f
+backward_sub_vector	cpp_serial_gp/forward_backward.cpp	/^void backward_sub_vector(double arr2[][DIM], double b[DIM], double y2[DIM]) {$/;"	f
+backward_sub_vector	cpp_serial_gp/forward_backward_square_matrices.cpp	/^void backward_sub_vector(double arr2[][DIM], double b[DIM], double y2[DIM]) {$/;"	f
+cg_solve	cpp_serial_gp/covkernel.cpp	/^void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {$/;"	f	class:Covsum
+cg_solve	cuda_src/main.cpp	/^void cg_solve(){$/;"	f
+check_ans	cpp_serial_gp/forward_backward.cpp	/^void check_ans(double M[][DIM], double y[DIM], double b[DIM]) {$/;"	f
+check_ans	cpp_serial_gp/forward_backward_square_matrices.cpp	/^void check_ans(double M[][DIM], double y[DIM], double b[DIM]) {$/;"	f
+check_matrixans	cpp_serial_gp/forward_backward.cpp	/^void check_matrixans(double M[][DIM], double y[][DIM], double b[][DIM]) {$/;"	f
+check_matrixans	cpp_serial_gp/forward_backward_square_matrices.cpp	/^void check_matrixans(double M[][DIM], double y[][DIM], double b[][DIM]) {$/;"	f
+check_matrixans_rect	cpp_matrixalgebra/blocked_cholesky.cpp	/^void check_matrixans_rect(double **arr1, double **arr2, double **arr3, int dim1, int dim2)$/;"	f
+check_matrixans_rect	cpp_serial_gp/forward_backward.cpp	/^void check_matrixans_rect(double **arr1, double **arr2, double **arr3, int dim1, int dim2)$/;"	f
+compare_two	python_matrix_operations/chol_elsevier.py	/^def compare_two(M1, M2):$/;"	f
+compare_two	python_matrix_operations/serial_chol.py	/^def compare_two(M1, M2):$/;"	f
+compute_K_inverse	common/matrixops.cpp	/^void compute_K_inverse(double **K, double **outputK, int n) {$/;"	f
+compute_K_train	cpp_serial_gp/covkernel.cpp	/^void Covsum::compute_K_train(double **X, double **output) {$/;"	f	class:Covsum
+compute_chol_and_det	common/matrixops.cpp	/^std::pair<double, double> compute_chol_and_det(double **K, double *y, int n) {$/;"	f
+compute_gradient_loghyperparam	cpp_serial_gp/covkernel.cpp	/^double* Covsum::compute_gradient_loghyperparam(double **X, double *y) {$/;"	f	class:Covsum
+compute_k_test	cpp_serial_gp/covkernel.cpp	/^void Covsum::compute_k_test(double **X, double *xtest, double *output) {$/;"	f	class:Covsum
+compute_loglikelihood	cpp_serial_gp/covkernel.cpp	/^double Covsum::compute_loglikelihood(double **X, double *y) {$/;"	f	class:Covsum
+compute_squared_dist	cpp_serial_gp/covkernel.cpp	/^void Covsum::compute_squared_dist(double **X, double c) {$/;"	f	class:Covsum
+compute_test_means_and_variances	cpp_serial_gp/covkernel.cpp	/^void Covsum::compute_test_means_and_variances(double **X, double *y, double **Xtest, double *tmeanvec, double *tvarvec, int numtest) {$/;"	f	class:Covsum
+covtempvec	cpp_serial_gp/covkernel.h	/^		double *covtempvec;$/;"	m	class:Covsum
+currentSeconds	common/cycleTimer.h	/^    static double currentSeconds() {$/;"	f	class:CycleTimer
+currentTicks	common/cycleTimer.h	/^    static SysClock currentTicks() {$/;"	f	class:CycleTimer
+debug	cpp_serial_gp/debug.h	/^#define debug /;"	d
+dim	cpp_matrixalgebra/serial_chol.cpp	/^#define dim /;"	d	file:
+dim	cpp_serial_gp/serial_chol.cpp	/^#define dim /;"	d	file:
+dotproduct_vec	common/matrixops.cpp	/^double dotproduct_vec(double *a, double *b, int DIM) {$/;"	f
+elementwise_matrixmultiply	common/matrixops.cpp	/^void elementwise_matrixmultiply(double ** inp1, double ** inp2, double ** output, int n1, int n2) {$/;"	f
+forward_sub_vector	cpp_serial_gp/forward_backward.cpp	/^void forward_sub_vector(double arr1[][DIM], double b[DIM], double y1[DIM]) {$/;"	f
+forward_sub_vector	cpp_serial_gp/forward_backward_square_matrices.cpp	/^void forward_sub_vector(double arr1[][DIM], double b[DIM], double y1[DIM]) {$/;"	f
+get_cholesky	common/matrixops.cpp	/^void get_cholesky(double **input, double **output, int dim)$/;"	f
+get_loghyperparam	cpp_serial_gp/covkernel.cpp	/^double* Covsum::get_loghyperparam() {$/;"	f	class:Covsum
+get_negative_log_predprob	cpp_serial_gp/covkernel.cpp	/^double Covsum::get_negative_log_predprob(double *actual, double *predmean, double *predvar, int TS) {$/;"	f	class:Covsum
+get_offseted_transpose	cpp_matrixalgebra/blocked_cholesky.cpp	/^void get_offseted_transpose(double **M, int start_idx, int dim, int b, double **temp_a21) {$/;"	f
+get_outer_product	common/matrixops.cpp	/^void get_outer_product(double *a, double *b, double **M, int n) {$/;"	f
+get_param_dim	cpp_serial_gp/covkernel.cpp	/^int Covsum::get_param_dim() {$/;"	f	class:Covsum
+get_symmetric_matrix	cpp_matrixalgebra/blocked_cholesky.cpp	/^void get_symmetric_matrix(double **M, double **matrix1, double **matrix2, int dim){$/;"	f
+hardcoded_cholesky_inplace_and_a11	cpp_matrixalgebra/blocked_cholesky.cpp	/^void hardcoded_cholesky_inplace_and_a11(double **M , int idx, int dim, int b, double **a11) {$/;"	f
+inputdatasize	cpp_serial_gp/covkernel.h	/^		int inputdatasize; \/\/number of training examples$/;"	m	class:Covsum
+loghyper	cpp_serial_gp/covkernel.h	/^		double *loghyper;$/;"	m	class:Covsum
+main	cpp_matrixalgebra/blocked_cholesky.cpp	/^int main() {$/;"	f
+main	cpp_matrixalgebra/serial_chol.cpp	/^int main()$/;"	f
+main	cpp_serial_gp/forward_backward.cpp	/^int main(){$/;"	f
+main	cpp_serial_gp/forward_backward_square_matrices.cpp	/^int main(){$/;"	f
+main	cpp_serial_gp/serial_chol.cpp	/^int main()$/;"	f
+main	cpp_serial_gp/serial_gp.cpp	/^int main()$/;"	f
+main	cpp_serial_gp/try.cpp	/^int main() {$/;"	f
+main	cuda_src/main.cpp	/^int main()$/;"	f
+main	cuda_src/multinode_mpi_sample.cpp	/^int main(int argc, char** argv) {$/;"	f
+main	python_matrix_operations/chol_elsevier.py	/^def main():$/;"	f
+main	python_matrix_operations/serial_chol.py	/^def main():$/;"	f
+make_identity	common/matrixops.cpp	/^void make_identity(double **M, int n) {$/;"	f
+matrix_backward_substitution	common/matrixops.cpp	/^void matrix_backward_substitution(double **A, double **B, double **output, int DIM){$/;"	f
+matrix_forward_substitution	common/matrixops.cpp	/^void matrix_forward_substitution(double **A, double **B, double **output, int DIM) {$/;"	f
+matrix_forward_substitution_rectangular	common/matrixops.cpp	/^void matrix_forward_substitution_rectangular(double **A, double **B, double **output, int dim1, int dim2)$/;"	f
+matrix_multiply_for_a22	cpp_matrixalgebra/blocked_cholesky.cpp	/^void matrix_multiply_for_a22(double **mat1, double **mat2, double **product, int rows, int cols)$/;"	f
+matrix_transpose	common/matrixops.cpp	/^void matrix_transpose(double **input, double **output, int n)$/;"	f
+matrix_transpose_rectangular	cpp_matrixalgebra/blocked_cholesky.cpp	/^void matrix_transpose_rectangular(double **input, double **a21, int rows, int cols)$/;"	f
+matrix_vector_multiply	common/matrixops.cpp	/^void matrix_vector_multiply(double **matrix, double *vector, int n, double *output) {$/;"	f
+msPerTick	common/cycleTimer.h	/^    static double msPerTick() {$/;"	f	class:CycleTimer
+multiply_and_get_logdeterminant	common/matrixops.cpp	/^std::pair<double, double> multiply_and_get_logdeterminant(double *yt, double **X, double *y, int n)$/;"	f
+np	python_matrix_operations/chol_elsevier.py	/^import numpy as np$/;"	i
+np	python_matrix_operations/serial_chol.py	/^import numpy as np$/;"	i
+numdim	cpp_serial_gp/covkernel.h	/^		int numdim; \/\/ dimensionality of the problem$/;"	m	class:Covsum
+print_matrix	common/matrixops.cpp	/^void print_matrix(double **M, int r, int c) {$/;"	f
+print_matrix	cpp_matrixalgebra/serial_chol.cpp	/^void print_matrix(double m[][dim] ,int rows, int cols){$/;"	f
+print_matrix	cpp_serial_gp/forward_backward.cpp	/^void print_matrix(double m[][DIM], int rows, int cols) {$/;"	f
+print_matrix	cpp_serial_gp/forward_backward_square_matrices.cpp	/^void print_matrix(double m[][DIM], int rows, int cols) {$/;"	f
+print_matrix	cpp_serial_gp/serial_chol.cpp	/^void print_matrix(double m[][dim] ,int rows, int cols){$/;"	f
+print_matrix_rect	cpp_serial_gp/forward_backward.cpp	/^void print_matrix_rect(double **mat, int rows, int cols)$/;"	f
+print_vector	common/matrixops.cpp	/^void print_vector(double *M, int n) {$/;"	f
+recurse	python_matrix_operations/chol_elsevier.py	/^def recurse(M):$/;"	f
+recursive_chol	python_matrix_operations/chol_elsevier.py	/^def recursive_chol(M):$/;"	f
+rprop_solve	cpp_serial_gp/covkernel.cpp	/^void Covsum::rprop_solve(double **X_mat, double *y_vec, bool verbose=true)$/;"	f	class:Covsum
+secondsPerTick	common/cycleTimer.h	/^    static double secondsPerTick() {$/;"	f	class:CycleTimer
+serial_cholesky	python_matrix_operations/chol_elsevier.py	/^def serial_cholesky(M):$/;"	f
+serial_cholesky	python_matrix_operations/serial_chol.py	/^def serial_cholesky(M):$/;"	f
+serial_cholesky_inplace	python_matrix_operations/chol_elsevier.py	/^def serial_cholesky_inplace(M):$/;"	f
+serial_cholesky_inplace	python_matrix_operations/serial_chol.py	/^def serial_cholesky_inplace(M):$/;"	f
+set_loghyper_eigen	cpp_serial_gp/covkernel.cpp	/^void Covsum::set_loghyper_eigen(Eigen::VectorXd initval) {$/;"	f	class:Covsum
+set_loghyperparam	cpp_serial_gp/covkernel.cpp	/^void Covsum::set_loghyperparam(double *initval) {$/;"	f	class:Covsum
+sign	cpp_serial_gp/covkernel.cpp	/^double sign(double x) {$/;"	f
+subtract_matrices	common/matrixops.cpp	/^void subtract_matrices(double **A, double **B, double **C, int n1, int n2) {$/;"	f
+subtract_vec	common/matrixops.cpp	/^void subtract_vec(double *a, double *b, double *c, int DIM) {$/;"	f
+sys	python_matrix_operations/chol_elsevier.py	/^import sys$/;"	i
+temp1dvec	cpp_serial_gp/covkernel.h	/^		double *temp1dvec; \/\/storing as a buffer to not allocate the n x 1 vector again and again$/;"	m	class:Covsum
+tempAlphamatrix	cpp_serial_gp/covkernel.h	/^			**tempAlphamatrix, \\$/;"	m	class:Covsum
+tempKinv	cpp_serial_gp/covkernel.h	/^			**tempKinv;$/;"	m	class:Covsum
+tempKmatrix	cpp_serial_gp/covkernel.h	/^		double **tempKmatrix; \/\/storing as a buffer to not allocate the n x n matrix again and again$/;"	m	class:Covsum
+tempWmatrix	cpp_serial_gp/covkernel.h	/^			**tempWmatrix, \\$/;"	m	class:Covsum
+tempmatrix2	cpp_serial_gp/covkernel.h	/^		double **tempmatrix2, \\$/;"	m	class:Covsum
+tempmatrix3	cpp_serial_gp/covkernel.h	/^			**tempmatrix3, \\$/;"	m	class:Covsum
+tempmatrix4	cpp_serial_gp/covkernel.h	/^			**tempmatrix4, \\$/;"	m	class:Covsum
+tickUnits	common/cycleTimer.h	/^    static const char* tickUnits() {$/;"	f	class:CycleTimer
+ticksPerSecond	common/cycleTimer.h	/^    static double ticksPerSecond() {$/;"	f	class:CycleTimer
+update_A21_temp_and_inplace	cpp_matrixalgebra/blocked_cholesky.cpp	/^void update_A21_temp_and_inplace(double **M, double**temp_a21_transpose, double **temp_output, double **a11, int start_idx, int dim, int b) {$/;"	f
+vector_Kinvy_using_cholesky	common/matrixops.cpp	/^void vector_Kinvy_using_cholesky(double **K, double *y, double *ans, int n){$/;"	f
+vector_matrix_multiply	common/matrixops.cpp	/^void vector_matrix_multiply(double *vector, double **matrix, int n, double *out_vector) {$/;"	f
+vector_vector_multiply	common/matrixops.cpp	/^double vector_vector_multiply(double *vector1, double *vector2, int n)$/;"	f
+~Covsum	cpp_serial_gp/covkernel.cpp	/^Covsum::~Covsum() {$/;"	f	class:Covsum

@@ -2,7 +2,7 @@ EXECUTABLE := gp
 
 CU_FILES   := #cudaRenderer.cu
 
-CC_FILES   := covkernel.cpp matrixops.cpp serial_gp.cpp
+CC_FILES   := covkernel.cpp ../common/matrixops.cpp serial_gp.cpp
 
 LOGS	   := logs
 
@@ -17,24 +17,13 @@ HOSTNAME=$(shell hostname)
 LIBS       :=
 FRAMEWORKS := 
 
-ifeq ($(HOSTNAME), latedays.andrew.cmu.edu)
-# Building on Latedays
-NVCCFLAGS=-O3 -m64 -arch compute_20
-LIBS += GL glut cudart
-LDFLAGS=-L/usr/local/cuda/lib64/ -lcudart
-else
-# Building on Linux
-NVCCFLAGS=-O3 -m64 -arch compute_20
-LIBS += GL glut cudart
-LDFLAGS=-L/usr/local/depot/cuda-6.5/lib64/ -lcudart
-endif
 
 LDLIBS  := $(addprefix -l, $(LIBS))
 LDFRAMEWORKS := $(addprefix -framework , $(FRAMEWORKS))
 
 NVCC=nvcc
 
-OBJS=serial_gp.o matrixops.o covkernel.o
+OBJS=serial_gp.o ../common/matrixops.o covkernel.o
 
 
 .PHONY: clean

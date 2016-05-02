@@ -5,6 +5,7 @@
 #include <cstdio>
 #include "debug.h"
 #include <utility>
+
 // Just for the sake of default constructor
 Covsum::Covsum(){ }
 
@@ -436,6 +437,7 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 
 	if (verbose) std::cout << f0 << std::endl;
 
+	Eigen::VectorXd printkeliye = -df0;								//initial search direction
 	Eigen::VectorXd s = -df0;								//initial search direction
 	double d0 = -s.dot(s);									//initial slope
 	double x3 = 1/(1-d0);
@@ -469,8 +471,12 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 			{
 				M --;
 				i++;
+				
+				 printkeliye = X + s*x3;
+                                printf("\n\n PLEASE-SEE 1 : %lf, %lf, %lf\n\n", printkeliye[0], printkeliye[1], printkeliye[2]);
 
 				set_loghyper_eigen((X+s*x3));
+				
 				f3 = -1.0 * compute_loglikelihood(X_mat, y_vec);
 				double *df3_temp = compute_gradient_loghyperparam(X_mat, y_vec);
 
@@ -552,6 +558,9 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 
 			x3 = std::max(std::min(x3, x4-INT*(x4-x2)), x2+INT*(x4-x2));
 
+			 printkeliye = X + s*x3;
+                        printf("\n\n PLEASE-SEE 2 : %lf, %lf, %lf\n\n", printkeliye[0], printkeliye[1], printkeliye[2]);
+
 			set_loghyper_eigen((X+s*x3));
 			f3 = -1.0 * compute_loglikelihood(X_mat, y_vec);
 			double *df3_temp = compute_gradient_loghyperparam(X_mat, y_vec);
@@ -610,6 +619,9 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 
 
 	}
+		 printkeliye = X ;
+                                printf("\n\n PLEASE-SEE 3 : %lf, %lf, %lf\n\n", printkeliye[0], printkeliye[1], printkeliye[2]);
+
 	set_loghyper_eigen(X);
 }
 
