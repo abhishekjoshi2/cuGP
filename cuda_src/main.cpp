@@ -12,7 +12,7 @@ void run_gp();
 
 void test_matrix_mult();
 
-void setup();
+void setup(int );
 
 void cg_solve(char *);
 
@@ -20,8 +20,10 @@ void test_tmi();
 
 int worker_id = 0;
 
+void testing_phase(int offset, int numtest);
+
 std::vector<int> worker_conn_fds;
-int total_workers = 4;
+int total_workers = 1;
 
 void *accept_commands(char *hostname, int connfd)
 {
@@ -82,7 +84,7 @@ int main(int argc, char *argv[])
 
 	printf("Hostname %s is listening on port %s with listenfd = %d\n", argv[1], common_port, listenfd);
 
-	if (strcmp(argv[1], "compute-0-27.local") == 0)
+	if (strcmp(argv[1], "compute-0-37.local") == 0)
 	{
 		for (int i = 0; i < total_workers - 1; i++)
 		{
@@ -111,12 +113,14 @@ int main(int argc, char *argv[])
 		printf("Host %s got worker id as %d\n", argv[1], worker_id);
 	}
 
-	if (strcmp(argv[1], "compute-0-27.local") == 0)
+	if (strcmp(argv[1], "compute-0-37.local") == 0)
 	{
 		printf("Master calling cg_solve()\n");
-
-		setup();
+	
+		int numtrain = 64;
+		setup(numtrain);
 		cg_solve(argv[1]);
+		testing_phase(64, 64);
 	}
 	else
 	{

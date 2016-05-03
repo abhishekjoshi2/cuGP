@@ -61,7 +61,7 @@ double *identity; // for gradient of hp
 
 // N is the number of training samples, and DIM is the number of parameters
 int N, DIM;
-
+int totalN; //total number of samples in the dataset; totalN = N + Ntest;
 
 
 int Ntest; //Ntest is the number of test samples
@@ -92,13 +92,27 @@ double *tmi_playground;
 double *get_loghyperparam();
 
 
+__global__ void print_vector(double *input, int size){
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+        if(i_index >= 1) return;
+	for(int i = 0; i < size; i++){
+		printf("%lf ", input[i]);
+	}
+	printf("\n");
+}
+
+
 __global__ void compute_NLPP(double *actualtestlabels, double * predicted_testmean, double *predicted_testvar, int Ntest, double * ans_nlpp){
-        double ans = 0.0;
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+        if(i_index >= 1) return;
+	double ans = 0.0;
         for(int i = 0; i < Ntest; i++) {
                 double val = 0.5 * log(6.283185 * predicted_testvar[i]) + pow( (predicted_testmean[i] - actualtestlabels[i]) , 2) / (2 * predicted_testvar[i]);
+		//printf("predvar = %lf, predmean = %lf, actualmean = %lf, lpp = %lf\n", predicted_testvar[i], predicted_testmean[i], actualtestlabels[i], val);
                 ans += val;
         }
-        *ans_nlpp = ans / Ntest;
+	//printf("TO FINAL ANSWER YEH HONA CHAHHIYE: %lf\n", ans / Ntest);
+        *ans_nlpp = (ans / Ntest);
 
 }
 __global__ void lowertriangular_matrixmultiply_noshare(double *a, double *output, int size)
@@ -149,7 +163,6 @@ __global__ void vector_dot_product(double *x1, double *x2, double *ans, int N){
 	for(int i = 0; i < N; i++) {
 		val += (x1[i]*x2[i]);
 	}
-	printf("Dot prod is %lf\n", val);
 	*ans = val;
 }
 
@@ -897,8 +910,9 @@ void init_and_print()
 	}
 }
 
-void read_input_and_copy_to_GPU()
+void read_input_and_copy_to_GPU(int numtrain)
 {
+	printf("Inside read_input_and_copy_to_GPUs\n");
 	FILE *input_file, *label_file;
 	double *X_host; //input dataset in host!
 	double *labels_host; //labels in host!
@@ -907,33 +921,41 @@ void read_input_and_copy_to_GPU()
 	input_file = fopen(INPUT_FILE, "r");
 	label_file = fopen(LABEL_FILE, "r");
 
-	fscanf(input_file, "%d%d", &N, &DIM);
+	fscanf(input_file, "%d%d", &totalN, &DIM);
 
 	for (int i = 0 ; i < 3 ; i++)
 		lh_host[i] = 0.5;	
 
 	
-	X_host = new double[N * DIM];
-	labels_host = new double[N];
+	X_host = new double[totalN * DIM];
+	labels_host = new double[totalN];
 
+	N = numtrain;
+
+	printf("Reading inputs boy\n");
+	printf("Number of inputs = %d\n", totalN);
+ 
 	// Reading inputs
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i < totalN; i++)
 		for (int j = 0; j < DIM; j++)
 			fscanf(input_file, "%lf", &X_host[i * DIM + j]);
 
 	// Reading labels (target values)
-	for (int i = 0; i < N; i++) {
+	for (int i = 0; i < totalN; i++) {
                 fscanf(label_file, "%lf", &labels_host[i]);
         }
 	
-	cudacall(cudaMalloc(&X, sizeof(double) * N * DIM));
-	cudacall(cudaMemcpy(X, X_host, sizeof(double) * N * DIM, cudaMemcpyHostToDevice));	
+	printf("reading labels \n");
+	cudacall(cudaMalloc(&X, sizeof(double) * totalN * DIM));
+	cudacall(cudaMemcpy(X, X_host, sizeof(double) * totalN * DIM, cudaMemcpyHostToDevice));	
 
-	cudacall(cudaMalloc(&labels, sizeof(double) * N ));
-	cudacall(cudaMemcpy(labels, labels_host, sizeof(double) * N , cudaMemcpyHostToDevice));	
+	cudacall(cudaMalloc(&labels, sizeof(double) * totalN ));
+	cudacall(cudaMemcpy(labels, labels_host, sizeof(double) * totalN , cudaMemcpyHostToDevice));	
 	
 	cudacall(cudaMalloc(&loghyper, sizeof(double) * 3));
 	cudacall(cudaMemcpy(loghyper, lh_host, sizeof(double) * 3 , cudaMemcpyHostToDevice));	
+	
+	printf("Okay boy.. reading and malloc done\n\n");
 }
 
 void setup_loglikelihood_data()
@@ -967,7 +989,7 @@ void setup_gradienthp_data(){
 
 	// CHECK: if we can get away without this
 	cudacall(cudaMalloc(&identity, sizeof(double) * N *N));
-	cudacall(cudaMemset((void *)identity, 0.0, sizeof(double)));
+	cudacall(cudaMemset((void *)identity, 0.0, sizeof(double) * N * N));
 
 	threads_per_block = 512;
         number_of_blocks = upit(N , threads_per_block);
@@ -996,9 +1018,9 @@ void setup_TMI()
 	cudacall(cudaMalloc(&tmi_intermediate_output, sizeof(double) * N * N));
 }
 
-void setup()
+void setup( int numtrain)
 {
-	read_input_and_copy_to_GPU();
+	read_input_and_copy_to_GPU(numtrain);
 
 	setup_loglikelihood_data();
 
@@ -1412,6 +1434,30 @@ void compute_K_inverse()
 	backward_substitution_matrix<<<number_of_blocks, threads_per_block>>>(K, tempfsforkinv, Kinv, N); // kernel - need N threads
 	cudaThreadSynchronize();
 	
+}
+
+void compute_K_inverse_with_tmi()
+{
+	int threads_per_block, number_of_blocks;
+	
+	// make_identity(); -> did this in setup "identity" is a double *
+
+	get_cholesky(K, N); //Set of kernels, the answer (a lower triangular matrix) is stored 
+
+	get_inverse_by_tmi(K, N);
+
+	/*
+	threads_per_block = 512;
+	number_of_blocks = upit(N, threads_per_block);
+	forward_substitution_matrix<<<number_of_blocks, threads_per_block>>>(K, identity, tempfsforkinv, N); // kernel - need N threads
+	cudaThreadSynchronize();
+	
+	// matrix_transpose(); // kernel - Not NEEDED
+
+	// matrix_backward_substitution();
+	backward_substitution_matrix<<<number_of_blocks, threads_per_block>>>(K, tempfsforkinv, Kinv, N); // kernel - need N threads
+	cudaThreadSynchronize();
+	*/
 }
 
 /* We don't need this!
@@ -1964,8 +2010,9 @@ void compute_test_means_and_variances(){
         compute_K_train<<<number_of_blocks, threads_per_block>>>(X, K, loghyper, N, DIM); // populated in K
         cudaThreadSynchronize();
 	
-	//compute_K_inverse();
-	compute_K_inverse(); //populates Kinv with K.inverse()
+	//compute_K_inverse(); //populates Kinv with K.inverse()
+	// instead of compute_K_inverse, let's see if TMI is of help!!!
+	compute_K_inverse_with_tmi();	
 	
 	// vector_Kinvy_using_cholesky(); // set of kernels
 	// We don't need this: we already have Kinv, so we just need to multiply Kinv and y
@@ -1983,8 +2030,8 @@ void compute_test_means_and_variances(){
 	        number_of_blocks = upit( N, threads_per_block);
 		compute_K_test<<<number_of_blocks, threads_per_block>>>(X, Xtest + i * DIM, Ktest_vec, loghyper, N, DIM); //REUSE SOME ALREADY EXISTING MALLOC'ED 1D VECTOR
       		cudaThreadSynchronize();
-		
-		vector_dot_product<<<1, 1>>>(Ktest_vec, temp1dvec, tmeanvec + i, DIM); //for mean
+
+		vector_dot_product<<<1, 1>>>(Ktest_vec, temp1dvec, tmeanvec + i, N); //for mean
       		cudaThreadSynchronize();
 	
 		threads_per_block = 512;
@@ -1992,14 +2039,15 @@ void compute_test_means_and_variances(){
        		vector_matrix_multiply<<<number_of_blocks, threads_per_block>>>(Ktest_vec, Kinv, temp_fs, N); //REUSING temp_fs from likelihood computation
         	cudaThreadSynchronize();
 		
-		vector_dot_product_with_loghp<<<1, 1>>>(Ktest_vec, temp_fs, tvarvec + i, DIM, sig_var, noise_var ); //for variance
+		vector_dot_product_with_loghp<<<1, 1>>>(Ktest_vec, temp_fs, tvarvec + i, N, sig_var, noise_var ); //for variance
       		cudaThreadSynchronize();
+		
 	}
 }
 
 void get_negative_log_predprob(){
 	
-	double *finalans; //for device
+	double *finalans = new double; //for host
 	double *ans_nlpp;
 	cudacall(cudaMalloc(&ans_nlpp, sizeof(double) ));
 	
@@ -2007,5 +2055,28 @@ void get_negative_log_predprob(){
       	cudaThreadSynchronize();
 	
 	cudacall(cudaMemcpy(finalans, ans_nlpp,  sizeof(double), cudaMemcpyDeviceToHost));
-	printf("OKAY FINAL NLPP = %lf\n", finalans);
+	printf("OKAY FINAL NLPP = %lf\n", *finalans);
+}
+
+void testing_phase(int offset, int numtest){
+
+	printf("---------------------------------------\n");
+	printf("TRYING TO START TESTING PHASE\n");	
+	printf("---------------------------------------\n");
+	//setup THINGS
+	setup_for_testing(offset, numtest);
+	
+	printf("\n---------------------------------------\n");
+	printf("TRYING TO Start compute_test_means PHASE\n");	
+	printf("---------------------------------------\n");
+	// Now calling testing phase
+	compute_test_means_and_variances();
+
+		
+	printf("\n---------------------------------------\n");
+	printf("Now result time\n");	
+	printf("---------------------------------------\n");
+	// actual answer time
+	get_negative_log_predprob();
+	
 }
