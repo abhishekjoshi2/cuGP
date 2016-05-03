@@ -18,6 +18,8 @@ void cg_solve(char *);
 
 void test_tmi();
 
+int worker_id = 0;
+
 std::vector<int> worker_conn_fds;
 int total_workers = 4;
 
@@ -72,6 +74,7 @@ int main(int argc, char *argv[])
 	socklen_t clientlen;
 	struct sockaddr_storage clientaddr;
 	char *common_port = "15618";
+	int worker_id_counter = 0;
 
 	listenfd = Open_listenfd (common_port);
 
@@ -92,6 +95,9 @@ int main(int argc, char *argv[])
 			printf ("Accepted connection from (%s, %s). Connfd is %d\n", hostname, port, connfd);
 
 			worker_conn_fds.push_back(connfd);
+
+			int new_worker_id = i + 1;
+			Rio_writen (connfd, (void *)&new_worker_id, sizeof(int));
 		}
 	}
 	else
@@ -99,6 +105,10 @@ int main(int argc, char *argv[])
 		connfd = Open_clientfd ("10.22.1.242", common_port);
 
 		printf("Host %s connected to master, connfd is %d\n", argv[1], connfd);
+
+		Rio_readn (connfd, (void *)&worker_id, sizeof(int));
+
+		printf("Host %s got worker id as %d\n", argv[1], worker_id);
 	}
 
 	if (strcmp(argv[1], "compute-0-27.local") == 0)
