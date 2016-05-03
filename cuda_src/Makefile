@@ -71,5 +71,8 @@ cg_solver.o: cg_solver.cpp
 cholesky_cu_solver: cholesky_cu_solver.cpp
 	g++ -m64 $(CXXFLAGS) -o cholesky_cu_solver cholesky_cu_solver.cpp -I/usr/local/cuda/include $(LDFLAGS) $(LDLIBS) -lcusolver $(LDFRAMEWORKS)
 
+cublas_matmul: cublas_matrix_multiply.cpp
+	g++ -m64 $(CXXFLAGS) -o cublas_matmul cublas_matrix_multiply.cpp -I/usr/local/cuda/include $(LDFLAGS) $(LDLIBS) -lcusolver -lcublas  $(LDFRAMEWORKS)
+
 tmi_cu_solver: tmi_cu_solver.cpp
 	g++ -m64 $(CXXFLAGS) -o tmi_cu_solver tmi_cu_solver.cpp -I/usr/local/cuda/include $(LDFLAGS) $(LDLIBS) -lcusolver -lcublas $(LDFRAMEWORKS)
