@@ -1,6 +1,6 @@
 EXECUTABLE := gp
 
-EXECUTABLES := gp multinode_mpi_sample
+EXECUTABLES := gp multinode_mpi_sample tmi_cu_solver sample_socket_comm cholesky_cu_solver
 
 CU_FILES   := #cudaRenderer.cu
 
@@ -12,8 +12,9 @@ LOGS	   := logs
 
 ARCH=$(shell uname | sed -e 's/-.*//g')
 OBJDIR=objs
-CXX=/usr/lib64/openmpi/bin/mpic++
-MPIRUN=/usr/lib64/openmpi/bin/mpirun
+#CXX=/usr/lib64/openmpi/bin/mpic++
+#MPIRUN=/usr/lib64/openmpi/bin/mpirun
+CXX=g++ -m64
 
 CXXFLAGS=-O3 -Wall -g
 HOSTNAME=$(shell hostname)
@@ -41,7 +42,7 @@ LDFRAMEWORKS := $(addprefix -framework , $(FRAMEWORKS))
 
 NVCC=nvcc
 
-OBJS=main.o cuda_gp.o cg_solver.o
+OBJS=main.o cuda_gp.o cg_solver.o csapp.o
 
 .PHONY: clean
 
@@ -73,3 +74,12 @@ cholesky_cu_solver: cholesky_cu_solver.cpp
 
 tmi_cu_solver: tmi_cu_solver.cpp
 	g++ -m64 $(CXXFLAGS) -o tmi_cu_solver tmi_cu_solver.cpp -I/usr/local/cuda/include $(LDFLAGS) $(LDLIBS) -lcusolver -lcublas $(LDFRAMEWORKS)
+
+sample_socket_comm: sample_socket_comm.o csapp.o
+	g++ -m64 $(CXXFLAGS) -o sample_socket_comm sample_socket_comm.o csapp.o $(LDFLAGS) $(LDLIBS) $(LDFRAMEWORKS)
+
+csapp.o: csapp.cpp
+	g++ -m64 -c $(CXXFLAGS) -o csapp.o csapp.cpp
+
+sample_socket_comm.o: sample_socket_comm.cpp
+	g++ -m64 -c $(CXXFLAGS) -o sample_socket_comm.o sample_socket_comm.cpp
