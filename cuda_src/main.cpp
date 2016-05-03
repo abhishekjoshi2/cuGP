@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <iostream>
+#include <vector>
 #include <cstdlib>
-#include <mpi.h>
+//#include <mpi.h>
 #include "../common/opcodes.h"
+#include "csapp.h"
 
 void run_kernel();
 
@@ -12,54 +14,53 @@ void test_matrix_mult();
 
 void setup();
 
-void cg_solve();
+void cg_solve(char *);
 
 void test_tmi();
 
-int num_nodes, rank;
+int worker_id = 0;
 
-void *accept_commands(void *arg)
+std::vector<int> worker_conn_fds;
+int total_workers = 4;
+
+void *accept_commands(char *hostname, int connfd)
 {
 	int opcode;
 
 	while (1)
 	{
-		printf("Node %d waiting for a command\n", rank);
-		MPI::COMM_WORLD.Recv(&opcode, 1, MPI_INT, 0, 1);
+		printf("Node %s waiting for a command\n", hostname);
+		Rio_readn (connfd, (void *)&opcode, sizeof(int));
+
 		switch (opcode)
 		{
 			case COMPUTE_LOG_LIKELIHOOD:
 				{
-					printf("Node %d will start computing log likelihood\n", rank);
-					//MPI::COMM_WORLD.Barrier();
+					printf("Node %s will start computing log likelihood\n", hostname);
 					break;
 				}
 
 			case COMPUTE_GRADIENT_LOG_HYPERPARAMS:
 				{
-					printf("Node %d will start computing gradient log hyperparams\n", rank);
-					//MPI::COMM_WORLD.Barrier();
+					printf("Node %s will start computing gradient log hyperparams\n", hostname);
 					break;
 				}
 
 			case GET_LOGHYPERPARAMS:
 				{
-					printf("Node %d will start computing gradient log hyperparams\n", rank);
-					//MPI::COMM_WORLD.Barrier();
+					printf("Node %s will start computing gradient log hyperparams\n", hostname);
 					break;
 				}
 
 			case SET_LOGHYPERPARAMS:
 				{
-					printf("Node %d expecing log hyperparams to be set\n", rank);
-					//MPI::COMM_WORLD.Barrier();
+					printf("Node %s expecing log hyperparams to be set\n", hostname);
 					break;
 				}
 
 			case DONE:
 				{
-					printf("Node %d got DONE message. Return!\n", rank);
-					//MPI::COMM_WORLD.Barrier();
+					printf("Node %s got DONE message. Return!\n", hostname);
 					return NULL;
 				}
 		}
@@ -68,71 +69,60 @@ void *accept_commands(void *arg)
 
 int main(int argc, char *argv[])
 {
-	/* char hostname[MPI_MAX_PROCESSOR_NAME];
-	int len;
-	pthread_t listener_thread;
-	int done_opcode = DONE;
+	int listenfd, connfd;
+	char hostname[MAXLINE], port[MAXLINE];
+	socklen_t clientlen;
+	struct sockaddr_storage clientaddr;
+	char *common_port = "15618";
+	int worker_id_counter = 0;
 
-	MPI::Init(argc, argv);
-	rank = MPI::COMM_WORLD.Get_rank();
-	num_nodes = MPI::COMM_WORLD.Get_size();
+	listenfd = Open_listenfd (common_port);
 
-	memset(hostname,0,MPI_MAX_PROCESSOR_NAME);
-	MPI::Get_processor_name(hostname,len);
-	memset(hostname+len,0,MPI_MAX_PROCESSOR_NAME-len);
+	sleep(5);
 
-	printf("Rank is %d and num_nodes is %d and hostname is %s\n", rank, num_nodes, hostname);
+	printf("Hostname %s is listening on port %s with listenfd = %d\n", argv[1], common_port, listenfd);
 
-	int val = 5;
-	for (int i = 0; i < 10; i++)
+	if (strcmp(argv[1], "compute-0-27.local") == 0)
 	{
-		if (rank == 0)
+		for (int i = 0; i < total_workers - 1; i++)
 		{
-			for (int j = 1; j < num_nodes; j++)
-			{
-				printf("Node 0 sending %d to node %d\n", val, j);
-				MPI::COMM_WORLD.Send(&val, 1, MPI_INT, j, 1);
-			}
-		}
-		else
-		{
-			printf("Node %d trying to receive from node 0\n", rank);
-			MPI::COMM_WORLD.Recv(&val, 1, MPI_INT, 0, 1);
-		}
-	}
-	if (rank == 0)
-	{
-		printf("Node 0 polling for commands\n");
-		pthread_create(&listener_thread, NULL, accept_commands, NULL);
-		printf("Node %d running cg_solve\n", rank);
+			clientlen = sizeof (clientaddr);
 
-		cg_solve();
+			// accept connections 
+			connfd = Accept (listenfd, (SA *) & clientaddr, &clientlen);
+			Getnameinfo ((SA *) & clientaddr, clientlen, hostname, MAXLINE,
+					port, MAXLINE, 0);
+			printf ("Accepted connection from (%s, %s). Connfd is %d\n", hostname, port, connfd);
 
-		printf("Solver done! Now tell everyone job is done.\n");
-		for (int i = num_nodes - 1; i >= 0; i--)
-		{
-			MPI::COMM_WORLD.Send(&done_opcode, 1, MPI_INT, i, 1);
+			worker_conn_fds.push_back(connfd);
+
+			int new_worker_id = i + 1;
+			Rio_writen (connfd, (void *)&new_worker_id, sizeof(int));
 		}
 	}
 	else
 	{
-		printf("Node %d skipping cg_solve and polling for commands\n", rank);
-		accept_commands(NULL);
-	} 
-	MPI::Finalize(); */
+		connfd = Open_clientfd ("10.22.1.242", common_port);
 
-void setup_for_timing_cholesky(int);
-int main()
-{
-	//setup_for_timing_cholesky(2000);
-	
-	/*
-	setup(); //setting all the hyperparameters
+		printf("Host %s connected to master, connfd is %d\n", argv[1], connfd);
 
-	cg_solve();
-	*/
-	 test_tmi();
-	//test_matrix_mult();
-	// run_gp();
+		Rio_readn (connfd, (void *)&worker_id, sizeof(int));
+
+		printf("Host %s got worker id as %d\n", argv[1], worker_id);
+	}
+
+	if (strcmp(argv[1], "compute-0-27.local") == 0)
+	{
+		printf("Master calling cg_solve()\n");
+
+		setup();
+		cg_solve(argv[1]);
+	}
+	else
+	{
+		printf("Worker skipping cg_solve(), instead calling accept_commands\n");
+		accept_commands(argv[1], connfd);
+	}
+
 	return 0;
 }

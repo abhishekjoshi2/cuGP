@@ -4,24 +4,25 @@
 #include <cublas_v2.h>
 #include "../common/cycleTimer.h"
 #define IDX2C(i,j,ld) (((j)*(ld))+(i))
-#define m 2048 // a - mxm matrix
-#define n 2048 // b,x - mxn matrices
+#define m 4096 // a - mxm matrix
+#define n 4096 // b,x - mxn matrices
+
 int main ( void ){
 	cudaError_t cudaStat ; // cudaMalloc status
 	cublasStatus_t stat ; // CUBLAS functions status
 	cublasHandle_t handle ; // CUBLAS context
 	int i,j; // i-row index , j-col. index
-	float * a; // mxm matrix a on the host
-	float * b; // mxn matrix b on the host
-	a=( float *) malloc (m*m* sizeof ( float )); // host memory for a
+	double * a; // mxm matrix a on the host
+	double * b; // mxn matrix b on the host
+	a=( double *) malloc (m*m* sizeof ( double )); // host memory for a
 
-	b=( float *) malloc (m*n* sizeof ( float )); // host memory for b
+	b=( double *) malloc (m*n* sizeof ( double )); // host memory for b
 
 	int ind =11; // a:
 	for(j=0;j<m;j ++){ // 11
 		for(i=0;i<m;i ++){ // 12 ,17
 			if(i >=j){ // 13 ,18 ,22
-				a[ IDX2C(i,j,m)]=( float )ind ++; // 14 ,19 ,23 ,26
+				a[ IDX2C(i,j,m)]=( double )ind ++; // 14 ,19 ,23 ,26
 			} // 15 ,20 ,24 ,27 ,29
 		} // 16 ,21 ,25 ,28 ,30 ,31
 	}
@@ -37,10 +38,11 @@ int main ( void ){
 	ind =11; // b:
 	for(j=0;j<n;j ++){ // 11 ,17 ,23 ,29 ,35
 		for(i=0;i<m;i ++){ // 12 ,18 ,24 ,30 ,36
-			if(i == j)
+			b[ IDX2C(i,j,m)] = ind++;
+			/*if(i == j)
 			b[ IDX2C(i,j,m)] = 1.0; // 13 ,19 ,25 ,31 ,37
 			else 
-			b[ IDX2C(i, j, m)] = 0.0;
+			b[ IDX2C(i, j, m)] = 0.0;*/
 			//ind ++; // 14 ,20 ,26 ,32 ,38
 		} // 15 ,21 ,27 ,33 ,39
 	} // 16 ,22 ,28 ,34 ,40
@@ -52,8 +54,8 @@ int main ( void ){
 		printf ("\n");
 	} */
 
-	float * d_a; // d_a - a on the device
-	float * d_b; // d_b - b on the device
+	double * d_a; // d_a - a on the device
+	double * d_b; // d_b - b on the device
 	cudaStat = cudaMalloc (( void **)& d_a ,m*m* sizeof (*a)); // device
 	// memory alloc for a
 	cudaStat = cudaMalloc (( void **)& d_b ,m*n* sizeof (*b)); // device
@@ -62,11 +64,11 @@ int main ( void ){
 
 	stat = cublasSetMatrix (m,m, sizeof (*a) ,a,m,d_a ,m); //a -> d_a
 	stat = cublasSetMatrix (m,n, sizeof (*b) ,b,m,d_b ,m); //b -> d_b
-	float al =1.0f;
+	double al =1.0f;
 
 	double startime = CycleTimer::currentSeconds();
-	stat=cublasStrsm(handle,CUBLAS_SIDE_LEFT,CUBLAS_FILL_MODE_LOWER,
-			CUBLAS_OP_N,CUBLAS_DIAG_NON_UNIT,m,n,&al,d_a,m,d_b,m);
+	(cublasDtrsm(handle,CUBLAS_SIDE_LEFT,CUBLAS_FILL_MODE_LOWER,
+			CUBLAS_OP_N,CUBLAS_DIAG_NON_UNIT,m,n,&al,d_a,m,d_b,m));
 	stat = cublasGetMatrix (m,n, sizeof (*b) ,d_b ,m,b,m); // d_b -> b
 	double endtime = CycleTimer::currentSeconds();
 	/* printf (" solution x from Strsm :\n");

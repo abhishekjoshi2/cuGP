@@ -1,9 +1,11 @@
 #include <stdio.h>
+#include <vector>
 #include<iostream>
 #include<cstdlib>
 #include "./Eigen/Dense"
-#include <mpi.h>
+//#include <mpi.h>
 
+#include "csapp.h"
 #include "./Eigen/src/Core/util/DisableStupidWarnings.h"
 #include "../common/opcodes.h"
 
@@ -12,54 +14,66 @@ void compute_gradient_log_hyperparams(double *);
 double *get_loghyperparam();
 void set_loghyper_eigen(Eigen::VectorXd initval);
 
-extern int num_nodes;
+extern int total_workers;
+extern std::vector<int> worker_conn_fds;
 
 void compute_log_likelihood_multinode()
 {
-	return;
 	int ll_opcode = COMPUTE_LOG_LIKELIHOOD;
-	for (int i = 1; i < num_nodes; i++)
+	for (int i = 0; i < total_workers - 1; i++)
 	{
-		printf("Tell node %d to compute log likelihood\n", i);
-		MPI::COMM_WORLD.Send(&ll_opcode, 1, MPI_INT, i, 1);
+		printf("Tell worker %d to compute log likelihood\n", i);
+
+		Rio_writen (worker_conn_fds[i], (void *)&ll_opcode, sizeof(int));
 	}
 }
 
 void compute_gradient_log_hyperparams_multinode(double *arg)
 {
-	return;
 	int gradient_loghyper_opcode = COMPUTE_GRADIENT_LOG_HYPERPARAMS;
-	for (int i = 1; i < num_nodes; i++)
+	for (int i = 0; i < total_workers - 1; i++)
 	{
-		printf("Tell node %d to compute log hyperparams\n", i);
-		MPI::COMM_WORLD.Send(&gradient_loghyper_opcode, 1, MPI_INT, i, 1);
+		printf("Tell worker %d to compute log hyperparams\n", i);
+
+		Rio_writen (worker_conn_fds[i], (void *)&gradient_loghyper_opcode, sizeof(int));
 	}
 }
 
 double *get_loghyperparam_multinode()
 {
-	return NULL;
 	int get_loghyper_opcode = GET_LOGHYPERPARAMS;
-	for (int i = 1; i < num_nodes; i++)
+	for (int i = 0; i < total_workers - 1; i++)
 	{
-		printf("Tell node %d to get log hyperparams\n", i);
-		MPI::COMM_WORLD.Send(&get_loghyper_opcode, 1, MPI_INT, i, 1);
+		printf("Tell worker %d to get log hyperparams\n", i);
+
+		Rio_writen (worker_conn_fds[i], (void *)&get_loghyper_opcode, sizeof(int));
 	}
 	return NULL;
 }
 
 void set_loghyper_eigen_multinode(Eigen::VectorXd initval)
 {
-	return;
 	int set_loghyper_opcode = SET_LOGHYPERPARAMS;
-	for (int i = 1; i < num_nodes; i++)
+	for (int i = 0; i < total_workers - 1; i++)
 	{
 		printf("Tell node %d to set log hyperparams\n", i);
-		MPI::COMM_WORLD.Send(&set_loghyper_opcode, 1, MPI_INT, i, 1);
+
+		Rio_writen (worker_conn_fds[i], (void *)&set_loghyper_opcode, sizeof(int));
 	}
 }
 
-void cg_solve()
+void send_done_message()
+{
+	int done_opcode = DONE;
+	for (int i = 0; i < total_workers - 1; i++)
+	{
+		printf("Tell node %d we are done!\n", i);
+
+		Rio_writen (worker_conn_fds[i], (void *)&done_opcode, sizeof(int));
+	}
+}
+
+void cg_solve(char *hostname)
 {
 	const double INT = 0.1; // don't reevaluate within 0.1 of the limit of the current bracket
 	const double EXT = 3.0; // extrapolate maximum 3 times the current step-size
@@ -116,7 +130,6 @@ get_loghyperparam_multinode();
 		unsigned int M = std::min(MAX, (int)(n-i));
 		while(1)											//keep extrapolating until necessary
 		{
-		
 			x2 = 0;
 			f2 = f0;
 			d2 = d0;
@@ -286,7 +299,9 @@ compute_gradient_log_hyperparams_multinode(df3_temp);
 
 	}
 	printkeliye = X;
-	printf("\n\n PLEASE-SEE  3: %lf, %lf, %lf\n\n", printkeliye[0], printkeliye[1], printkeliye[2]);
+	printf("\n\n%s: PLEASE-SEE  3: %lf, %lf, %lf\n\n", hostname, printkeliye[0], printkeliye[1], printkeliye[2]);
 	set_loghyper_eigen(X);
 set_loghyper_eigen_multinode(X);
+	
+	send_done_message();
 }

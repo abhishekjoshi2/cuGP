@@ -1,9 +1,26 @@
 #!/bin/bash
 
+JOBNAME=$PBS_JOBID
+
 cd $PBS_O_WORKDIR
 PATH=$PATH:$PBS_O_PATH
+
+USERNAME=`whoami`
+MASTER=`head -n1 $PBS_NODEFILE`
+NODES=`sort -u $PBS_NODEFILE`
+
 . ~/.bashrc
 . ~/.bash_profile
+
+echo $PBS_NODEFILE > nodes
+
+echo "Username is " $USERNAME
+echo "Master is " $MASTER
+echo "List of nodes is " $NODES
+echo "Also check out the nodes file"
+
+echo "Spawning process on $HOSTNAME ($PBS_NODENUM of $PBS_NUM_NODES)"
+
 HOST=`hostname`
 
 echo "Hostname is " $HOST
@@ -15,4 +32,6 @@ module load gcc-4.9.2
 #fi
 # cuda-memcheck ./gp
 
-./cublas_matmul
+#./cublas_matmul
+#cuda-memcheck ./gp
+./gp $HOSTNAME > $HOSTNAME.log
