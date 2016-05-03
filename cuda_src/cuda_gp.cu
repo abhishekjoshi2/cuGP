@@ -15,7 +15,6 @@
 #define INPUT_FILE "../cpp_serial_gp/input_128.txt"
 #define LABEL_FILE "../cpp_serial_gp/label_128.txt"
 
-#define filename "sym5000.txt"
 
 #define BLOCK_SIZE 32
 
@@ -63,6 +62,15 @@ double *identity; // for gradient of hp
 // N is the number of training samples, and DIM is the number of parameters
 int N, DIM;
 
+
+
+int Ntest; //Ntest is the number of test samples
+double *Xtest;
+double *labelstest;
+double *tmeanvec;
+double *tvarvec;
+double *Ktest_vec;
+
 // For actual TMI
 double *tmi_intermediate_output;
 
@@ -84,6 +92,15 @@ double *tmi_playground;
 double *get_loghyperparam();
 
 
+__global__ void compute_NLPP(double *actualtestlabels, double * predicted_testmean, double *predicted_testvar, int Ntest, double * ans_nlpp){
+        double ans = 0.0;
+        for(int i = 0; i < Ntest; i++) {
+                double val = 0.5 * log(6.283185 * predicted_testvar[i]) + pow( (predicted_testmean[i] - actualtestlabels[i]) , 2) / (2 * predicted_testvar[i]);
+                ans += val;
+        }
+        *ans_nlpp = ans / Ntest;
+
+}
 __global__ void lowertriangular_matrixmultiply_noshare(double *a, double *output, int size)
 {
 
@@ -103,6 +120,21 @@ __global__ void lowertriangular_matrixmultiply_noshare(double *a, double *output
         output[row * size + col] = sum;
 }
 
+//FIXME: can do a shared memory reduce
+__global__ void vector_dot_product_with_loghp(double *x1, double *x2, double *ans, int N, double noisevar, double sigvar){
+
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	if (i_index >= 1)
+		return;
+
+	double val = 0.0;
+	for(int i = 0; i < N; i++) {
+		val += (x1[i]*x2[i]);
+	}
+	*ans = -val + noisevar + sigvar;
+}
 
 //FIXME: can do a shared memory reduce
 __global__ void vector_dot_product(double *x1, double *x2, double *ans, int N){
@@ -596,6 +628,31 @@ compute_K_train(double *M, double *K_output, double *loghyper, int n, int dim) {
 	K_output[M_row * n + M_col] = K_output[M_col * n + M_row] = dot_product;
 }
 
+__global__ void
+compute_K_test(double *M, double *testsample, double *ktest_output_vector, double *loghyper, int n, int dim) {
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	if (i_index >= n ) return;
+
+	double ell_sq = exp(loghyper[0] * 2); //l^2 after coverting back from the log form
+	double signal_var = exp(loghyper[1] * 2); // signal variance
+	double noise_var = exp(loghyper[2] * 2); //noise variance
+
+	double dot_product = 0.0;
+
+
+	for (int i = 0; i < dim; i++){
+		double val1 = M[i_index * dim + i];
+		double val2 = testsample[i];
+		dot_product += (val1 - val2) * (val1 - val2);
+	}
+
+	dot_product = signal_var * exp(-dot_product * 0.5 / ell_sq);
+
+	ktest_output_vector[i_index] = dot_product;
+}
+
 __global__ void matrix_vector_multiply(double *M, double *x, double *output, int size) {
 	
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
@@ -606,6 +663,20 @@ __global__ void matrix_vector_multiply(double *M, double *x, double *output, int
 	double ans = 0.0;
 	for(int i = 0; i < size; i++){
 		ans += M[i_index * size + i] * x[i];
+	}
+	output[i_index] = ans;
+}
+
+__global__ void vector_matrix_multiply(double *x, double *M, double *output, int size) {
+	
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	if (i_index >= size) return;
+	
+	double ans = 0.0;
+	for(int i = 0; i < size; i++){
+		ans += M[i * size + i_index] * x[i];
 	}
 	output[i_index] = ans;
 }
@@ -1869,3 +1940,72 @@ void get_inverse_by_tmi(double *lower_triangular_mat, int ltm_dim)
 	}
 	printf("Total sum: %lf\n", total_sum);
 } 
+
+void setup_for_testing(int offset, int numtest){
+	Xtest = X + DIM * offset;
+	labelstest = labels + offset;
+	Ntest = numtest;	
+	
+	cudacall(cudaMalloc(&tmeanvec, sizeof(double) * Ntest));
+	cudacall(cudaMalloc(&tvarvec, sizeof(double) * Ntest));
+	
+	//Remember Ktest_vec should have size = N, not Ntest
+	cudacall(cudaMalloc(&Ktest_vec, sizeof(double) * N));
+
+}
+
+//compute_test_means_and_variances is a set of kernels
+void compute_test_means_and_variances(){
+	int threads_per_block, number_of_blocks;
+
+	//Maybe can move the compute_K_train to setup in SCHEDULER-vala (THINK ABOUT IT SID)
+        threads_per_block = 512;
+        number_of_blocks = upit((N * N), threads_per_block);
+        compute_K_train<<<number_of_blocks, threads_per_block>>>(X, K, loghyper, N, DIM); // populated in K
+        cudaThreadSynchronize();
+	
+	//compute_K_inverse();
+	compute_K_inverse(); //populates Kinv with K.inverse()
+	
+	// vector_Kinvy_using_cholesky(); // set of kernels
+	// We don't need this: we already have Kinv, so we just need to multiply Kinv and y
+        threads_per_block = 512;
+        number_of_blocks = upit( N, threads_per_block);
+	matrix_vector_multiply<<<number_of_blocks, threads_per_block>>>(Kinv, labels, temp1dvec, N); //so temp1dvec gets populated
+      	cudaThreadSynchronize();
+
+	
+	double sig_var = exp(lh_host[1] * 2); //signal variance
+	double noise_var = exp(lh_host[2] * 2); //noise variance
+	for(int i = 0; i < Ntest; i++){
+
+        	threads_per_block = 512;
+	        number_of_blocks = upit( N, threads_per_block);
+		compute_K_test<<<number_of_blocks, threads_per_block>>>(X, Xtest + i * DIM, Ktest_vec, loghyper, N, DIM); //REUSE SOME ALREADY EXISTING MALLOC'ED 1D VECTOR
+      		cudaThreadSynchronize();
+		
+		vector_dot_product<<<1, 1>>>(Ktest_vec, temp1dvec, tmeanvec + i, DIM); //for mean
+      		cudaThreadSynchronize();
+	
+		threads_per_block = 512;
+	        number_of_blocks = upit(N, threads_per_block);
+       		vector_matrix_multiply<<<number_of_blocks, threads_per_block>>>(Ktest_vec, Kinv, temp_fs, N); //REUSING temp_fs from likelihood computation
+        	cudaThreadSynchronize();
+		
+		vector_dot_product_with_loghp<<<1, 1>>>(Ktest_vec, temp_fs, tvarvec + i, DIM, sig_var, noise_var ); //for variance
+      		cudaThreadSynchronize();
+	}
+}
+
+void get_negative_log_predprob(){
+	
+	double *finalans; //for device
+	double *ans_nlpp;
+	cudacall(cudaMalloc(&ans_nlpp, sizeof(double) ));
+	
+	compute_NLPP<<<1, 1>>>(labelstest, tmeanvec, tvarvec, Ntest, ans_nlpp);
+      	cudaThreadSynchronize();
+	
+	cudacall(cudaMemcpy(finalans, ans_nlpp,  sizeof(double), cudaMemcpyDeviceToHost));
+	printf("OKAY FINAL NLPP = %lf\n", finalans);
+}
