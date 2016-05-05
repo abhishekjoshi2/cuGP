@@ -39,24 +39,49 @@ void *accept_commands(char *hostname, int connfd)
 			case COMPUTE_LOG_LIKELIHOOD:
 				{
 					printf("Node %s will start computing log likelihood\n", hostname);
+					
+					double ll = compute_log_likelihood();
+
+					Rio_writen (connfd, (void *)&ll, sizeof(double));
 					break;
 				}
 
 			case COMPUTE_GRADIENT_LOG_HYPERPARAMS:
 				{
 					printf("Node %s will start computing gradient log hyperparams\n", hostname);
+
+					double grads[3];
+
+					compute_gradient_log_hyperparams(grads);
+
+					Rio_writen (connfd, (void *)&grads[0], sizeof(double));
+					Rio_writen (connfd, (void *)&grads[1], sizeof(double));
+					Rio_writen (connfd, (void *)&grads[2], sizeof(double));
 					break;
 				}
 
 			case GET_LOGHYPERPARAMS:
 				{
-					printf("Node %s will start computing gradient log hyperparams\n", hostname);
+					printf("Node %s will start returning log hyperparams\n", hostname);
+
+					double log_hyperparams = 0.5;
+
+					// send the same value thrice
+					Rio_writen (connfd, (void *)&log_hyperparams, sizeof(double));
+					Rio_writen (connfd, (void *)&log_hyperparams, sizeof(double));
+					Rio_writen (connfd, (void *)&log_hyperparams, sizeof(double));
 					break;
 				}
 
 			case SET_LOGHYPERPARAMS:
 				{
 					printf("Node %s expecing log hyperparams to be set\n", hostname);
+					double new_log_hyperparams[3];
+
+					Rio_readn (connfd, (void *)&new_log_hyperparams[0], sizeof(double));
+					Rio_readn (connfd, (void *)&new_log_hyperparams[1], sizeof(double));
+					Rio_readn (connfd, (void *)&new_log_hyperparams[2], sizeof(double));
+
 					break;
 				}
 

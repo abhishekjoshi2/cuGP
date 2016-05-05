@@ -17,7 +17,7 @@ void set_loghyper_eigen(Eigen::VectorXd initval);
 extern int total_workers;
 extern std::vector<int> worker_conn_fds;
 
-void compute_log_likelihood_multinode()
+double compute_log_likelihood_multinode()
 {
 	int ll_opcode = COMPUTE_LOG_LIKELIHOOD;
 	for (int i = 0; i < total_workers - 1; i++)
@@ -25,7 +25,24 @@ void compute_log_likelihood_multinode()
 		printf("Tell worker %d to compute log likelihood\n", i);
 
 		Rio_writen (worker_conn_fds[i], (void *)&ll_opcode, sizeof(int));
+
 	}
+	// TODO now call getll on self
+	double ll_sum;
+
+	ll_sum = compute_log_likelihood();
+
+	for (i = 0; i < total_workers - 1; i++)
+	{
+		double ll = 0.0;
+
+		Rio_readn (worker_conn_fds[i], (void *)&ll, sizeof(double));
+		printf("Got %lf as log likelihood from node %d\n", ll, i);
+		ll_sum += ll;
+	}
+	printf("Final ll_sum is %lf\n", ll_sum);
+
+	return ll_sum;
 }
 
 void compute_gradient_log_hyperparams_multinode(double *arg)
@@ -36,7 +53,25 @@ void compute_gradient_log_hyperparams_multinode(double *arg)
 		printf("Tell worker %d to compute log hyperparams\n", i);
 
 		Rio_writen (worker_conn_fds[i], (void *)&gradient_loghyper_opcode, sizeof(int));
+
 	}
+	// TODO now call compute_grad_log_hyperparams on self
+	compute_gradient_log_hyperparams(arg);
+
+	for (int i = 0; i < total_workers - 1; i++)
+	{
+		double grad1, grad2, grad3;
+
+		Rio_readn (worker_conn_fds[i], (void *)&grad1, sizeof(double));
+		Rio_readn (worker_conn_fds[i], (void *)&grad2, sizeof(double));
+		Rio_readn (worker_conn_fds[i], (void *)&grad3, sizeof(double));
+
+		printf("Got %lf, %lf, %lf as gradient log hyperparams from node %d\n", grad1, grad2, grad3, i);
+		arg[0] += grad1;
+		arg[1] += grad2;
+		arg[2] += grad3;
+	}
+	printf("Final gradients of log hyperparams are %lf, %lf, %lf\n", arg[0], arg[1], arg[2]);
 }
 
 double *get_loghyperparam_multinode()
@@ -48,17 +83,44 @@ double *get_loghyperparam_multinode()
 
 		Rio_writen (worker_conn_fds[i], (void *)&get_loghyper_opcode, sizeof(int));
 	}
-	return NULL;
+
+	static double log_hyperparams[3] = {0.5, 0.5, 0.5};
+	for (int i = 0; i < total_workers - 1; i++)
+	{
+		double log_hyperparams_temp[3];
+
+		Rio_readn (worker_conn_fds[i], (void *)&log_hyperparams_temp[0], sizeof(double));
+		Rio_readn (worker_conn_fds[i], (void *)&log_hyperparams_temp[1], sizeof(double));
+		Rio_readn (worker_conn_fds[i], (void *)&log_hyperparams_temp[2], sizeof(double));
+		
+		printf("Got %lf, %lf, %lf as log hyperparams from node %d\n", log_hyperparams_temp[0], log_hyperparams_temp[1], log_hyperparams_temp[2], i);
+
+		log_hyperparams[0] += log_hyperparams_temp[0];
+		log_hyperparams[1] += log_hyperparams_temp[1];
+		log_hyperparams[2] += log_hyperparams_temp[2];
+	}
+
+	printf("Final log hyperparams are %lf, %lf, %lf\n", log_hyperparams[0], log_hyperparams[1], log_hyperparams[2]);
+	return log_hyperparams;
 }
 
 void set_loghyper_eigen_multinode(Eigen::VectorXd initval)
 {
 	int set_loghyper_opcode = SET_LOGHYPERPARAMS;
+	double new_loghyper_params[3];
+
+	set_loghyper_eigen(initval);
+
+	for (int i = 0; i < 3; i++)
+		new_loghyper_params[i] = initval[i];
+
 	for (int i = 0; i < total_workers - 1; i++)
 	{
 		printf("Tell node %d to set log hyperparams\n", i);
 
-		Rio_writen (worker_conn_fds[i], (void *)&set_loghyper_opcode, sizeof(int));
+		Rio_writen (worker_conn_fds[i], (void *)&new_loghyper_params[0], sizeof(int));
+		Rio_writen (worker_conn_fds[i], (void *)&new_loghyper_params[1], sizeof(int));
+		Rio_writen (worker_conn_fds[i], (void *)&new_loghyper_params[2], sizeof(int));
 	}
 }
 
