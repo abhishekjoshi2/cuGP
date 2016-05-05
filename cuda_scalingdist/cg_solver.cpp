@@ -108,16 +108,16 @@ void compute_gradient_log_hyperparams_multinode(double *arg)
 double *get_loghyperparam_multinode()
 {
 	int get_loghyper_opcode = GET_LOGHYPERPARAMS;
-	for (int i = 0; i < total_workers - 1; i++)
+	/* for (int i = 0; i < total_workers - 1; i++)
 	{
 		printf("\n\n");
 		printf("Tell worker %d to get log hyperparams\n", i);
 
 		Rio_writen (worker_conn_fds[i], (void *)&get_loghyper_opcode, sizeof(int));
-	}
+	} */
 
-	//static double log_hyperparams[3] = {0.5, 0.5, 0.5};
-	double *log_hyperparams = get_loghyperparam();
+	static double log_hyperparams[3] = {0.5, 0.5, 0.5};
+	/* double *log_hyperparams = get_loghyperparam();
 	for (int i = 0; i < total_workers - 1; i++)
 	{
 		double log_hyperparams_temp[3];
@@ -131,7 +131,7 @@ double *get_loghyperparam_multinode()
 		log_hyperparams[0] += log_hyperparams_temp[0];
 		log_hyperparams[1] += log_hyperparams_temp[1];
 		log_hyperparams[2] += log_hyperparams_temp[2];
-	}
+	} */
 
 	printf("Final log hyperparams are %lf, %lf, %lf\n", log_hyperparams[0], log_hyperparams[1], log_hyperparams[2]);
 	return log_hyperparams;

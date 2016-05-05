@@ -57,5 +57,3 @@ IPprefix="../chunked_dataset/si32_chunk"
 LAprefix="../chunked_dataset/si32_label"
 
 ./gp $HOSTNAME $MASTER $PBS_NUM_NODES $Numchunks $Numtrain $Dimensions $IPprefix $LAprefix > $HOSTNAME.log
-
-
