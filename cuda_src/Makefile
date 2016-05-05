@@ -14,7 +14,7 @@ ARCH=$(shell uname | sed -e 's/-.*//g')
 OBJDIR=objs
 #CXX=/usr/lib64/openmpi/bin/mpic++
 #MPIRUN=/usr/lib64/openmpi/bin/mpirun
-CXX=g++ -m64
+CXX=g++ -m64 -std=c++11
 
 CXXFLAGS=-O3 -Wall -g
 HOSTNAME=$(shell hostname)

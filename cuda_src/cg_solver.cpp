@@ -22,6 +22,7 @@ double compute_log_likelihood_multinode()
 	int ll_opcode = COMPUTE_LOG_LIKELIHOOD;
 	for (int i = 0; i < total_workers - 1; i++)
 	{
+		printf("\n\n");
 		printf("Tell worker %d to compute log likelihood\n", i);
 
 		Rio_writen (worker_conn_fds[i], (void *)&ll_opcode, sizeof(int));
@@ -50,7 +51,8 @@ void compute_gradient_log_hyperparams_multinode(double *arg)
 	int gradient_loghyper_opcode = COMPUTE_GRADIENT_LOG_HYPERPARAMS;
 	for (int i = 0; i < total_workers - 1; i++)
 	{
-		printf("Tell worker %d to compute log hyperparams\n", i);
+		printf("\n\n");
+		printf("Tell worker %d to compute gradient of log hyperparams\n", i);
 
 		Rio_writen (worker_conn_fds[i], (void *)&gradient_loghyper_opcode, sizeof(int));
 
@@ -79,6 +81,7 @@ double *get_loghyperparam_multinode()
 	int get_loghyper_opcode = GET_LOGHYPERPARAMS;
 	for (int i = 0; i < total_workers - 1; i++)
 	{
+		printf("\n\n");
 		printf("Tell worker %d to get log hyperparams\n", i);
 
 		Rio_writen (worker_conn_fds[i], (void *)&get_loghyper_opcode, sizeof(int));
@@ -115,20 +118,28 @@ void set_loghyper_eigen_multinode(Eigen::VectorXd initval)
 
 	for (int i = 0; i < total_workers - 1; i++)
 	{
+		printf("\n\n");
 		printf("Tell node %d to set log hyperparams\n", i);
 
 		Rio_writen (worker_conn_fds[i], (void *)&set_loghyper_opcode, sizeof(int));
 	}
 
 	set_loghyper_eigen(initval);
+	printf("----------------------------");
+	printf("the values are:- \n");
+	for(int i = 0 ; i < 3 ;i++){
 
+		printf("%lf\n", initval[i]);
+	}
+	printf("\n");
+	printf("----------------------------");
 	for (int i = 0; i < total_workers - 1; i++)
 	{
 		printf("Tell node %d to set log hyperparams\n", i);
 
-		Rio_writen (worker_conn_fds[i], (void *)&new_loghyper_params[0], sizeof(int));
-		Rio_writen (worker_conn_fds[i], (void *)&new_loghyper_params[1], sizeof(int));
-		Rio_writen (worker_conn_fds[i], (void *)&new_loghyper_params[2], sizeof(int));
+		Rio_writen (worker_conn_fds[i], (void *)&new_loghyper_params[0], sizeof(double));
+		Rio_writen (worker_conn_fds[i], (void *)&new_loghyper_params[1], sizeof(double));
+		Rio_writen (worker_conn_fds[i], (void *)&new_loghyper_params[2], sizeof(double));
 	}
 }
 

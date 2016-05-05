@@ -76,12 +76,12 @@ void *accept_commands(char *hostname, int connfd)
 				{
 					printf("Node %s will start returning log hyperparams\n", hostname);
 
-					double *log_hyperparams = get_loghyperparams();
+					double *log_hyperparams = get_loghyperparam();
 
 					// send the same value thrice
-					Rio_writen (connfd, (void *)&log_hyperparams, sizeof(double));
-					Rio_writen (connfd, (void *)&log_hyperparams, sizeof(double));
-					Rio_writen (connfd, (void *)&log_hyperparams, sizeof(double));
+					Rio_writen (connfd, (void *)&log_hyperparams[0], sizeof(double));
+					Rio_writen (connfd, (void *)&log_hyperparams[1], sizeof(double));
+					Rio_writen (connfd, (void *)&log_hyperparams[2], sizeof(double));
 					break;
 				}
 
@@ -99,7 +99,14 @@ void *accept_commands(char *hostname, int connfd)
 					new_eigen[0] = new_log_hyperparams[0];
 					new_eigen[1] = new_log_hyperparams[1];
 					new_eigen[2] = new_log_hyperparams[2];
-
+					
+					printf("------------------\n");
+					printf("slave set the value of HP as\n");
+					for(int i = 0; i < 3;i++){
+						printf("%lf\n", new_eigen[i]);
+					}
+					printf("\n");
+					printf("------------------\n");
 					set_loghyper_eigen(new_eigen);
 
 					break;
@@ -160,24 +167,29 @@ int main(int argc, char *argv[])
 		printf("Host %s got worker id as %d\n", argv[1], worker_id);
 	}
 
+	int numtrain = 128;
+	std::string prefix_input_file_name = "../chunked_dataset/si_chunk";
+	std::string prefix_label_file_name = "../chunked_dataset/si_label";
+
+	std::string ipfile = prefix_input_file_name + std::to_string(worker_id) + std::string(".txt");
+	std::string opfile = prefix_label_file_name + std::to_string(worker_id) + std::string(".txt");
+
 	if (strcmp(argv[1], argv[2]) == 0)
 	{
 		printf("Master calling cg_solve()\n");
-		
-		std::string ipfile = "../cpp_serial_gp/sine_256_input.txt";
-		std::string opfile = "../cpp_serial_gp/sine_256_labels.txt";	
-		int numtrain = 128;
-		setup(numtrain, ipfile, opfile);
-		//printf("------------------------------");
-		//return 0;
-		cg_solve(argv[1]);
 
+		setup(numtrain, ipfile, opfile);
+
+		cg_solve(argv[1]);
 	
-		testing_phase(numtrain,numtrain);
+		// testing_phase(numtrain,numtrain);
 	}
 	else
 	{
 		printf("Worker skipping cg_solve(), instead calling accept_commands\n");
+
+		setup(numtrain, ipfile, opfile);
+
 		accept_commands(argv[1], connfd);
 	}
 
