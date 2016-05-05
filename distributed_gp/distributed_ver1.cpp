@@ -272,7 +272,7 @@ int main()
 	int numtrain = 100;
 	int numtest = total - numtrain;
 
-	int numexp = 2;
+	int numexp = 4;
 	
 	BCM poe(X, y, numtrain, dim , numexp);
 	poe.set_BCM_log_hyperparam(inithypervalues);		
