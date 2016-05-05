@@ -7,8 +7,8 @@
 #include "../common/cycleTimer.h"
 #include "BCM.h"
 
-#define INPUT_FILE "../dataset/input.txt"
-#define LABEL_FILE "../dataset/label.txt"
+#define INPUT_FILE "../dataset/input_128.txt"
+#define LABEL_FILE "../dataset/label_128.txt"
 
 void cg_solve(BCM pobj){
 
@@ -18,16 +18,21 @@ void cg_solve(BCM pobj){
 	const double RATIO = 10;	// maximum allowed slope ratio
 	const double SIG = 0.1, RHO = SIG/2;
 
-	int n = 200;
+	int n = 100;
 	bool ls_failed = false;									//prev line-search failed
 
 	double f0 = -1.0 * pobj.get_BCM_loglikelihood();
 	double *gradient_loghp = new double [3];
 	pobj.get_BCM_gradient_hyper(gradient_loghp);
-
+	
 	double *log_hparam = new double[3];
 	pobj.get_loghyperparam(log_hparam);
-
+	printf("--------------------\n");
+	printf("okay we should get all 1s");
+	for(int i = 0; i < 3; i++){
+		printf("%lf\n",log_hparam[i]);
+	}
+	printf("--------------------\n");
 	Eigen::VectorXd df0(3);
 	df0[0] = 1.0 * gradient_loghp[0];
 	df0[1] = 1.0 * gradient_loghp[1];
@@ -268,17 +273,18 @@ int main()
 
 	double inithypervalues[] = {0.5, 0.5, 0.5};
 	
-	int total = 200;
-	int numtrain = 100;
+	int total = 128;
+	int numtrain = 128;
 	int numtest = total - numtrain;
 
-	int numexp = 4;
+	int numexp = 2;
 	
 	BCM poe(X, y, numtrain, dim , numexp);
 	poe.set_BCM_log_hyperparam(inithypervalues);		
 	cg_solve(poe);
 
 	//Now test phase	
+	return 0;
 
 	double *tmeanvec = new double[numtest];
 	double *tvarvec = new double[numtest];
