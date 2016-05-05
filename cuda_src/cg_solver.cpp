@@ -17,15 +17,33 @@ void set_loghyper_eigen(Eigen::VectorXd initval);
 extern int total_workers;
 extern std::vector<int> worker_conn_fds;
 
-void compute_log_likelihood_multinode()
+double compute_log_likelihood_multinode()
 {
 	int ll_opcode = COMPUTE_LOG_LIKELIHOOD;
 	for (int i = 0; i < total_workers - 1; i++)
 	{
+		printf("\n\n");
 		printf("Tell worker %d to compute log likelihood\n", i);
 
 		Rio_writen (worker_conn_fds[i], (void *)&ll_opcode, sizeof(int));
+
 	}
+	// TODO now call getll on self
+	double ll_sum;
+
+	ll_sum = compute_log_likelihood();
+
+	for (int i = 0; i < total_workers - 1; i++)
+	{
+		double ll = 0.0;
+
+		Rio_readn (worker_conn_fds[i], (void *)&ll, sizeof(double));
+		printf("Got %lf as log likelihood from node %d\n", ll, i);
+		ll_sum += ll;
+	}
+	printf("Final ll_sum is %lf\n", ll_sum);
+
+	return ll_sum;
 }
 
 void compute_gradient_log_hyperparams_multinode(double *arg)
@@ -33,10 +51,29 @@ void compute_gradient_log_hyperparams_multinode(double *arg)
 	int gradient_loghyper_opcode = COMPUTE_GRADIENT_LOG_HYPERPARAMS;
 	for (int i = 0; i < total_workers - 1; i++)
 	{
-		printf("Tell worker %d to compute log hyperparams\n", i);
+		printf("\n\n");
+		printf("Tell worker %d to compute gradient of log hyperparams\n", i);
 
 		Rio_writen (worker_conn_fds[i], (void *)&gradient_loghyper_opcode, sizeof(int));
+
 	}
+	// TODO now call compute_grad_log_hyperparams on self
+	compute_gradient_log_hyperparams(arg);
+
+	for (int i = 0; i < total_workers - 1; i++)
+	{
+		double grad1, grad2, grad3;
+
+		Rio_readn (worker_conn_fds[i], (void *)&grad1, sizeof(double));
+		Rio_readn (worker_conn_fds[i], (void *)&grad2, sizeof(double));
+		Rio_readn (worker_conn_fds[i], (void *)&grad3, sizeof(double));
+
+		printf("Got %lf, %lf, %lf as gradient log hyperparams from node %d\n", grad1, grad2, grad3, i);
+		arg[0] += grad1;
+		arg[1] += grad2;
+		arg[2] += grad3;
+	}
+	printf("Final gradients of log hyperparams are %lf, %lf, %lf\n", arg[0], arg[1], arg[2]);
 }
 
 double *get_loghyperparam_multinode()
@@ -44,21 +81,65 @@ double *get_loghyperparam_multinode()
 	int get_loghyper_opcode = GET_LOGHYPERPARAMS;
 	for (int i = 0; i < total_workers - 1; i++)
 	{
+		printf("\n\n");
 		printf("Tell worker %d to get log hyperparams\n", i);
 
 		Rio_writen (worker_conn_fds[i], (void *)&get_loghyper_opcode, sizeof(int));
 	}
-	return NULL;
+
+	//static double log_hyperparams[3] = {0.5, 0.5, 0.5};
+	double *log_hyperparams = get_loghyperparam();
+	for (int i = 0; i < total_workers - 1; i++)
+	{
+		double log_hyperparams_temp[3];
+
+		Rio_readn (worker_conn_fds[i], (void *)&log_hyperparams_temp[0], sizeof(double));
+		Rio_readn (worker_conn_fds[i], (void *)&log_hyperparams_temp[1], sizeof(double));
+		Rio_readn (worker_conn_fds[i], (void *)&log_hyperparams_temp[2], sizeof(double));
+		
+		printf("Got %lf, %lf, %lf as log hyperparams from node %d\n", log_hyperparams_temp[0], log_hyperparams_temp[1], log_hyperparams_temp[2], i);
+
+		log_hyperparams[0] += log_hyperparams_temp[0];
+		log_hyperparams[1] += log_hyperparams_temp[1];
+		log_hyperparams[2] += log_hyperparams_temp[2];
+	}
+
+	printf("Final log hyperparams are %lf, %lf, %lf\n", log_hyperparams[0], log_hyperparams[1], log_hyperparams[2]);
+	return log_hyperparams;
 }
 
 void set_loghyper_eigen_multinode(Eigen::VectorXd initval)
 {
 	int set_loghyper_opcode = SET_LOGHYPERPARAMS;
+	double new_loghyper_params[3];
+
+	for (int i = 0; i < 3; i++)
+		new_loghyper_params[i] = initval[i];
+
+	for (int i = 0; i < total_workers - 1; i++)
+	{
+		printf("\n\n");
+		printf("Tell node %d to set log hyperparams\n", i);
+
+		Rio_writen (worker_conn_fds[i], (void *)&set_loghyper_opcode, sizeof(int));
+	}
+
+	set_loghyper_eigen(initval);
+	printf("----------------------------");
+	printf("the values are:- \n");
+	for(int i = 0 ; i < 3 ;i++){
+
+		printf("%lf\n", initval[i]);
+	}
+	printf("\n");
+	printf("----------------------------");
 	for (int i = 0; i < total_workers - 1; i++)
 	{
 		printf("Tell node %d to set log hyperparams\n", i);
 
-		Rio_writen (worker_conn_fds[i], (void *)&set_loghyper_opcode, sizeof(int));
+		Rio_writen (worker_conn_fds[i], (void *)&new_loghyper_params[0], sizeof(double));
+		Rio_writen (worker_conn_fds[i], (void *)&new_loghyper_params[1], sizeof(double));
+		Rio_writen (worker_conn_fds[i], (void *)&new_loghyper_params[2], sizeof(double));
 	}
 }
 
@@ -84,16 +165,16 @@ void cg_solve(char *hostname)
 	int n = 100;
 	bool ls_failed = false;									//prev line-search failed
 
-	double f0 = -1.0 * compute_log_likelihood();
-compute_log_likelihood_multinode();
+	//double f0 = -1.0 * compute_log_likelihood();
+double f0 = -1.0 * compute_log_likelihood_multinode();
 
 	double *gradient_loghp = new double [3];
 
-	compute_gradient_log_hyperparams(gradient_loghp);
+	//compute_gradient_log_hyperparams(gradient_loghp);
 compute_gradient_log_hyperparams_multinode(gradient_loghp);
 
-	double *log_hyper_param = get_loghyperparam();
-get_loghyperparam_multinode();
+	//double *log_hyper_param = get_loghyperparam();
+double *log_hyper_param = get_loghyperparam_multinode();
 
 	Eigen::VectorXd df0(3);
 	df0[0] = 1.0 * gradient_loghp[0];
@@ -145,13 +226,13 @@ get_loghyperparam_multinode();
 				printkeliye = X + s*x3;
 				printf("\n\n PLEASE-SEE 1 : %lf, %lf, %lf\n\n", printkeliye[0], printkeliye[1], printkeliye[2]);
 
-				set_loghyper_eigen((X+s*x3));
+				//set_loghyper_eigen((X+s*x3));
 set_loghyper_eigen_multinode((X+s*x3));
 
-				f3 = -1.0 * compute_log_likelihood();
-compute_log_likelihood_multinode();
+				//f3 = -1.0 * compute_log_likelihood();
+f3 = -1.0 * compute_log_likelihood_multinode();
 
-				compute_gradient_log_hyperparams(df3_temp);
+				//compute_gradient_log_hyperparams(df3_temp);
 compute_gradient_log_hyperparams_multinode(df3_temp);
 
 				df3[0] = 1.0 * df3_temp[0];
@@ -235,13 +316,13 @@ compute_gradient_log_hyperparams_multinode(df3_temp);
 				printkeliye = X + s*x3;
 				printf("\n\n PLEASE-SEE  2: %lf, %lf, %lf\n\n", printkeliye[0], printkeliye[1], printkeliye[2]);
 
-			set_loghyper_eigen((X+s*x3));
+			//set_loghyper_eigen((X+s*x3));
 set_loghyper_eigen_multinode((X+s*x3));
 
-			f3 = -1.0 * compute_log_likelihood();
-compute_log_likelihood_multinode();
+			//f3 = -1.0 * compute_log_likelihood();
+f3 = -1.0 * compute_log_likelihood_multinode();
 
-			compute_gradient_log_hyperparams(df3_temp); 
+			// compute_gradient_log_hyperparams(df3_temp); 
 compute_gradient_log_hyperparams_multinode(df3_temp);
 
 			df3[0] = 1.0 * df3_temp[0];
@@ -300,7 +381,7 @@ compute_gradient_log_hyperparams_multinode(df3_temp);
 	}
 	printkeliye = X;
 	printf("\n\n%s: PLEASE-SEE  3: %lf, %lf, %lf\n\n", hostname, printkeliye[0], printkeliye[1], printkeliye[2]);
-	set_loghyper_eigen(X);
+	// set_loghyper_eigen(X);
 set_loghyper_eigen_multinode(X);
 	
 	send_done_message();
