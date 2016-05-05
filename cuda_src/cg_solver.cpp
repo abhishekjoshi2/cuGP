@@ -17,6 +17,8 @@ void set_loghyper_eigen(Eigen::VectorXd initval);
 extern int total_workers;
 extern std::vector<int> worker_conn_fds;
 
+extern double *BCM_log_hyperparams;
+
 double compute_log_likelihood_multinode()
 {
 	int ll_opcode = COMPUTE_LOG_LIKELIHOOD;
@@ -78,7 +80,7 @@ void compute_gradient_log_hyperparams_multinode(double *arg)
 
 double *get_loghyperparam_multinode()
 {
-	int get_loghyper_opcode = GET_LOGHYPERPARAMS;
+	/* int get_loghyper_opcode = GET_LOGHYPERPARAMS;
 	for (int i = 0; i < total_workers - 1; i++)
 	{
 		printf("\n\n");
@@ -89,6 +91,10 @@ double *get_loghyperparam_multinode()
 
 	//static double log_hyperparams[3] = {0.5, 0.5, 0.5};
 	double *log_hyperparams = get_loghyperparam();
+	static double ret[3];
+	ret[0] = log_hyperparams[0];
+	ret[1] = log_hyperparams[1];
+	ret[2] = log_hyperparams[2];
 	for (int i = 0; i < total_workers - 1; i++)
 	{
 		double log_hyperparams_temp[3];
@@ -99,13 +105,14 @@ double *get_loghyperparam_multinode()
 		
 		printf("Got %lf, %lf, %lf as log hyperparams from node %d\n", log_hyperparams_temp[0], log_hyperparams_temp[1], log_hyperparams_temp[2], i);
 
-		log_hyperparams[0] += log_hyperparams_temp[0];
-		log_hyperparams[1] += log_hyperparams_temp[1];
-		log_hyperparams[2] += log_hyperparams_temp[2];
+		ret[0] += log_hyperparams_temp[0];
+		ret[1] += log_hyperparams_temp[1];
+		ret[2] += log_hyperparams_temp[2];
 	}
 
-	printf("Final log hyperparams are %lf, %lf, %lf\n", log_hyperparams[0], log_hyperparams[1], log_hyperparams[2]);
-	return log_hyperparams;
+	printf("Final log hyperparams are %lf, %lf, %lf\n", ret[0], ret[1], ret[2]);
+	return ret; */
+	return BCM_log_hyperparams;
 }
 
 void set_loghyper_eigen_multinode(Eigen::VectorXd initval)
@@ -114,7 +121,10 @@ void set_loghyper_eigen_multinode(Eigen::VectorXd initval)
 	double new_loghyper_params[3];
 
 	for (int i = 0; i < 3; i++)
+	{
 		new_loghyper_params[i] = initval[i];
+		BCM_log_hyperparams[i] = initval[i];
+	}
 
 	for (int i = 0; i < total_workers - 1; i++)
 	{

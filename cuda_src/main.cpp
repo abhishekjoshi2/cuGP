@@ -37,6 +37,8 @@ std::vector<int> worker_conn_fds;
 
 int total_workers = -1;
 
+double *BCM_log_hyperparams;
+
 void *accept_commands(char *hostname, int connfd)
 {
 	int opcode;
@@ -167,9 +169,9 @@ int main(int argc, char *argv[])
 		printf("Host %s got worker id as %d\n", argv[1], worker_id);
 	}
 
-	int numtrain = 128;
-	std::string prefix_input_file_name = "../chunked_dataset/si_chunk";
-	std::string prefix_label_file_name = "../chunked_dataset/si_label";
+	int numtrain = 32;
+	std::string prefix_input_file_name = "../chunked_dataset/si32_chunk";
+	std::string prefix_label_file_name = "../chunked_dataset/si32_label";
 
 	std::string ipfile = prefix_input_file_name + std::to_string(worker_id) + std::string(".txt");
 	std::string opfile = prefix_label_file_name + std::to_string(worker_id) + std::string(".txt");
@@ -177,6 +179,11 @@ int main(int argc, char *argv[])
 	if (strcmp(argv[1], argv[2]) == 0)
 	{
 		printf("Master calling cg_solve()\n");
+		
+		BCM_log_hyperparams = new double[3];
+
+		for (int i = 0; i < 3; i++)
+			BCM_log_hyperparams[i] = 0.5;
 
 		setup(numtrain, ipfile, opfile);
 
