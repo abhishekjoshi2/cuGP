@@ -13,9 +13,16 @@ double compute_log_likelihood();
 void compute_gradient_log_hyperparams(double *);
 double *get_loghyperparam();
 void set_loghyper_eigen(Eigen::VectorXd initval);
+void read_trainingdata_and_copy_to_GPU(std::string inputfilename, std::string labelfilename);
 
 extern int total_workers;
 extern std::vector<int> worker_conn_fds;
+extern std::string prefix_input_file_name;
+extern std::string prefix_label_file_name;
+extern int worker_id;
+//extern int numtrain ;
+extern int numchunks ;
+//extern int dimensions ;
 
 double compute_log_likelihood_multinode()
 {
@@ -32,8 +39,8 @@ double compute_log_likelihood_multinode()
 	double ll_sum = 0.0;
 
 	for(int i = worker_id; i < numchunks; i+=total_workers){
-		ipfile = prefix_input_file_name +  std::to_string(i) + std::string(".txt");
-		labfile = prefix_label_file_name +  std::to_string(i) + std::string(".txt");
+		std::string ipfile = prefix_input_file_name +  std::to_string(i) + std::string(".txt");
+		std::string labfile = prefix_label_file_name +  std::to_string(i) + std::string(".txt");
 		read_trainingdata_and_copy_to_GPU(ipfile, labfile);
 		ll_sum += compute_log_likelihood();
 	}
@@ -71,8 +78,8 @@ void compute_gradient_log_hyperparams_multinode(double *arg)
 		arg[j] = 0.0;
 	}
 	for(int i = worker_id; i < numchunks; i+=total_workers){
-		ipfile = prefix_input_file_name +  std::to_string(i) + std::string(".txt");
-		labfile = prefix_label_file_name +  std::to_string(i) + std::string(".txt");
+		std::string ipfile = prefix_input_file_name +  std::to_string(i) + std::string(".txt");
+		std::string labfile = prefix_label_file_name +  std::to_string(i) + std::string(".txt");
 		read_trainingdata_and_copy_to_GPU(ipfile, labfile);
 		compute_gradient_log_hyperparams(temp);
 		for(int j = 0 ; j < 3; j++){

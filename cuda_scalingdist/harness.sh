@@ -53,8 +53,9 @@ cat masternode
 Numchunks=4
 Numtrain=32
 Dimensions=2
-IPprefix="../chunked_dataset/si32"
+IPprefix="../chunked_dataset/si32_chunk"
+LAprefix="../chunked_dataset/si32_label"
 
-./gp $HOSTNAME $MASTER $PBS_NUM_NODES  > $HOSTNAME.log
+./gp $HOSTNAME $MASTER $PBS_NUM_NODES $Numchunks $Numtrain $Dimensions $IPprefix $LAprefix > $HOSTNAME.log
 
 

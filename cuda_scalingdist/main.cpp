@@ -64,8 +64,8 @@ void *accept_commands(char *hostname, int connfd)
 					double ll = 0.0;
 			
 					for(int i = worker_id; i < numchunks; i+=total_workers){ 
-						ipfile = prefix_input_file_name +  std::to_string(i) + std::string(".txt");
-						labfile = prefix_label_file_name +  std::to_string(i) + std::string(".txt");
+						std::string ipfile = prefix_input_file_name +  std::to_string(i) + std::string(".txt");
+						std::string labfile = prefix_label_file_name +  std::to_string(i) + std::string(".txt");
 						read_trainingdata_and_copy_to_GPU(ipfile, labfile);
 						ll += compute_log_likelihood();
 					}
@@ -82,8 +82,8 @@ void *accept_commands(char *hostname, int connfd)
 					double temp[3];
 				
 					for(int i = worker_id; i < numchunks; i+=total_workers){ 
-						ipfile = prefix_input_file_name +  std::to_string(i) + std::string(".txt");
-						labfile = prefix_label_file_name +  std::to_string(i) + std::string(".txt");
+						std::string ipfile = prefix_input_file_name +  std::to_string(i) + std::string(".txt");
+						std::string labfile = prefix_label_file_name +  std::to_string(i) + std::string(".txt");
 						read_trainingdata_and_copy_to_GPU(ipfile, labfile);
 						compute_gradient_log_hyperparams(temp);
 						for(int j = 0 ; j < 3; j++){
