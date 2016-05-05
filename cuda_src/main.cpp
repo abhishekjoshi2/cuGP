@@ -23,7 +23,7 @@ int worker_id = 0;
 void testing_phase(int offset, int numtest);
 
 std::vector<int> worker_conn_fds;
-int total_workers = 1;
+int total_workers = -1;
 
 void *accept_commands(char *hostname, int connfd)
 {
@@ -76,15 +76,17 @@ int main(int argc, char *argv[])
 	socklen_t clientlen;
 	struct sockaddr_storage clientaddr;
 	char *common_port = "15618";
-	int worker_id_counter = 0;
 
 	listenfd = Open_listenfd (common_port);
 
 	sleep(5);
 
-	printf("Hostname %s is listening on port %s with listenfd = %d\n", argv[1], common_port, listenfd);
+	total_workers = atoi(argv[3]);
 
-	if (strcmp(argv[1], "compute-0-37.local") == 0)
+	printf("Hostname %s is listening on port %s with listenfd = %d\n", argv[1], common_port, listenfd);
+	printf("Node is %s and Master is %s. Number of workers is %d\n", argv[1], argv[2], total_workers);
+
+	if (strcmp(argv[1], argv[2]) == 0)
 	{
 		for (int i = 0; i < total_workers - 1; i++)
 		{
@@ -104,7 +106,7 @@ int main(int argc, char *argv[])
 	}
 	else
 	{
-		connfd = Open_clientfd ("10.22.1.242", common_port);
+		connfd = Open_clientfd (argv[2], common_port);
 
 		printf("Host %s connected to master, connfd is %d\n", argv[1], connfd);
 
@@ -113,14 +115,14 @@ int main(int argc, char *argv[])
 		printf("Host %s got worker id as %d\n", argv[1], worker_id);
 	}
 
-	if (strcmp(argv[1], "compute-0-37.local") == 0)
+	if (strcmp(argv[1], argv[2]) == 0)
 	{
 		printf("Master calling cg_solve()\n");
 	
-		int numtrain = 64;
+		int numtrain = 128;
 		setup(numtrain);
 		cg_solve(argv[1]);
-		testing_phase(64, 64);
+		//testing_phase(64, 64);
 	}
 	else
 	{
