@@ -11,9 +11,10 @@
 #include "./Eigen/Dense"
 #include "./Eigen/src/Core/util/DisableStupidWarnings.h"
 #include <cmath>
+#include<string>
 
-#define INPUT_FILE "../cpp_serial_gp/input_128.txt"
-#define LABEL_FILE "../cpp_serial_gp/label_128.txt"
+#define INPUT_FILE "../cpp_serial_gp/sine_256_input.txt"
+#define LABEL_FILE "../cpp_serial_gp/sine_256_labels.txt"
 
 
 #define BLOCK_SIZE 32
@@ -910,7 +911,7 @@ void init_and_print()
 	}
 }
 
-void read_input_and_copy_to_GPU(int numtrain)
+void read_input_and_copy_to_GPU(int numtrain, std::string inputfilename, std::string outputfilename)
 {
 	printf("Inside read_input_and_copy_to_GPUs\n");
 	FILE *input_file, *label_file;
@@ -918,8 +919,8 @@ void read_input_and_copy_to_GPU(int numtrain)
 	double *labels_host; //labels in host!
 	lh_host = new double[3];
 
-	input_file = fopen(INPUT_FILE, "r");
-	label_file = fopen(LABEL_FILE, "r");
+	input_file = fopen(inputfilename.c_str(), "r");
+	label_file = fopen(outputfilename.c_str(), "r");
 
 	fscanf(input_file, "%d%d", &totalN, &DIM);
 
@@ -1018,9 +1019,11 @@ void setup_TMI()
 	cudacall(cudaMalloc(&tmi_intermediate_output, sizeof(double) * N * N));
 }
 
-void setup( int numtrain)
+void setup( int numtrain, std::string inputfilename, std::string outputfilename)
 {
-	read_input_and_copy_to_GPU(numtrain);
+	printf("YEEEEEEEEEEEEEEEHH setup call huaa\n");
+	std::string s;
+	read_input_and_copy_to_GPU(numtrain, inputfilename, outputfilename);
 
 	setup_loglikelihood_data();
 
@@ -1678,7 +1681,6 @@ cudaThreadSynchronize();
 
 void run_gp()
 {
-	// setup(); moving setup to main file
 
 	double startime = CycleTimer::currentSeconds();
 	double ans  = compute_log_likelihood();

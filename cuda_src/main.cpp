@@ -7,6 +7,7 @@
 //#include <mpi.h>
 #include "../common/opcodes.h"
 #include "csapp.h"
+#include<string>
 
 void run_kernel();
 
@@ -14,7 +15,7 @@ void run_gp();
 
 void test_matrix_mult();
 
-void setup(int );
+void setup(int, std::string, std::string );
 
 void cg_solve(char *);
 
@@ -129,7 +130,7 @@ int main(int argc, char *argv[])
 
 	printf("Hostname %s is listening on port %s with listenfd = %d\n", argv[1], common_port, listenfd);
 	printf("Node is %s and Master is %s. Number of workers is %d\n", argv[1], argv[2], total_workers);
-
+	
 	if (strcmp(argv[1], argv[2]) == 0)
 	{
 		for (int i = 0; i < total_workers - 1; i++)
@@ -162,11 +163,17 @@ int main(int argc, char *argv[])
 	if (strcmp(argv[1], argv[2]) == 0)
 	{
 		printf("Master calling cg_solve()\n");
-	
+		
+		std::string ipfile = "../cpp_serial_gp/sine_256_input.txt";
+		std::string opfile = "../cpp_serial_gp/sine_256_labels.txt";	
 		int numtrain = 128;
-		setup(numtrain);
+		setup(numtrain, ipfile, opfile);
+		//printf("------------------------------");
+		//return 0;
 		cg_solve(argv[1]);
-		//testing_phase(64, 64);
+
+	
+		testing_phase(numtrain,numtrain);
 	}
 	else
 	{

@@ -287,11 +287,28 @@ void Covsum::compute_test_means_and_variances(double **X, double *y, double **Xt
 
 	compute_K_train(X, tempKmatrix);
 	vector_Kinvy_using_cholesky(tempKmatrix, y, temp1dvec, n); // so temp1dvec has inv(K) * y which is required for mean
+	
+	printf("temp1dvec dekho\n");
+	for(int i = 0 ; i < n ; i++){
+		printf("%lf ", temp1dvec[i]);
+	}
+	printf("\n");
+
 	compute_K_inverse(tempKmatrix, tempKinv, n);   // tempKinv will have inv(K) only
 
 	for(int i = 0; i < numtest; i++) {
 		// i'th test sample: Xtest[i]
 		compute_k_test(X, Xtest[i], testK);  
+	
+		if(i < 2){
+		printf("for i = %d\n");
+		printf("ktest dekho\n");
+		for(int j = 0 ; j < n ; j++){
+			printf("%lf ", testK[j]);
+		}
+		printf("\n");
+		}
+
 
 		tmeanvec[i] = vector_vector_multiply(testK, temp1dvec, n); 	// testK * ( inv(K) * y) = testK * temp1dvec;
 
@@ -627,10 +644,11 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 
 double Covsum::get_negative_log_predprob(double *actual, double *predmean, double *predvar, int TS) {
 
+	std::cout << "inside the final testing NLPP \n" ;
 	double ans = 0.0;
 	for(int i = 0; i < TS; i++) {
 		double val = 0.5 * log(6.283185 * predvar[i]) + pow( (predmean[i] - actual[i]) , 2) / (2 * predvar[i]);
-		std::cout << val << std::endl;
+		std::cout << "predvar = " << predvar[i] << " predmean = " << predmean[i] << " actualmean = " << actual[i] << ", finalnlpp = " <<  val << std::endl;
 		ans += val;
 	}
 	return ans / TS;

@@ -6,8 +6,8 @@
 #include "covkernel.h"
 #include "../common/cycleTimer.h"
 
-#define INPUT_FILE "../dataset/input.txt"
-#define LABEL_FILE "../dataset/label.txt"
+#define INPUT_FILE "../dataset/sine_256_input.txt"
+#define LABEL_FILE "../dataset/sine_256_labels.txt"
 int main()
 {
 	FILE *input_file, *label_file;
@@ -48,8 +48,8 @@ int main()
 
 	double inithypervalues[] = {0.5, 0.5, 0.5};
 
-	int total = 200;
-	int numtrain =100;
+	int total = 256;
+	int numtrain = 128;
 	int numtest = total - numtrain;
 	Covsum kernelobj(numtrain, dim);
 	kernelobj.set_loghyperparam(inithypervalues);
