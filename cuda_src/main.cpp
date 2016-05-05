@@ -5,6 +5,7 @@
 //#include <mpi.h>
 #include "../common/opcodes.h"
 #include "csapp.h"
+#include<string>
 
 void run_kernel();
 
@@ -12,7 +13,7 @@ void run_gp();
 
 void test_matrix_mult();
 
-void setup(int );
+void setup(int, std::string, std::string );
 
 void cg_solve(char *);
 
@@ -116,11 +117,13 @@ int main(int argc, char *argv[])
 	if (strcmp(argv[1], "compute-0-37.local") == 0)
 	{
 		printf("Master calling cg_solve()\n");
-	
-		int numtrain = 64;
-		setup(numtrain);
+		
+		std::string ipfile = "sine_256_input.txt";
+		std::string opfile = "sine_256_labels.txt";	
+		int numtrain = 128;
+		setup(numtrain, ipfile, opfile);
 		cg_solve(argv[1]);
-		testing_phase(64, 64);
+		testing_phase(numtrain,numtrain);
 	}
 	else
 	{
