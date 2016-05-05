@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include "./Eigen/Dense"
+
 #include <iostream>
 #include <vector>
 #include <cstdlib>
@@ -22,7 +24,16 @@ int worker_id = 0;
 
 void testing_phase(int offset, int numtest);
 
+double compute_log_likelihood();
+
+void compute_gradient_log_hyperparams(double *localhp_grad);
+
+double *get_loghyperparam();
+
+void set_loghyper_eigen(Eigen::VectorXd initval);
+
 std::vector<int> worker_conn_fds;
+
 int total_workers = -1;
 
 void *accept_commands(char *hostname, int connfd)
@@ -64,7 +75,7 @@ void *accept_commands(char *hostname, int connfd)
 				{
 					printf("Node %s will start returning log hyperparams\n", hostname);
 
-					double log_hyperparams = 0.5;
+					double *log_hyperparams = get_loghyperparams();
 
 					// send the same value thrice
 					Rio_writen (connfd, (void *)&log_hyperparams, sizeof(double));
@@ -81,6 +92,14 @@ void *accept_commands(char *hostname, int connfd)
 					Rio_readn (connfd, (void *)&new_log_hyperparams[0], sizeof(double));
 					Rio_readn (connfd, (void *)&new_log_hyperparams[1], sizeof(double));
 					Rio_readn (connfd, (void *)&new_log_hyperparams[2], sizeof(double));
+
+					Eigen::VectorXd new_eigen(3);
+
+					new_eigen[0] = new_log_hyperparams[0];
+					new_eigen[1] = new_log_hyperparams[1];
+					new_eigen[2] = new_log_hyperparams[2];
+
+					set_loghyper_eigen(new_eigen);
 
 					break;
 				}
