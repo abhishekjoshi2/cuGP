@@ -16,14 +16,10 @@
 # You should only need 1 node for the standard assignment 2.
 #
 
-#PBS -l nodes=1:ppn=24
-
 #
 # This job should be submitted to the Tesla queue, to ensure it runs
 # on dedicated, on a machine with a Tesla K40.
 #
-
-#PBS -q titanx
 
 #
 # Submit the job.  No need to modify this.

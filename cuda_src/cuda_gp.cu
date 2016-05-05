@@ -15,7 +15,6 @@
 #define INPUT_FILE "../cpp_serial_gp/input_128.txt"
 #define LABEL_FILE "../cpp_serial_gp/label_128.txt"
 
-#define filename "sym5000.txt"
 
 #define BLOCK_SIZE 32
 
@@ -62,13 +61,22 @@ double *identity; // for gradient of hp
 
 // N is the number of training samples, and DIM is the number of parameters
 int N, DIM;
+int totalN; //total number of samples in the dataset; totalN = N + Ntest;
+
+
+int Ntest; //Ntest is the number of test samples
+double *Xtest;
+double *labelstest;
+double *tmeanvec;
+double *tvarvec;
+double *Ktest_vec;
 
 // For actual TMI
 double *tmi_intermediate_output;
 
 // For testing TMI
-/* double *lower_triangular_mat;
-double *tmi_playground; */
+ double *lower_triangular_mat;
+double *tmi_playground; 
 
 #define cudacall(call) \
 { \
@@ -84,6 +92,29 @@ double *tmi_playground; */
 double *get_loghyperparam();
 
 
+__global__ void print_vector(double *input, int size){
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+        if(i_index >= 1) return;
+	for(int i = 0; i < size; i++){
+		printf("%lf ", input[i]);
+	}
+	printf("\n");
+}
+
+
+__global__ void compute_NLPP(double *actualtestlabels, double * predicted_testmean, double *predicted_testvar, int Ntest, double * ans_nlpp){
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+        if(i_index >= 1) return;
+	double ans = 0.0;
+        for(int i = 0; i < Ntest; i++) {
+                double val = 0.5 * log(6.283185 * predicted_testvar[i]) + pow( (predicted_testmean[i] - actualtestlabels[i]) , 2) / (2 * predicted_testvar[i]);
+		//printf("predvar = %lf, predmean = %lf, actualmean = %lf, lpp = %lf\n", predicted_testvar[i], predicted_testmean[i], actualtestlabels[i], val);
+                ans += val;
+        }
+	//printf("TO FINAL ANSWER YEH HONA CHAHHIYE: %lf\n", ans / Ntest);
+        *ans_nlpp = (ans / Ntest);
+
+}
 __global__ void lowertriangular_matrixmultiply_noshare(double *a, double *output, int size)
 {
 
@@ -103,6 +134,21 @@ __global__ void lowertriangular_matrixmultiply_noshare(double *a, double *output
         output[row * size + col] = sum;
 }
 
+//FIXME: can do a shared memory reduce
+__global__ void vector_dot_product_with_loghp(double *x1, double *x2, double *ans, int N, double noisevar, double sigvar){
+
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	if (i_index >= 1)
+		return;
+
+	double val = 0.0;
+	for(int i = 0; i < N; i++) {
+		val += (x1[i]*x2[i]);
+	}
+	*ans = -val + noisevar + sigvar;
+}
 
 //FIXME: can do a shared memory reduce
 __global__ void vector_dot_product(double *x1, double *x2, double *ans, int N){
@@ -117,7 +163,6 @@ __global__ void vector_dot_product(double *x1, double *x2, double *ans, int N){
 	for(int i = 0; i < N; i++) {
 		val += (x1[i]*x2[i]);
 	}
-	printf("Dot prod is %lf\n", val);
 	*ans = val;
 }
 
@@ -596,6 +641,31 @@ compute_K_train(double *M, double *K_output, double *loghyper, int n, int dim) {
 	K_output[M_row * n + M_col] = K_output[M_col * n + M_row] = dot_product;
 }
 
+__global__ void
+compute_K_test(double *M, double *testsample, double *ktest_output_vector, double *loghyper, int n, int dim) {
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	if (i_index >= n ) return;
+
+	double ell_sq = exp(loghyper[0] * 2); //l^2 after coverting back from the log form
+	double signal_var = exp(loghyper[1] * 2); // signal variance
+	double noise_var = exp(loghyper[2] * 2); //noise variance
+
+	double dot_product = 0.0;
+
+
+	for (int i = 0; i < dim; i++){
+		double val1 = M[i_index * dim + i];
+		double val2 = testsample[i];
+		dot_product += (val1 - val2) * (val1 - val2);
+	}
+
+	dot_product = signal_var * exp(-dot_product * 0.5 / ell_sq);
+
+	ktest_output_vector[i_index] = dot_product;
+}
+
 __global__ void matrix_vector_multiply(double *M, double *x, double *output, int size) {
 	
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
@@ -606,6 +676,20 @@ __global__ void matrix_vector_multiply(double *M, double *x, double *output, int
 	double ans = 0.0;
 	for(int i = 0; i < size; i++){
 		ans += M[i_index * size + i] * x[i];
+	}
+	output[i_index] = ans;
+}
+
+__global__ void vector_matrix_multiply(double *x, double *M, double *output, int size) {
+	
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	if (i_index >= size) return;
+	
+	double ans = 0.0;
+	for(int i = 0; i < size; i++){
+		ans += M[i * size + i_index] * x[i];
 	}
 	output[i_index] = ans;
 }
@@ -826,8 +910,9 @@ void init_and_print()
 	}
 }
 
-void read_input_and_copy_to_GPU()
+void read_input_and_copy_to_GPU(int numtrain)
 {
+	printf("Inside read_input_and_copy_to_GPUs\n");
 	FILE *input_file, *label_file;
 	double *X_host; //input dataset in host!
 	double *labels_host; //labels in host!
@@ -836,33 +921,41 @@ void read_input_and_copy_to_GPU()
 	input_file = fopen(INPUT_FILE, "r");
 	label_file = fopen(LABEL_FILE, "r");
 
-	fscanf(input_file, "%d%d", &N, &DIM);
+	fscanf(input_file, "%d%d", &totalN, &DIM);
 
 	for (int i = 0 ; i < 3 ; i++)
 		lh_host[i] = 0.5;	
 
 	
-	X_host = new double[N * DIM];
-	labels_host = new double[N];
+	X_host = new double[totalN * DIM];
+	labels_host = new double[totalN];
 
+	N = numtrain;
+
+	printf("Reading inputs boy\n");
+	printf("Number of inputs = %d\n", totalN);
+ 
 	// Reading inputs
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i < totalN; i++)
 		for (int j = 0; j < DIM; j++)
 			fscanf(input_file, "%lf", &X_host[i * DIM + j]);
 
 	// Reading labels (target values)
-	for (int i = 0; i < N; i++) {
+	for (int i = 0; i < totalN; i++) {
                 fscanf(label_file, "%lf", &labels_host[i]);
         }
 	
-	cudacall(cudaMalloc(&X, sizeof(double) * N * DIM));
-	cudacall(cudaMemcpy(X, X_host, sizeof(double) * N * DIM, cudaMemcpyHostToDevice));	
+	printf("reading labels \n");
+	cudacall(cudaMalloc(&X, sizeof(double) * totalN * DIM));
+	cudacall(cudaMemcpy(X, X_host, sizeof(double) * totalN * DIM, cudaMemcpyHostToDevice));	
 
-	cudacall(cudaMalloc(&labels, sizeof(double) * N ));
-	cudacall(cudaMemcpy(labels, labels_host, sizeof(double) * N , cudaMemcpyHostToDevice));	
+	cudacall(cudaMalloc(&labels, sizeof(double) * totalN ));
+	cudacall(cudaMemcpy(labels, labels_host, sizeof(double) * totalN , cudaMemcpyHostToDevice));	
 	
 	cudacall(cudaMalloc(&loghyper, sizeof(double) * 3));
 	cudacall(cudaMemcpy(loghyper, lh_host, sizeof(double) * 3 , cudaMemcpyHostToDevice));	
+	
+	printf("Okay boy.. reading and malloc done\n\n");
 }
 
 void setup_loglikelihood_data()
@@ -896,7 +989,7 @@ void setup_gradienthp_data(){
 
 	// CHECK: if we can get away without this
 	cudacall(cudaMalloc(&identity, sizeof(double) * N *N));
-	cudacall(cudaMemset((void *)identity, 0.0, sizeof(double)));
+	cudacall(cudaMemset((void *)identity, 0.0, sizeof(double) * N * N));
 
 	threads_per_block = 512;
         number_of_blocks = upit(N , threads_per_block);
@@ -925,9 +1018,9 @@ void setup_TMI()
 	cudacall(cudaMalloc(&tmi_intermediate_output, sizeof(double) * N * N));
 }
 
-void setup()
+void setup( int numtrain)
 {
-	read_input_and_copy_to_GPU();
+	read_input_and_copy_to_GPU(numtrain);
 
 	setup_loglikelihood_data();
 
@@ -1033,7 +1126,6 @@ void check_cholesky(double *M1, double* targetoutput, int d){
 		for(int j = 0; j < d ;j++){ 
 			double tempval = 0.0;
 			for(int k = 0; k < d; k++){
-				//tempval += M1[i*d + k] * M2[k * d + j];
 				tempval += M1[i*d + k] * M1[j * d + k];
 			}
 			diff = tempval - targetoutput[i * d + j];
@@ -1102,6 +1194,43 @@ void generate_random_vector(double *b, int dim){
 	}
 }
 
+void get_cholesky(double *, int);
+void setup_for_timing_cholesky(int dimp){
+	double **m1, **m2;
+	
+	setup_cholesky(dimp, 2);
+
+	temp_m = new double[dimp * dimp];
+
+	m1 = new double *[dimp];
+	m2 = new double *[dimp];
+
+	for (int i = 0; i < dimp; i++)
+	{
+		m1[i] = new double[dimp];
+		m2[i] = new double[dimp];
+	}
+
+	get_symmetric_matrix_1d(temp_m, m1, m2, dimp);
+
+	orig_sym = new double[dimp * dimp]; // should be equal to covariance matrix
+	double *devM; //device ka banda
+	cudacall(cudaMalloc(&devM, sizeof(double) * dimp * dimp));
+	cudacall(cudaMemcpy(devM, temp_m,  sizeof(double) * dimp * dimp, cudaMemcpyHostToDevice));
+	
+	get_cholesky(devM, dimp);
+	for(int i = 0 ; i < dimp ; i++){
+		delete[] m1[i];
+		delete[] m2[i];
+	}
+	delete[] m1;
+	delete[] m2;
+
+
+
+}
+
+
 void get_cholesky(double *M, int n)
 {
 	int start_id, b;
@@ -1158,13 +1287,12 @@ void get_cholesky(double *M, int n)
 
 		start_id += b;
 	}
+	endtime = CycleTimer::currentSeconds();	
 	// Fire a kernel for making upper-triangular as 0.0
 	threads_per_block = 512;
 	number_of_blocks = upit( (dim * dim), threads_per_block);
 	set_upper_zero<<<number_of_blocks, threads_per_block>>>(M, dim);
 	cudaThreadSynchronize();
-
-	endtime = CycleTimer::currentSeconds();	
 
 	printf("Total time taken in cholesky = %lf s\n", endtime - startime);	
 	// Now checking!
@@ -1306,6 +1434,30 @@ void compute_K_inverse()
 	backward_substitution_matrix<<<number_of_blocks, threads_per_block>>>(K, tempfsforkinv, Kinv, N); // kernel - need N threads
 	cudaThreadSynchronize();
 	
+}
+
+void compute_K_inverse_with_tmi()
+{
+	int threads_per_block, number_of_blocks;
+	
+	// make_identity(); -> did this in setup "identity" is a double *
+
+	get_cholesky(K, N); //Set of kernels, the answer (a lower triangular matrix) is stored 
+
+	get_inverse_by_tmi(K, N);
+
+	/*
+	threads_per_block = 512;
+	number_of_blocks = upit(N, threads_per_block);
+	forward_substitution_matrix<<<number_of_blocks, threads_per_block>>>(K, identity, tempfsforkinv, N); // kernel - need N threads
+	cudaThreadSynchronize();
+	
+	// matrix_transpose(); // kernel - Not NEEDED
+
+	// matrix_backward_substitution();
+	backward_substitution_matrix<<<number_of_blocks, threads_per_block>>>(K, tempfsforkinv, Kinv, N); // kernel - need N threads
+	cudaThreadSynchronize();
+	*/
 }
 
 /* We don't need this!
@@ -1760,8 +1912,8 @@ void get_inverse_by_tmi(double *lower_triangular_mat, int ltm_dim)
 	delete []final_ans;
 }
 
-/* void test_tmi() {
-	int ltm_dim = 4096;
+ void test_tmi() {
+	int ltm_dim = 2048;
 	double *lower_triangular_mat_host;
 	double *final_ans;
 	int filler = 1;
@@ -1782,9 +1934,11 @@ void get_inverse_by_tmi(double *lower_triangular_mat, int ltm_dim)
 	cudacall(cudaMalloc(&tmi_playground, sizeof(double) * ltm_dim * ltm_dim));
 
 	final_ans = new double[ltm_dim * ltm_dim];
+	double startime, endtime;
 
 	int threads_per_block = 1024;
 	int num_blocks = upit(ltm_dim / 2, threads_per_block);
+	startime = CycleTimer::currentSeconds();	
 	inplace_lower_inverse_2x2<<<num_blocks, threads_per_block>>>(lower_triangular_mat, ltm_dim);
 	cudaThreadSynchronize();
 
@@ -1792,10 +1946,8 @@ void get_inverse_by_tmi(double *lower_triangular_mat, int ltm_dim)
 	printf("num_iters is %d\n", num_iters);
 
 	mat_size = 2;
-	double startime, endtime;
 	for (i = 0; i < num_iters; i++)
 	{
-		startime = CycleTimer::currentSeconds();	
 		total_threads = ltm_dim * mat_size / 2;
 		printf("Total threads launched: %d\n", total_threads);
 
@@ -1807,13 +1959,13 @@ void get_inverse_by_tmi(double *lower_triangular_mat, int ltm_dim)
 
 		second_offseted_mat_mult<<<num_blocks, threads_per_block>>>(lower_triangular_mat, mat_size, tmi_playground, ltm_dim, total_threads);
 		cudaThreadSynchronize();
-		endtime = CycleTimer::currentSeconds();
 
 		mat_size *= 2;
-		printf("Time for iter %d: %lf\n", i, endtime - startime);
 	}
 
-	printf("Final matrix:\n");
+	endtime = CycleTimer::currentSeconds();
+	printf("Total time for LMI = %lf\n",  endtime - startime);
+	//printf("Final matrix:\n");
 	// print_matrix_kernel<<<1, 1>>>(lower_triangular_mat, ltm_dim, ltm_dim);
 	// cudaThreadSynchronize();
 
@@ -1833,4 +1985,98 @@ void get_inverse_by_tmi(double *lower_triangular_mat, int ltm_dim)
 		//printf("\n");
 	}
 	printf("Total sum: %lf\n", total_sum);
-} */
+} 
+
+void setup_for_testing(int offset, int numtest){
+	Xtest = X + DIM * offset;
+	labelstest = labels + offset;
+	Ntest = numtest;	
+	
+	cudacall(cudaMalloc(&tmeanvec, sizeof(double) * Ntest));
+	cudacall(cudaMalloc(&tvarvec, sizeof(double) * Ntest));
+	
+	//Remember Ktest_vec should have size = N, not Ntest
+	cudacall(cudaMalloc(&Ktest_vec, sizeof(double) * N));
+
+}
+
+//compute_test_means_and_variances is a set of kernels
+void compute_test_means_and_variances(){
+	int threads_per_block, number_of_blocks;
+
+	//Maybe can move the compute_K_train to setup in SCHEDULER-vala (THINK ABOUT IT SID)
+        threads_per_block = 512;
+        number_of_blocks = upit((N * N), threads_per_block);
+        compute_K_train<<<number_of_blocks, threads_per_block>>>(X, K, loghyper, N, DIM); // populated in K
+        cudaThreadSynchronize();
+	
+	//compute_K_inverse(); //populates Kinv with K.inverse()
+	// instead of compute_K_inverse, let's see if TMI is of help!!!
+	compute_K_inverse_with_tmi();	
+	
+	// vector_Kinvy_using_cholesky(); // set of kernels
+	// We don't need this: we already have Kinv, so we just need to multiply Kinv and y
+        threads_per_block = 512;
+        number_of_blocks = upit( N, threads_per_block);
+	matrix_vector_multiply<<<number_of_blocks, threads_per_block>>>(Kinv, labels, temp1dvec, N); //so temp1dvec gets populated
+      	cudaThreadSynchronize();
+
+	
+	double sig_var = exp(lh_host[1] * 2); //signal variance
+	double noise_var = exp(lh_host[2] * 2); //noise variance
+	for(int i = 0; i < Ntest; i++){
+
+        	threads_per_block = 512;
+	        number_of_blocks = upit( N, threads_per_block);
+		compute_K_test<<<number_of_blocks, threads_per_block>>>(X, Xtest + i * DIM, Ktest_vec, loghyper, N, DIM); //REUSE SOME ALREADY EXISTING MALLOC'ED 1D VECTOR
+      		cudaThreadSynchronize();
+
+		vector_dot_product<<<1, 1>>>(Ktest_vec, temp1dvec, tmeanvec + i, N); //for mean
+      		cudaThreadSynchronize();
+	
+		threads_per_block = 512;
+	        number_of_blocks = upit(N, threads_per_block);
+       		vector_matrix_multiply<<<number_of_blocks, threads_per_block>>>(Ktest_vec, Kinv, temp_fs, N); //REUSING temp_fs from likelihood computation
+        	cudaThreadSynchronize();
+		
+		vector_dot_product_with_loghp<<<1, 1>>>(Ktest_vec, temp_fs, tvarvec + i, N, sig_var, noise_var ); //for variance
+      		cudaThreadSynchronize();
+		
+	}
+}
+
+void get_negative_log_predprob(){
+	
+	double *finalans = new double; //for host
+	double *ans_nlpp;
+	cudacall(cudaMalloc(&ans_nlpp, sizeof(double) ));
+	
+	compute_NLPP<<<1, 1>>>(labelstest, tmeanvec, tvarvec, Ntest, ans_nlpp);
+      	cudaThreadSynchronize();
+	
+	cudacall(cudaMemcpy(finalans, ans_nlpp,  sizeof(double), cudaMemcpyDeviceToHost));
+	printf("OKAY FINAL NLPP = %lf\n", *finalans);
+}
+
+void testing_phase(int offset, int numtest){
+
+	printf("---------------------------------------\n");
+	printf("TRYING TO START TESTING PHASE\n");	
+	printf("---------------------------------------\n");
+	//setup THINGS
+	setup_for_testing(offset, numtest);
+	
+	printf("\n---------------------------------------\n");
+	printf("TRYING TO Start compute_test_means PHASE\n");	
+	printf("---------------------------------------\n");
+	// Now calling testing phase
+	compute_test_means_and_variances();
+
+		
+	printf("\n---------------------------------------\n");
+	printf("Now result time\n");	
+	printf("---------------------------------------\n");
+	// actual answer time
+	get_negative_log_predprob();
+	
+}

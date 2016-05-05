@@ -1,0 +1,19 @@
+
+*500 points each 10 dimensional*
+Serial cpp implementation:
+	- Time in cholesky: 0.209846
+	- Time in LL	  : 0.233815
+
+naive CUDA implementation:
+	- Time in cholesky: 0.040800
+	- Time in LL	  : 2.356624
+
+
+*1000 points each 10 dimensional"
+Serial cpp implementation:
+	- Time in cholesky: 2.027622
+	- Time in LL	  : 2.10917
+
+naive CUDA implementation:
+	- Time in cholesky: 0.196799 
+	- Time in LL	  : 16.017447 
