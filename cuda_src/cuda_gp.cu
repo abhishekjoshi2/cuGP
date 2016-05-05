@@ -1021,6 +1021,7 @@ void setup_TMI()
 
 void setup( int numtrain, std::string inputfilename, std::string outputfilename)
 {
+	printf("YEEEEEEEEEEEEEEEHH setup call huaa\n");
 	std::string s;
 	read_input_and_copy_to_GPU(numtrain, inputfilename, outputfilename);
 
