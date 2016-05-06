@@ -16,6 +16,9 @@ int dimensions = 0;
 std::string prefix_input_file_name;
 std::string prefix_label_file_name;
 
+
+void set_loghyper_eigen_multinode(Eigen::VectorXd initval);
+
 void run_kernel();
 
 void read_trainingdata_and_copy_to_GPU(std::string inputfilename, std::string labelfilename);
@@ -45,6 +48,9 @@ void set_loghyper_eigen(Eigen::VectorXd initval);
 std::vector<int> worker_conn_fds;
 
 int total_workers = -1;
+
+double *BCM_log_hyperparams;
+
 
 void *accept_commands(char *hostname, int connfd)
 {
@@ -210,6 +216,13 @@ int main(int argc, char *argv[])
 
 		setup(numtrain, dimensions);
 
+		BCM_log_hyperparams = new double[3];
+		Eigen::VectorXd initval(3);                               
+		for(int i = 0 ; i < 3; i++){                              
+			initval[i] = 2.0;                                 
+		}                                                         
+		set_loghyper_eigen_multinode(initval);                    
+		
 		cg_solve(argv[1]);
 	
 		// testing_phase(numtrain,numtrain);

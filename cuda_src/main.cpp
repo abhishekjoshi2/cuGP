@@ -9,6 +9,8 @@
 #include "csapp.h"
 #include<string>
 
+void set_loghyper_eigen_multinode(Eigen::VectorXd initval);
+
 void run_kernel();
 
 void run_gp();
@@ -180,13 +182,17 @@ int main(int argc, char *argv[])
 	{
 		printf("Master calling cg_solve()\n");
 		
+		setup(numtrain, ipfile, opfile);
+		
 		BCM_log_hyperparams = new double[3];
 
-		for (int i = 0; i < 3; i++)
-			BCM_log_hyperparams[i] = 0.5;
-
-		setup(numtrain, ipfile, opfile);
-
+		Eigen::VectorXd initval(3);
+		for(int i = 0 ; i < 3; i++){
+			initval[i] = 1.5;
+		}
+		set_loghyper_eigen_multinode(initval);
+		
+		
 		cg_solve(argv[1]);
 	
 		// testing_phase(numtrain,numtrain);
