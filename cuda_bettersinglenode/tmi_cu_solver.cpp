@@ -4,8 +4,8 @@
 #include <cublas_v2.h>
 #include "../common/cycleTimer.h"
 #define IDX2C(i,j,ld) (((j)*(ld))+(i))
-#define m 10 // a - mxm matrix
-#define n 10 // b,x - mxn matrices
+#define m 1000 // a - mxm matrix
+#define n 1000 // b,x - mxn matrices
 
 int main ( void ){
 	cudaError_t cudaStat ; // cudaMalloc status
@@ -27,13 +27,13 @@ int main ( void ){
 		} // 16 ,21 ,25 ,28 ,30 ,31
 	}
 	 printf (" lower triangle of a:\n");
-	for (i=0;i<m;i ++){
+/*	for (i=0;i<m;i ++){
 		for (j=0;j<m;j ++){
 			if(i >=j)
 				printf (" %5.0f",a[ IDX2C(i,j,m)]);
 		}
 		printf ("\n");
-	} 
+	} */
 
 	ind =11; // b:
 	for(j=0;j<n;j ++){ // 11 ,17 ,23 ,29 ,35
@@ -50,12 +50,12 @@ int main ( void ){
 			b[ IDX2C(i, j, m)] = 0.0;*/
 			//ind ++; // 14 ,20 ,26 ,32 ,38
 	 printf ("b:\n");
-	for (i=0;i<m;i ++){
+/*	for (i=0;i<m;i ++){
 		for (j=0;j<n;j ++){
 			printf (" %5.0f",b[IDX2C(i,j,m)]); // print b row by row
 		}
 		printf ("\n");
-	} 
+	} */
 
 	double * d_a; // d_a - a on the device
 	double * d_b; // d_b - b on the device
@@ -75,12 +75,12 @@ int main ( void ){
 	stat = cublasGetMatrix (m,n, sizeof (*b) ,d_b ,m,b,m); // d_b -> b
 	double endtime = CycleTimer::currentSeconds();
 	printf (" solution x from Strsm :\n");
-	for(i=0;i<m;i ++){
+/*	for(i=0;i<m;i ++){
 		for(j=0;j<n;j ++){
 			printf (" %11.5f",b[IDX2C(i,j,m )]); // print b after Strsm
 		}
 		printf ("\n");
-	} 
+	} */
 	cudaFree (d_a ); // free device memory
 	cudaFree (d_b ); // free device memory
 	cublasDestroy ( handle ); // destroy CUBLAS context

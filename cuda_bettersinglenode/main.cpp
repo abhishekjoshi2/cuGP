@@ -172,9 +172,9 @@ int main(int argc, char *argv[])
 		printf("Host %s got worker id as %d\n", argv[1], worker_id);
 	}
 
-	int numtrain = 128;
-	std::string prefix_input_file_name = "../chunked_dataset/si128_chunk";
-	std::string prefix_label_file_name = "../chunked_dataset/si128_label"; 
+	int numtrain = 6000;
+	std::string prefix_input_file_name = "../chunked_dataset/sine_dataset_6000_10_chunk";
+	std::string prefix_label_file_name = "../chunked_dataset/sine_dataset_6000_10_label"; 
 	std::string ipfile = prefix_input_file_name + std::to_string(worker_id) + std::string(".txt");
 	std::string opfile = prefix_label_file_name + std::to_string(worker_id) + std::string(".txt");
 

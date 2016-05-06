@@ -610,8 +610,11 @@ get_determinant_from_L(double *M, int dim, double *log_det)
 	// single thread
 
 	double ans = 0.0;
-	for (int i = 0; i < dim; i++)
-		ans += log(M[i * dim + i]);
+	for (int i = 0; i < dim; i++){
+		double val = log(M[i * dim + i]);
+		printf("%lf ", val);
+		ans += val;
+	}
 	ans *= 2;
 	*log_det = ans;
 	printf("Determinant is %lf\n", ans);
@@ -1114,53 +1117,6 @@ void setup_cholesky(int dim, int b)
 
 	cudacall(cudaMalloc(&l22_temp, sizeof(double) * (dim - b) * (dim - b)));
 
-
-
-	/*GlobalConstants params;
-	  params.sceneName = sceneName;
-	  params.numCircles = numCircles;
-	  params.imageWidth = image->width;
-	  params.imageHeight = image->height;
-	  params.position = cudaDevicePosition;
-	  params.velocity = cudaDeviceVelocity;
-	  params.color = cudaDeviceColor;
-	  params.radius = cudaDeviceRadius;
-	  params.imageData = cudaDeviceImageData;
-
-	  cudaMemcpyToSymbol(cuConstRendererParams, &params, sizeof(GlobalConstants));
-
-	// also need to copy over the noise lookup tables, so we can
-	// implement noise on the GPU
-	int* permX;
-	int* permY;
-	float* value1D;
-	getNoiseTables(&permX, &permY, &value1D);
-	cudaMemcpyToSymbol(cuConstNoiseXPermutationTable, permX, sizeof(int) * 256);
-	cudaMemcpyToSymbol(cuConstNoiseYPermutationTable, permY, sizeof(int) * 256);
-	cudaMemcpyToSymbol(cuConstNoise1DValueTable, value1D, sizeof(float) * 256);
-
-	// last, copy over the color table that's used by the shading // function for circles in the snowflake demo
-
-	float lookupTable[COLOR_MAP_SIZE][3] = {
-	{1.f, 1.f, 1.f},
-	{1.f, 1.f, 1.f},
-	{.8f, .9f, 1.f},
-	{.8f, .9f, 1.f},
-	{.8f, 0.8f, 1.f},
-	};
-
-	cudaMemcpyToSymbol(cuConstColorRamp, lookupTable, sizeof(float) * 3 * COLOR_MAP_SIZE);
-
-	if(cudaMalloc(&table, sizeof(int) * numCircles * image->width * image->height / 16 / 16) != cudaSuccess )
-	printf("The giant malloc failed.\n");
-
-	if (cudaMalloc(&counters, sizeof(int) * image->height * image->width / 16 / 16) != cudaSuccess)
-	printf("The counter malloc fialed.\n");
-
-	if (cudaMalloc(&flagarray, sizeof(int) * numCircles) != cudaSuccess)
-	printf("The flag array malloc failed.\n");
-
-	cudaMemset((void *)flagarray, 0, sizeof(int) * numCircles); */
 }
 
 
@@ -1230,48 +1186,10 @@ void initialize_random(int dim){
 
 }
 
-
-
 void generate_random_vector(double *b, int dim){
 	for(int i = 0 ; i < dim ; i++){
 		b[i] = rand() % 10;	
 	}
-}
-
-void get_cholesky(double *, int);
-void setup_for_timing_cholesky(int dimp){
-	double **m1, **m2;
-	
-	setup_cholesky(dimp, 2);
-
-	temp_m = new double[dimp * dimp];
-
-	m1 = new double *[dimp];
-	m2 = new double *[dimp];
-
-	for (int i = 0; i < dimp; i++)
-	{
-		m1[i] = new double[dimp];
-		m2[i] = new double[dimp];
-	}
-
-	get_symmetric_matrix_1d(temp_m, m1, m2, dimp);
-
-	orig_sym = new double[dimp * dimp]; // should be equal to covariance matrix
-	double *devM; //device ka banda
-	cudacall(cudaMalloc(&devM, sizeof(double) * dimp * dimp));
-	cudacall(cudaMemcpy(devM, temp_m,  sizeof(double) * dimp * dimp, cudaMemcpyHostToDevice));
-	
-	get_cholesky(devM, dimp);
-	for(int i = 0 ; i < dimp ; i++){
-		delete[] m1[i];
-		delete[] m2[i];
-	}
-	delete[] m1;
-	delete[] m2;
-
-
-
 }
 
 
@@ -1283,25 +1201,29 @@ void get_cholesky_using_cublas(double *M, int n){
         int work_size = 0;
 
 
-        // --- CUDA CHOLESKY initialization: Not needed
-        //cusolverDnDpotrf_bufferSize(solver_handle, CUBLAS_FILL_MODE_UPPER, n, M, n * n, &work_size);
+	//print_matrix_kernel<<<1,1>>>(M, n, n);
+	//cudaThreadSynchronize(); 
+        
+	// --- CUDA CHOLESKY initialization: Not needed
+         cusolverDnDpotrf_bufferSize(solver_handle, CUBLAS_FILL_MODE_UPPER, n, M, n * n, &work_size);
         
 	// --- CUDA POTRF execution
-	// double *work;
-  	// cudacall(cudaMalloc(&work, work_size * sizeof(double)));
-   	// cusolverDnDpotrf(solver_handle, CUBLAS_FILL_MODE_UPPER, n, M, n, work, work_size, devInfo);
+	 double *work;
+  	 cudacall(cudaMalloc(&work, work_size * sizeof(double)));
+   	 cusolverDnDpotrf(solver_handle, CUBLAS_FILL_MODE_UPPER, n, M, n, work, work_size, devInfo);
 
 	// Giving the entire Kinv for buffer: Be happy!!
-        cusolverDnDpotrf(solver_handle, CUBLAS_FILL_MODE_UPPER, n, M, n, Kinv, n * n, devInfo);
+        //cusolverDnDpotrf(solver_handle, CUBLAS_FILL_MODE_UPPER, n, M, n, Kinv, n * n, devInfo);
 	
-       // int devInfo_h = 0;
-       // cudacall(cudaMemcpy(&devInfo_h, devInfo, sizeof(int), cudaMemcpyDeviceToHost));
-       // if (devInfo_h != 0) std::cout   << "Unsuccessful potrf execution\n\n";
+       int devInfo_h = 0;
+       cudacall(cudaMemcpy(&devInfo_h, devInfo, sizeof(int), cudaMemcpyDeviceToHost));
+        if (devInfo_h != 0) std::cout   << "Unsuccessful potrf execution, value = " << devInfo_h << std::endl;
+	else printf("okay cholesky went fine\n");
 
 	double endtime = CycleTimer::currentSeconds();
 	printf("Time taken for CUSOLVER cholesky: %lf\n", endtime - startime);
 	//now make upper vala 0
-	int threads_per_block = 512;
+	int threads_per_block = 1024;
         int number_of_blocks = upit( (n * n), threads_per_block);
         set_upper_zero<<<number_of_blocks, threads_per_block>>>(M, n);
         cudaThreadSynchronize();
@@ -1310,84 +1232,11 @@ void get_cholesky_using_cublas(double *M, int n){
 }
 
 
-void get_cholesky(double *M, int n)
-{
-	int start_id, b;
-	int threads_per_block;
-	int number_of_blocks;
-	int num_iters;
-	double startime, endtime;
-	int dim = n;
-
-	cudacall(cudaMemcpy(orig_sym, M,  sizeof(double) * dim * dim, cudaMemcpyDeviceToHost));
-
-	start_id = 0;
-	b = 2;
-
-	startime = CycleTimer::currentSeconds();	
-
-	num_iters = n / b;
-
-	for (int i = 0; i < num_iters; i++)
-	{
-		hardcoded_cholesky_2x2<<<1, 1>>>(M, a11, dim, b, start_id);
-		cudaThreadSynchronize();
-
-		if (i == num_iters - 1)
-			break;
-
-		// TODO optimize a21_transpose, by bypassing it perhaps? Can avoid transpose and manipulate indices inside next kernel
-		threads_per_block = 512;
-		number_of_blocks = upit((dim - b - start_id) * b, threads_per_block);
-		take_a21_transpose<<<number_of_blocks, threads_per_block>>>(M, a21_transpose, dim, b, start_id);
-		cudaThreadSynchronize();
-
-		threads_per_block = 512;
-		number_of_blocks = upit((dim - b - start_id), threads_per_block);
-		forward_substitution_rectangular_a21<<<number_of_blocks, threads_per_block>>>(M, a11, a21_transpose, l21_transpose_from_fs, dim, b, start_id);
-		cudaThreadSynchronize();
-
-		threads_per_block = 512;
-		number_of_blocks = upit((dim - b - start_id) * b, threads_per_block);
-		generic_matrix_transpose<<<number_of_blocks, threads_per_block>>>(l21_transpose_from_fs, l21, b, dim - b - start_id);
-		cudaThreadSynchronize();
-
-		//matrixmultiply_noshare<<<(double *a, int rowsA, int colsA, double *b, int rowsB, int colsB, double *c)
-		int rowA = (dim - b - start_id) , colA = b, rowB = b , colB = (dim - b - start_id) ;
-		dim3 blockDim(32,32);
-		dim3 gridDim( upit(colB, blockDim.x), upit(rowA, blockDim.y));
-		matrixmultiply_noshare<<<gridDim, blockDim >>>(l21, (dim - b - start_id), b,  l21_transpose_from_fs, b, dim - b - start_id, l22_temp);
-		cudaThreadSynchronize();
-
-		threads_per_block = 512;
-		number_of_blocks = upit((dim - b - start_id) * (dim - b - start_id), threads_per_block);
-		offseted_elementwise_subtraction<<<number_of_blocks, threads_per_block >>>(l22_temp, dim - b - start_id, M, dim, b, start_id);
-		cudaThreadSynchronize();
-
-		start_id += b;
-	}
-	endtime = CycleTimer::currentSeconds();	
-	// Fire a kernel for making upper-triangular as 0.0
-	threads_per_block = 512;
-	number_of_blocks = upit( (dim * dim), threads_per_block);
-	set_upper_zero<<<number_of_blocks, threads_per_block>>>(M, dim);
-	cudaThreadSynchronize();
-
-	printf("Total time taken in cholesky = %lf s\n", endtime - startime);	
-	// Now checking!
-
-	double *finalans = new double[dim * dim];
-
-	cudacall(cudaMemcpy(finalans, M,  sizeof(double) * dim * dim, cudaMemcpyDeviceToHost));
-
-	check_cholesky(finalans, orig_sym, dim); 
-}
-
 void get_inverse_by_cublas(double *Lmat, int sizelmat){
         double al =1.0f;
 
 	int threads_per_block, number_of_blocks;
-	threads_per_block = 512;
+	threads_per_block = 1024;
 	number_of_blocks = upit((sizelmat * sizelmat), threads_per_block);
 	
 	generate_identity<<<number_of_blocks, threads_per_block>>>(lowermat_inv_store, sizelmat);
@@ -1531,14 +1380,28 @@ double compute_log_likelihood()
 {
 	int threads_per_block, number_of_blocks;
 
-	threads_per_block = 512;
+	threads_per_block = 1024;
 	number_of_blocks = upit((N * N), threads_per_block);
 
+	printf("compute_K_train hota hai\n");
 	compute_K_train<<<number_of_blocks, threads_per_block>>>(X, K, loghyper, N, DIM); // kernel
 	cudaThreadSynchronize();
 
-	/* print_matrix_kernel<<<1,1>>>(K, N, N);
-	   cudaThreadSynchronize(); */
+	
+/*	double *okaybhai = new double[N * N];
+	cudacall(cudaMemcpy(okaybhai, K, sizeof(double) * N * N , cudaMemcpyDeviceToHost)); 
+
+	printf("NEEECHE\n\n");
+	
+	for(int i = 0 ; i < N ;i++){
+		for(int j = 0 ; j < N;j++){
+
+			printf("%lf", okaybhai[i*N +j]);
+			if(j < N -1) printf(",");
+		}
+		printf("\n");
+	}
+*/
 
 	compute_chol_get_mul_and_det(); // set of kernels
 
@@ -1575,63 +1438,6 @@ void compute_K_inverse_using_cublas()
 	//-> So the answer is in Kinv
 }
 
-void compute_K_inverse()
-{
-	int threads_per_block, number_of_blocks;
-	
-	// make_identity(); -> did this in setup "identity" is a double *
-
-	get_cholesky(K, N); //Set of kernels, the answer (a lower triangular matrix) is stored 
-
-	threads_per_block = 512;
-	number_of_blocks = upit(N, threads_per_block);
-	forward_substitution_matrix<<<number_of_blocks, threads_per_block>>>(K, identity, tempfsforkinv, N); // kernel - need N threads
-	cudaThreadSynchronize();
-	
-	// matrix_transpose(); // kernel - Not NEEDED
-
-	// matrix_backward_substitution();
-	backward_substitution_matrix<<<number_of_blocks, threads_per_block>>>(K, tempfsforkinv, Kinv, N); // kernel - need N threads
-	cudaThreadSynchronize();
-	
-}
-
-void compute_K_inverse_with_tmi()
-{
-	int threads_per_block, number_of_blocks;
-	
-	// make_identity(); -> did this in setup "identity" is a double *
-
-	get_cholesky(K, N); //Set of kernels, the answer (a lower triangular matrix) is stored 
-
-	get_inverse_by_tmi(K, N);
-
-	/*
-	threads_per_block = 512;
-	number_of_blocks = upit(N, threads_per_block);
-	forward_substitution_matrix<<<number_of_blocks, threads_per_block>>>(K, identity, tempfsforkinv, N); // kernel - need N threads
-	cudaThreadSynchronize();
-	
-	// matrix_transpose(); // kernel - Not NEEDED
-
-	// matrix_backward_substitution();
-	backward_substitution_matrix<<<number_of_blocks, threads_per_block>>>(K, tempfsforkinv, Kinv, N); // kernel - need N threads
-	cudaThreadSynchronize();
-	*/
-}
-
-/* We don't need this!
-void vector_Kinvy_using_cholesky()
-{
-	// get_cholesky(); // set of kernels
-
-	// matrix_transpose();
-
-	// forward_solve_vector();
-
-	// backward_solve_vector();
-}*/
-
 void compute_gradient_log_hyperparams(double *localhp_grad)
 {
 	int threads_per_block, number_of_blocks;
@@ -1643,25 +1449,25 @@ void compute_gradient_log_hyperparams(double *localhp_grad)
 	//	1/2 SAVING TO THIS COMPUTE_K_TRAIN
 
 	// compute_K_train(); // kernel - can reuse earlier matrix?
-        threads_per_block = 512;
+        threads_per_block = 1024;
         number_of_blocks = upit((N * N), threads_per_block);
         compute_K_train<<<number_of_blocks, threads_per_block>>>(X, K, loghyper, N, DIM); // kernel
         cudaThreadSynchronize();
 	
-        threads_per_block = 512;
+        threads_per_block = 1024;
         number_of_blocks = upit((N * N), threads_per_block);
 	copy_Kmatrix<<<number_of_blocks, threads_per_block>>>(K, Kintact, N);
         cudaThreadSynchronize();
 		
 	
 	//compute_squared_distance(); // kernel
-        threads_per_block = 512;
+        threads_per_block = 1024;
         number_of_blocks = upit((N * N), threads_per_block);
    	compute_squared_distances<<<number_of_blocks, threads_per_block>>>(X,  Ksqdist,  loghyper,  N, DIM);
    	cudaThreadSynchronize();
 
 	// elementwise_matrix_mult(); // kernel
-        threads_per_block = 512;
+        threads_per_block = 1024;
         number_of_blocks = upit((N * N), threads_per_block);
 	elementwise_matrix_mult<<<number_of_blocks, threads_per_block>>>(K, Ksqdist, matforell, N, N);
 	cudaThreadSynchronize();
@@ -1695,7 +1501,7 @@ void compute_gradient_log_hyperparams(double *localhp_grad)
       	cudaThreadSynchronize();
 	*/
 	
-        threads_per_block = 512;
+        threads_per_block = 1024;
         number_of_blocks = upit((N * N), threads_per_block);
 	copy_Kmatrix<<<number_of_blocks, threads_per_block>>>(Kinv, tempWmatrix, N);
      	const double alf = -1; //NOTE: we neeed to subtract, that's why -1
@@ -1703,7 +1509,7 @@ void compute_gradient_log_hyperparams(double *localhp_grad)
 
 	cublasDger(blas_handle, N, N, alpha,  temp1dvec, 1, temp1dvec, 1, tempWmatrix, N);
 
-        threads_per_block = 512;
+        threads_per_block = 1024;
         number_of_blocks = upit( N, threads_per_block);
 	gather_diagonal<<<number_of_blocks, threads_per_block>>>(tempWmatrix, tempdiagonal, N);	
       	cudaThreadSynchronize();
@@ -1752,68 +1558,6 @@ void set_loghyper_eigen(Eigen::VectorXd initval) {
 	cudacall(cudaMemcpy(loghyper, lh_host, sizeof(double) * 3 , cudaMemcpyHostToDevice)); 
 }
 
-void get_inverse_by_tmi(double *lower_triangular_mat, int ltm_dim)
-{
-	int mat_size, i, num_iters;
-	int total_threads;
-	double *final_ans;
-	double *lower_triangular_mat_host;
-	lower_triangular_mat_host = new double[ltm_dim * ltm_dim];
-
-	int threads_per_block = 1024;
-	int num_blocks = upit(ltm_dim / 2, threads_per_block);
-
-	cudacall(cudaMemcpy(lower_triangular_mat_host, lower_triangular_mat, sizeof(double) * ltm_dim * ltm_dim, cudaMemcpyDeviceToHost));	
-
-	inplace_lower_inverse_2x2<<<num_blocks, threads_per_block>>>(lower_triangular_mat, ltm_dim);
-	cudaThreadSynchronize();
-
-	num_iters = log2((double)ltm_dim) - 1;
-	printf("num_iters is %d\n", num_iters);
-
-	mat_size = 2;
-	double startime, endtime;
-	final_ans = new double[ltm_dim * ltm_dim];
-	for (i = 0; i < num_iters; i++)
-	{
-		startime = CycleTimer::currentSeconds();	
-		total_threads = ltm_dim * mat_size / 2;
-		printf("Total threads launched: %d\n", total_threads);
-
-		threads_per_block = 1024;
-		num_blocks = upit(total_threads, threads_per_block);
-
-		first_offseted_mat_mult<<<num_blocks, threads_per_block>>>(lower_triangular_mat, mat_size, tmi_intermediate_output, ltm_dim, total_threads);
-		cudaThreadSynchronize();
-
-		second_offseted_mat_mult<<<num_blocks, threads_per_block>>>(lower_triangular_mat, mat_size, tmi_intermediate_output, ltm_dim, total_threads);
-		cudaThreadSynchronize();
-		endtime = CycleTimer::currentSeconds();
-
-		mat_size *= 2;
-		printf("Time for iter %d: %lf\n", i, endtime - startime);
-	}
-
-	cudacall(cudaMemcpy(final_ans, lower_triangular_mat, sizeof(double) * ltm_dim * ltm_dim, cudaMemcpyDeviceToHost));	
-
-	double total_sum = 0;
-	for (int i = 0; i < ltm_dim; i++)
-	{
-		for (int j = 0; j < ltm_dim; j++)
-		{
-			double sum = 0;
-			for (int k = 0; k < ltm_dim; k++)
-				sum += lower_triangular_mat_host[i * ltm_dim + k] * final_ans[k * ltm_dim + j];
-			//printf("%lf ", sum);
-			total_sum += sum;
-		}
-		//printf("\n");
-	}
-	printf("Total sum: %lf\n", total_sum);
-
-	delete []lower_triangular_mat_host;
-	delete []final_ans;
-}
 
 void setup_for_testing(int offset, int numtest){
 	Xtest = X + DIM * offset;
@@ -1833,14 +1577,16 @@ void compute_test_means_and_variances(){
 	int threads_per_block, number_of_blocks;
 
 	//Maybe can move the compute_K_train to setup in SCHEDULER-vala (THINK ABOUT IT SID)
-        threads_per_block = 512;
+        threads_per_block = 1024;
         number_of_blocks = upit((N * N), threads_per_block);
         compute_K_train<<<number_of_blocks, threads_per_block>>>(X, K, loghyper, N, DIM); // populated in K
         cudaThreadSynchronize();
 	
 	//compute_K_inverse(); //populates Kinv with K.inverse()
 	// instead of compute_K_inverse, let's see if TMI is of help!!!
-	compute_K_inverse_with_tmi();	
+	
+	//FIXME: cublas vala call KAROOOOOOOOOOOOOOO
+	//compute_K_inverse_with_tmi();	
 	
 	// vector_Kinvy_using_cholesky(); // set of kernels
 	// We don't need this: we already have Kinv, so we just need to multiply Kinv and y

@@ -28,7 +28,7 @@
 /********/
 int main(){
 
-	const int Nrows = 1000;
+	const int Nrows = 6000;
 	const int Ncols = Nrows;
 
 	double h_A[Nrows][Ncols];
@@ -90,7 +90,7 @@ int main(){
 	int devInfo_h = 0;
 	cudacall(cudaMemcpy(&devInfo_h, devInfo, sizeof(int), cudaMemcpyDeviceToHost));
 	if (devInfo_h != 0) std::cout   << "Unsuccessful potrf execution\n\n";
-	
+	printf("status = %d\n", devInfo_h);	
 	printf("dekho bhai time = %lf", endtime - startime);
 	// --- At this point, the upper triangular part of A contains the elements of L. Showing this.
 	printf("\nFactorized matrix\n");
