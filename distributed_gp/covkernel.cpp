@@ -121,9 +121,9 @@ double Covsum::compute_loglikelihood(double **X, double *y) {
 	compute_K_train(X, this->tempKmatrix);
 	std::pair<double, double> pp = compute_chol_and_det(this->tempKmatrix, y, n);
 
-	if (debug)
 		std::cout << "Product: " << pp.first << " log Determinant: " << pp.second << std::endl;
 
+	
 	return -0.5 * ( pp.first + pp.second + n * 1.83787);  // log (2 * pi) = 1.8378770664093453
 
 }

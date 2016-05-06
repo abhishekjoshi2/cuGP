@@ -271,13 +271,14 @@ int main()
 		fscanf(label_file, "%lf", &y[i]);
 	}
 
-	double inithypervalues[] = {0.5, 0.5, 0.5};
+	double inithypervalues[] = {1.5, 1.5, 1.5};
+	//double inithypervalues[] = {2.0, 2.0, 2.0};
 	
 	int total = 128;
 	int numtrain = 128;
 	int numtest = total - numtrain;
 
-	int numexp = 2;
+	int numexp = 1;
 	
 	BCM poe(X, y, numtrain, dim , numexp);
 	poe.set_BCM_log_hyperparam(inithypervalues);		
