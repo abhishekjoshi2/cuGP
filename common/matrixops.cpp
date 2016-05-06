@@ -1,8 +1,9 @@
 #include <cmath>
 #include <utility>
 #include <cstdio>
-#include "debug.h"
+// #include "debug.h"
 #include "../common/cycleTimer.h"
+#define debug 0
 
 void print_matrix(double **M, int r, int c) {
 	/*
