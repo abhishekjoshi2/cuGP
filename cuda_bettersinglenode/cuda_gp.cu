@@ -22,6 +22,14 @@
 
 #define BLOCK_SIZE 32
 
+//For cublas
+int *devInfo;
+cusolverDnHandle_t solver_handle;
+cublasHandle_t blas_handle;
+cublasStatus_t stat;
+
+double *lowermat_inv_store;
+
 bool correct = true;
 double *temp_m; 
 
@@ -96,6 +104,20 @@ double *tmi_playground;
 double *get_loghyperparam();
 
 
+__global__ void generate_identity(double *M, int size){
+	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	if (i_index >= size * size)
+		return;
+
+	int i = i_index / size;
+	int j = i_index % size;
+
+	if(i == j) M[i*size + i] = 1.0;
+	else M[i*size + j] = 0.0;	
+
+}
 __global__ void print_vector(double *input, int size){
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
         if(i_index >= 1) return;
@@ -971,6 +993,9 @@ void setup_loglikelihood_data()
 	//matrix for storing K.inverse()
 	cudacall(cudaMalloc(&Kinv, sizeof(double) * N * N));
 
+	//matrix for storing K.inverse()
+	cudacall(cudaMalloc(&lowermat_inv_store, sizeof(double) * N * N));
+	
 	// this is the log determinant
 	cudacall(cudaMalloc(&log_det, sizeof(double)));
 
@@ -1023,6 +1048,16 @@ void setup_TMI()
 	cudacall(cudaMalloc(&tmi_intermediate_output, sizeof(double) * N * N));
 }
 
+void destruct_cublas_cusoler(){
+	cusolverDnDestroy(solver_handle);
+	cublasDestroy ( blas_handle );
+}
+void setup_cublas_cusolver(){
+		
+        cudacall(cudaMalloc(&devInfo, sizeof(int)));
+        cusolverDnCreate(&solver_handle);
+	stat = cublasCreate (& blas_handle );
+}
 void setup( int numtrain, std::string inputfilename, std::string outputfilename)
 {
 	printf("YEEEEEEEEEEEEEEEHH setup call huaa\n");
@@ -1036,6 +1071,8 @@ void setup( int numtrain, std::string inputfilename, std::string outputfilename)
 	setup_gradienthp_data();	
 
 	setup_TMI();
+	
+	setup_cublas_cusolver();
 }
 
 void setup_cholesky(int dim, int b)
@@ -1243,26 +1280,23 @@ void get_cholesky_using_cublas(double *M, int n){
 
 	printf("Haaaar REE call hua\n");
 	double startime = CycleTimer::currentSeconds();	
-	// --- cuSOLVE input/output parameters/arrays
         int work_size = 0;
-        int *devInfo;
-        cudacall(cudaMalloc(&devInfo, sizeof(int)));
 
-        // --- CUDA solver initialization
-        cusolverDnHandle_t solver_handle;
-        cusolverDnCreate(&solver_handle);
 
-        // --- CUDA CHOLESKY initialization
-        cusolverDnDpotrf_bufferSize(solver_handle, CUBLAS_FILL_MODE_UPPER, n, M, n * n, &work_size);
+        // --- CUDA CHOLESKY initialization: Not needed
+        //cusolverDnDpotrf_bufferSize(solver_handle, CUBLAS_FILL_MODE_UPPER, n, M, n * n, &work_size);
+        
+	// --- CUDA POTRF execution
+	// double *work;
+  	// cudacall(cudaMalloc(&work, work_size * sizeof(double)));
+   	// cusolverDnDpotrf(solver_handle, CUBLAS_FILL_MODE_UPPER, n, M, n, work, work_size, devInfo);
 
-        // --- CUDA POTRF execution
-        double *work;
-        cudacall(cudaMalloc(&work, work_size * sizeof(double)));
-        cusolverDnDpotrf(solver_handle, CUBLAS_FILL_MODE_UPPER, n, M, n, work, work_size, devInfo);
-
-        int devInfo_h = 0;
-        cudacall(cudaMemcpy(&devInfo_h, devInfo, sizeof(int), cudaMemcpyDeviceToHost));
-        if (devInfo_h != 0) std::cout   << "Unsuccessful potrf execution\n\n";
+	// Giving the entire Kinv for buffer: Be happy!!
+        cusolverDnDpotrf(solver_handle, CUBLAS_FILL_MODE_UPPER, n, M, n, Kinv, n * n, devInfo);
+	
+       // int devInfo_h = 0;
+       // cudacall(cudaMemcpy(&devInfo_h, devInfo, sizeof(int), cudaMemcpyDeviceToHost));
+       // if (devInfo_h != 0) std::cout   << "Unsuccessful potrf execution\n\n";
 
 	double endtime = CycleTimer::currentSeconds();
 	printf("Time taken for CUSOLVER cholesky: %lf\n", endtime - startime);
@@ -1272,7 +1306,6 @@ void get_cholesky_using_cublas(double *M, int n){
         set_upper_zero<<<number_of_blocks, threads_per_block>>>(M, n);
         cudaThreadSynchronize();
 
-	cusolverDnDestroy(solver_handle);
 
 }
 
@@ -1350,6 +1383,59 @@ void get_cholesky(double *M, int n)
 	check_cholesky(finalans, orig_sym, dim); 
 }
 
+void get_inverse_by_cublas(double *Lmat, int sizelmat){
+        double al =1.0f;
+
+	int threads_per_block, number_of_blocks;
+	threads_per_block = 512;
+	number_of_blocks = upit((sizelmat * sizelmat), threads_per_block);
+	
+	generate_identity<<<number_of_blocks, threads_per_block>>>(lowermat_inv_store, sizelmat);
+	cudaThreadSynchronize(); 
+		
+	printf("---------------------------------------------\n");
+	printf("A matrix: \n");
+	print_matrix_kernel<<<1, 1>>>(Lmat, sizelmat, sizelmat);
+	cudaThreadSynchronize(); 
+	printf("B matrix: \n");
+	print_matrix_kernel<<<1, 1>>>(lowermat_inv_store, sizelmat, sizelmat);
+	cudaThreadSynchronize(); 
+	
+        double startime = CycleTimer::currentSeconds();
+        (cublasDtrsm(blas_handle,CUBLAS_SIDE_LEFT,CUBLAS_FILL_MODE_UPPER,
+                        CUBLAS_OP_N,CUBLAS_DIAG_NON_UNIT, sizelmat , sizelmat ,&al, Lmat, sizelmat, lowermat_inv_store, sizelmat));
+        double endtime = CycleTimer::currentSeconds();
+	printf("time taken by cublas-TMI-inverse = %lf\n", endtime - startime);
+	printf("output matrix (should be inverse of A: \n");
+	print_matrix_kernel<<<1, 1>>>(lowermat_inv_store, sizelmat, sizelmat);
+	cudaThreadSynchronize(); 
+
+	printf("---------------------------------------------\n");
+
+}
+
+void matrix_multiply_cublas_withtranspose(double *A, double *B, double *C, int size){
+     const double alf = 1;
+     const double bet = 0;
+     const double *alpha = &alf;
+     const double *beta = &bet;
+
+     // Do the actual multiplication
+     cublasDgemm(blas_handle, CUBLAS_OP_N, CUBLAS_OP_T, size, size, size, alpha, A, size, B, size, beta, C, size);
+}
+
+void matrix_vector_multiply_cublas(double *A, double *B, double *C, int size){
+     const double alf = 1;
+     const double bet = 0;
+     const double *alpha = &alf;
+     const double *beta = &bet;
+
+     // Do the actual multiplication
+     cublasDgemv(blas_handle, CUBLAS_OP_N, size, size, alpha, A, size, B, 1, beta, C, size);
+}
+
+
+
 void get_inverse_by_tmi(double *, int );
 void compute_chol_get_mul_and_det()
 {
@@ -1390,30 +1476,64 @@ void compute_chol_get_mul_and_det()
 	//vector-matrix-mulitply of (ouput of prev step) and labels => temp_bs
 	//TODO: CAN DELETE TEMP_FS..... */
 
-	get_inverse_by_tmi(K, N);
-      	cudaThreadSynchronize();
-  	
-	dim3 blockDim(32,32);
-        dim3 gridDim( upit(N, blockDim.x), upit(N, blockDim.y));
-        lowertriangular_matrixmultiply_noshare<<<gridDim, blockDim >>>(K, Kinv, N);
-        cudaThreadSynchronize();
+	printf("okay NOW TMI with cublas instead of our call\n");
+//	get_inverse_by_tmi(K, N);
+//     	cudaThreadSynchronize();
+	get_inverse_by_cublas(K, N); //-> Now note that the result will be in lowermat_inv_store and not K (IMP)
 
+
+//      NOTE: THIS TRANPOSE IS NOT REQUIRED
+//		BECAUSE WE HAVE AN ADHOC MATRIX_MULITPLY_CUBLAS_WITHTRANPOSE
+//	double alpha = 1.0, beta = 0.0;
+//	//now we need to get the transpose lowermat_inv_store : let's store this in K (reuse!!!)
+//	cublasDgeam(blas_handle, CUBLAS_OP_T, CUBLAS_OP_T, N, N, &alpha, lowermat_inv_store, N, &beta, lowermat_inv_store, N, K, N);	
+
+//	printf("Bhai transpose dekhle \n");
+//	print_matrix_kernel<<<1, 1>>>(K,N, N);
+//	cudaThreadSynchronize(); 
+
+	//Now we will do the DGEMM matrix multiply	
+//	printf("SIMPLE MULTIPLY\n");
+//	dim3 blockDim(32,32);
+ //       dim3 gridDim( upit(N, blockDim.x), upit(N, blockDim.y));
+  //      lowertriangular_matrixmultiply_noshare<<<gridDim, blockDim >>>(lowermat_inv_store, Kinv, N);
+  //      cudaThreadSynchronize();
+	
+	matrix_multiply_cublas_withtranspose(lowermat_inv_store, lowermat_inv_store, Kinv, N);
+	//printf("Bhai DGEMM dekhle \n");
+	print_matrix_kernel<<<1, 1>>>(Kinv,N, N);
+	cudaThreadSynchronize(); 
+	
+	printf("LABELS = \n");
+	print_vector<<<1, 1>>>(labels, N);
+	cudaThreadSynchronize(); 
+
+	
+
+	matrix_vector_multiply_cublas(Kinv, labels, temp_bs, N);
+	printf("\nokay neeche dekho\n");
+	print_vector<<<1, 1>>>(temp_bs, N);
+	cudaThreadSynchronize(); 
+
+	/*
         threads_per_block = 512;
         number_of_blocks = upit(N, threads_per_block);
         matrix_vector_multiply<<<number_of_blocks, threads_per_block>>>(Kinv, labels, temp_bs, N);
         cudaThreadSynchronize();
+	*/
+	
+	
+	/*vector_dot_product<<<1, 1>>>(temp_bs, labels, ll_dotprod, N);
+	cudaThreadSynchronize();*/
 
-	vector_dot_product<<<1, 1>>>(temp_bs, labels, ll_dotprod, N);
-	cudaThreadSynchronize();
-
-	/* thrust::device_ptr<double> td1 = thrust::device_pointer_cast(temp_bs);
+	thrust::device_ptr<double> td1 = thrust::device_pointer_cast(temp_bs);
 	thrust::device_ptr<double> td2 = thrust::device_pointer_cast(labels);
 
 	double ans = 0.0;
 	ans = thrust::inner_product(td1, td1 + N, td2, 0.0);
-
+	printf("\n\n ############# PRODUCT YEH AYA = %lf\n", ans);
 	//POTENTIAL IMPROVEMENT POSSIBLE
-	cudacall(cudaMemcpy(ll_dotprod, &ans, sizeof(double), cudaMemcpyHostToDevice)); */
+	cudacall(cudaMemcpy(ll_dotprod, &ans, sizeof(double), cudaMemcpyHostToDevice)); 
 }
 
 

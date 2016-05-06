@@ -9,6 +9,7 @@
 #include "csapp.h"
 #include <string>
 
+void destruct_cublas_cusoler();
 void set_loghyper_eigen_multinode(Eigen::VectorXd initval);
 
 void run_kernel();
@@ -193,7 +194,7 @@ int main(int argc, char *argv[])
 		set_loghyper_eigen_multinode(initval);
 		
 		cg_solve(argv[1]);
-	
+		destruct_cublas_cusoler();	
 		// testing_phase(numtrain,numtrain);
 	}
 	else

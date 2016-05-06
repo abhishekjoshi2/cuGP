@@ -28,7 +28,7 @@ void gpu_blas_mmul(const double *A, const double *B, double *C, const int m, con
 
 int main(){
 
-	int m = 4096;
+	int m = 10;
 	int n = m;
 	cudaError_t cudaStat ; // cudaMalloc status
 	cublasStatus_t stat ; // CUBLAS functions status
@@ -42,22 +42,22 @@ int main(){
 	b=( double *) malloc (m*m* sizeof ( double )); // host memory for b
 	c=( double *) malloc (m*m* sizeof ( double )); // host memory for b
 
-	int ind =11; // a:
+	int ind =1; // a:
 	for(j=0;j<m;j ++){ // 11
 		for(i=0;i<m;i ++){ // 12 ,17
-			if(i >=j){ // 13 ,18 ,22
+	//		if(i >=j){ // 13 ,18 ,22
 				a[ IDX2C(i,j,m)]=( float )ind ++; // 14 ,19 ,23 ,26
-			} // 15 ,20 ,24 ,27 ,29
+	//		} // 15 ,20 ,24 ,27 ,29
 		} // 16 ,21 ,25 ,28 ,30 ,31
 	}
-	/* printf (" lower triangle of a:\n");
+	 printf (" lower triangle of a:\n");
 	for (i=0;i<m;i ++){
 		for (j=0;j<m;j ++){
-			if(i >=j)
+	//		if(i >=j)
 				printf (" %5.0f",a[ IDX2C(i,j,m)]);
 		}
 		printf ("\n");
-	} */
+	} 
 
 	ind =11; // b:
 	for(j=0;j<n;j ++){ // 11 ,17 ,23 ,29 ,35
@@ -69,13 +69,13 @@ int main(){
 			//ind ++; // 14 ,20 ,26 ,32 ,38
 		} // 15 ,21 ,27 ,33 ,39
 	} // 16 ,22 ,28 ,34 ,40
-	/* printf ("b:\n");
+	 printf ("b:\n");
 	for (i=0;i<m;i ++){
 		for (j=0;j<n;j ++){
 			printf (" %5.0f",b[IDX2C(i,j,m)]); // print b row by row
 		}
 		printf ("\n");
-	} */
+	} 
 
 	double * d_a; // d_a - a on the device
 	double * d_b; // d_b - b on the device
@@ -93,14 +93,14 @@ int main(){
 	gpu_blas_mmul(d_a, d_b, d_c, m, m, m);
 	double endtime = CycleTimer::currentSeconds();
 	
-	stat = cublasGetMatrix (m,n, sizeof (*b) ,d_b ,m,b,m); // d_b -> b
-	/* printf (" solution x from Strsm :\n");
+	stat = cublasGetMatrix (m,n, sizeof (*c) ,d_c ,m,c,m); // d_b -> b
+	 printf (" solution x from Strsm :\n");
 	for(i=0;i<m;i ++){
 		for(j=0;j<n;j ++){
-			printf (" %11.5f",b[IDX2C(i,j,m )]); // print b after Strsm
+			printf (" %11.5f",c[IDX2C(i,j,m )]); // print b after Strsm
 		}
 		printf ("\n");
-	} */
+	} 
 	cudaFree (d_a ); // free device memory
 	cudaFree (d_b ); // free device memory
 	cudaFree (d_c ); // free device memory
