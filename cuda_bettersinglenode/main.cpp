@@ -7,27 +7,18 @@
 //#include <mpi.h>
 #include "../common/opcodes.h"
 #include "csapp.h"
-#include<string>
+#include <string>
 
-int numtrain = 0;
-int numchunks = 0;
-int dimensions = 0;
-
-std::string prefix_input_file_name;
-std::string prefix_label_file_name;
-
-
+void destruct_cublas_cusoler();
 void set_loghyper_eigen_multinode(Eigen::VectorXd initval);
 
 void run_kernel();
-
-void read_trainingdata_and_copy_to_GPU(std::string inputfilename, std::string labelfilename);
 
 void run_gp();
 
 void test_matrix_mult();
 
-void setup(int, int);
+void setup(int, std::string, std::string );
 
 void cg_solve(char *);
 
@@ -51,7 +42,6 @@ int total_workers = -1;
 
 double *BCM_log_hyperparams;
 
-
 void *accept_commands(char *hostname, int connfd)
 {
 	int opcode;
@@ -66,15 +56,8 @@ void *accept_commands(char *hostname, int connfd)
 			case COMPUTE_LOG_LIKELIHOOD:
 				{
 					printf("Node %s will start computing log likelihood\n", hostname);
-				
-					double ll = 0.0;
-			
-					for(int i = worker_id; i < numchunks; i+=total_workers){ 
-						std::string ipfile = prefix_input_file_name +  std::to_string(i) + std::string(".txt");
-						std::string labfile = prefix_label_file_name +  std::to_string(i) + std::string(".txt");
-						read_trainingdata_and_copy_to_GPU(ipfile, labfile);
-						ll += compute_log_likelihood();
-					}
+					
+					double ll = compute_log_likelihood();
 
 					Rio_writen (connfd, (void *)&ll, sizeof(double));
 					break;
@@ -84,20 +67,9 @@ void *accept_commands(char *hostname, int connfd)
 				{
 					printf("Node %s will start computing gradient log hyperparams\n", hostname);
 
-					double grads[3] = {0.0};
-					double temp[3];
-				
-					for(int i = worker_id; i < numchunks; i+=total_workers){ 
-						std::string ipfile = prefix_input_file_name +  std::to_string(i) + std::string(".txt");
-						std::string labfile = prefix_label_file_name +  std::to_string(i) + std::string(".txt");
-						read_trainingdata_and_copy_to_GPU(ipfile, labfile);
-						compute_gradient_log_hyperparams(temp);
-						for(int j = 0 ; j < 3; j++){
-							grads[j] += temp[j];
-						}
-					}	
-					
-					//compute_gradient_log_hyperparams(grads);
+					double grads[3];
+
+					compute_gradient_log_hyperparams(grads);
 
 					Rio_writen (connfd, (void *)&grads[0], sizeof(double));
 					Rio_writen (connfd, (void *)&grads[1], sizeof(double));
@@ -167,19 +139,10 @@ int main(int argc, char *argv[])
 	sleep(5);
 
 	total_workers = atoi(argv[3]);
-	numchunks = atoi(argv[4]);
-	numtrain = atoi(argv[5]);
-	dimensions = atoi(argv[6]);
-	prefix_input_file_name = std::string(argv[7]);
-	prefix_label_file_name = std::string(argv[8]);
-	
 
 	printf("Hostname %s is listening on port %s with listenfd = %d\n", argv[1], common_port, listenfd);
 	printf("Node is %s and Master is %s. Number of workers is %d\n", argv[1], argv[2], total_workers);
-	printf("Number of shards (chunks) = %d\n", numchunks);
-	printf("Number of traning points for each expert = %d, with D = %d\n", numtrain, dimensions);
-	printf("Input file prefix: %s, Label file prefix = %s\n", prefix_input_file_name.c_str(), prefix_label_file_name.c_str());
-		
+	
 	if (strcmp(argv[1], argv[2]) == 0)
 	{
 		for (int i = 0; i < total_workers - 1; i++)
@@ -209,29 +172,35 @@ int main(int argc, char *argv[])
 		printf("Host %s got worker id as %d\n", argv[1], worker_id);
 	}
 
+	int numtrain = 6000;
+	std::string prefix_input_file_name = "../chunked_dataset/sine_dataset_6000_10_chunk";
+	std::string prefix_label_file_name = "../chunked_dataset/sine_dataset_6000_10_label"; 
+	std::string ipfile = prefix_input_file_name + std::to_string(worker_id) + std::string(".txt");
+	std::string opfile = prefix_label_file_name + std::to_string(worker_id) + std::string(".txt");
 
 	if (strcmp(argv[1], argv[2]) == 0)
 	{
 		printf("Master calling cg_solve()\n");
-
-		setup(numtrain, dimensions);
-
+		
+		setup(numtrain, ipfile, opfile);
+		
 		BCM_log_hyperparams = new double[3];
-		Eigen::VectorXd initval(3);                               
-		for(int i = 0 ; i < 3; i++){                              
-			initval[i] = 2.0;                                 
-		}                                                         
-		set_loghyper_eigen_multinode(initval);                    
+
+		Eigen::VectorXd initval(3);
+		for(int i = 0 ; i < 3; i++){
+			initval[i] = 1.5;
+		}
+		set_loghyper_eigen_multinode(initval);
 		
 		cg_solve(argv[1]);
-	
+		destruct_cublas_cusoler();	
 		// testing_phase(numtrain,numtrain);
 	}
 	else
 	{
 		printf("Worker skipping cg_solve(), instead calling accept_commands\n");
 
-		setup(numtrain, dimensions);
+		setup(numtrain, ipfile, opfile);
 
 		accept_commands(argv[1], connfd);
 	}

@@ -13,18 +13,11 @@ double compute_log_likelihood();
 void compute_gradient_log_hyperparams(double *);
 double *get_loghyperparam();
 void set_loghyper_eigen(Eigen::VectorXd initval);
-void read_trainingdata_and_copy_to_GPU(std::string inputfilename, std::string labelfilename);
 
 extern int total_workers;
 extern std::vector<int> worker_conn_fds;
-extern std::string prefix_input_file_name;
-extern std::string prefix_label_file_name;
-extern int worker_id;
-//extern int numtrain ;
-extern int numchunks ;
-//extern int dimensions ;
 
-extern double *BCM_log_hyperparams; 
+extern double *BCM_log_hyperparams;
 
 double compute_log_likelihood_multinode()
 {
@@ -38,16 +31,9 @@ double compute_log_likelihood_multinode()
 
 	}
 	// TODO now call getll on self
-	double ll_sum = 0.0;
+	double ll_sum;
 
-	for(int i = worker_id; i < numchunks; i+=total_workers){
-		std::string ipfile = prefix_input_file_name +  std::to_string(i) + std::string(".txt");
-		std::string labfile = prefix_label_file_name +  std::to_string(i) + std::string(".txt");
-		read_trainingdata_and_copy_to_GPU(ipfile, labfile);
-		ll_sum += compute_log_likelihood();
-	}
-
-	//ll_sum = compute_log_likelihood();
+	ll_sum = compute_log_likelihood();
 
 	for (int i = 0; i < total_workers - 1; i++)
 	{
@@ -73,23 +59,8 @@ void compute_gradient_log_hyperparams_multinode(double *arg)
 		Rio_writen (worker_conn_fds[i], (void *)&gradient_loghyper_opcode, sizeof(int));
 
 	}
-
-	double temp[3];
-	//initializinig args;
-	for(int j = 0; j < 3; j++) {
-		arg[j] = 0.0;
-	}
-	for(int i = worker_id; i < numchunks; i+=total_workers){
-		std::string ipfile = prefix_input_file_name +  std::to_string(i) + std::string(".txt");
-		std::string labfile = prefix_label_file_name +  std::to_string(i) + std::string(".txt");
-		read_trainingdata_and_copy_to_GPU(ipfile, labfile);
-		compute_gradient_log_hyperparams(temp);
-		for(int j = 0 ; j < 3; j++){
-			arg[j] += temp[j];
-		}
-	}
-
-	//compute_gradient_log_hyperparams(arg);
+	// TODO now call compute_grad_log_hyperparams on self
+	compute_gradient_log_hyperparams(arg);
 
 	for (int i = 0; i < total_workers - 1; i++)
 	{
@@ -109,17 +80,21 @@ void compute_gradient_log_hyperparams_multinode(double *arg)
 
 double *get_loghyperparam_multinode()
 {
-	//int get_loghyper_opcode = GET_LOGHYPERPARAMS;
-	/* for (int i = 0; i < total_workers - 1; i++)
+	/* int get_loghyper_opcode = GET_LOGHYPERPARAMS;
+	for (int i = 0; i < total_workers - 1; i++)
 	{
 		printf("\n\n");
 		printf("Tell worker %d to get log hyperparams\n", i);
 
 		Rio_writen (worker_conn_fds[i], (void *)&get_loghyper_opcode, sizeof(int));
-	} */
+	}
 
-	//static double log_hyperparams[3] = {1.0, 1.0, 1.0};
-	/* double *log_hyperparams = get_loghyperparam();
+	//static double log_hyperparams[3] = {0.5, 0.5, 0.5};
+	double *log_hyperparams = get_loghyperparam();
+	static double ret[3];
+	ret[0] = log_hyperparams[0];
+	ret[1] = log_hyperparams[1];
+	ret[2] = log_hyperparams[2];
 	for (int i = 0; i < total_workers - 1; i++)
 	{
 		double log_hyperparams_temp[3];
@@ -130,11 +105,14 @@ double *get_loghyperparam_multinode()
 		
 		printf("Got %lf, %lf, %lf as log hyperparams from node %d\n", log_hyperparams_temp[0], log_hyperparams_temp[1], log_hyperparams_temp[2], i);
 
-		log_hyperparams[0] += log_hyperparams_temp[0];
-		log_hyperparams[1] += log_hyperparams_temp[1];
-		log_hyperparams[2] += log_hyperparams_temp[2];
-	} */
-	return BCM_log_hyperparams; 
+		ret[0] += log_hyperparams_temp[0];
+		ret[1] += log_hyperparams_temp[1];
+		ret[2] += log_hyperparams_temp[2];
+	}
+
+	printf("Final log hyperparams are %lf, %lf, %lf\n", ret[0], ret[1], ret[2]);
+	return ret; */
+	return BCM_log_hyperparams;
 }
 
 void set_loghyper_eigen_multinode(Eigen::VectorXd initval)
@@ -142,10 +120,12 @@ void set_loghyper_eigen_multinode(Eigen::VectorXd initval)
 	int set_loghyper_opcode = SET_LOGHYPERPARAMS;
 	double new_loghyper_params[3];
 
-	for (int i = 0; i < 3; i++){
+	for (int i = 0; i < 3; i++)
+	{
 		new_loghyper_params[i] = initval[i];
 		BCM_log_hyperparams[i] = initval[i];
 	}
+
 	for (int i = 0; i < total_workers - 1; i++)
 	{
 		printf("\n\n");
@@ -192,7 +172,7 @@ void cg_solve(char *hostname)
 	const double RATIO = 10;	// maximum allowed slope ratio
 	const double SIG = 0.1, RHO = SIG/2;
 
-	int n = 100;
+	int n = 1;
 	bool ls_failed = false;									//prev line-search failed
 
 	//double f0 = -1.0 * compute_log_likelihood();
