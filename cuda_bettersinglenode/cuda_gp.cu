@@ -1393,25 +1393,11 @@ void get_inverse_by_cublas(double *Lmat, int sizelmat){
 	generate_identity<<<number_of_blocks, threads_per_block>>>(lowermat_inv_store, sizelmat);
 	cudaThreadSynchronize(); 
 		
-	printf("---------------------------------------------\n");
-	printf("A matrix: \n");
-	print_matrix_kernel<<<1, 1>>>(Lmat, sizelmat, sizelmat);
-	cudaThreadSynchronize(); 
-	printf("B matrix: \n");
-	print_matrix_kernel<<<1, 1>>>(lowermat_inv_store, sizelmat, sizelmat);
-	cudaThreadSynchronize(); 
-	
         double startime = CycleTimer::currentSeconds();
         (cublasDtrsm(blas_handle,CUBLAS_SIDE_LEFT,CUBLAS_FILL_MODE_UPPER,
                         CUBLAS_OP_N,CUBLAS_DIAG_NON_UNIT, sizelmat , sizelmat ,&al, Lmat, sizelmat, lowermat_inv_store, sizelmat));
         double endtime = CycleTimer::currentSeconds();
 	printf("time taken by cublas-TMI-inverse = %lf\n", endtime - startime);
-	printf("output matrix (should be inverse of A: \n");
-	print_matrix_kernel<<<1, 1>>>(lowermat_inv_store, sizelmat, sizelmat);
-	cudaThreadSynchronize(); 
-
-	printf("---------------------------------------------\n");
-
 }
 
 void matrix_multiply_cublas_withtranspose(double *A, double *B, double *C, int size){
@@ -1431,7 +1417,7 @@ void matrix_vector_multiply_cublas(double *A, double *B, double *C, int size){
      const double *beta = &bet;
 
      // Do the actual multiplication
-     cublasDgemv(blas_handle, CUBLAS_OP_N, size, size, alpha, A, size, B, 1, beta, C, size);
+     cublasDgemv(blas_handle, CUBLAS_OP_N, size, size, alpha, A, size, B, 1, beta, C, 1);
 }
 
 
@@ -1441,19 +1427,13 @@ void compute_chol_get_mul_and_det()
 {
 	int threads_per_block, number_of_blocks;
 
-	printf("ORIGNAL YEH HAI\n");
-	print_matrix_kernel<<<1,1>>>(K, N, N);
-	cudaThreadSynchronize(); 
-
 
 //	get_cholesky(K, N); // set of kernels : Now K is actually L
-	printf("ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\n");
 	get_cholesky_using_cublas(K, N); // set of kernels
-	printf("UPAR DEKH\n");
 
-	printf("INVERSE KE BAAD\n");
-	print_matrix_kernel<<<1,1>>>(K, N, N);
-	cudaThreadSynchronize(); 
+//	printf("INVERSE KE BAAD\n");
+//	print_matrix_kernel<<<1,1>>>(K, N, N);
+//	cudaThreadSynchronize(); 
 
 	get_determinant_from_L<<<1, 1>>>(K, N, log_det);
 	cudaThreadSynchronize();
@@ -1501,30 +1481,31 @@ void compute_chol_get_mul_and_det()
 	
 	matrix_multiply_cublas_withtranspose(lowermat_inv_store, lowermat_inv_store, Kinv, N);
 	//printf("Bhai DGEMM dekhle \n");
-	print_matrix_kernel<<<1, 1>>>(Kinv,N, N);
-	cudaThreadSynchronize(); 
+	//print_matrix_kernel<<<1, 1>>>(Kinv,N, N);
+	//cudaThreadSynchronize(); 
 	
-	printf("LABELS = \n");
-	print_vector<<<1, 1>>>(labels, N);
-	cudaThreadSynchronize(); 
-
 	
 
 	matrix_vector_multiply_cublas(Kinv, labels, temp_bs, N);
-	printf("\nokay neeche dekho\n");
-	print_vector<<<1, 1>>>(temp_bs, N);
-	cudaThreadSynchronize(); 
+	//printf("\nokay neeche dekho\n");
+	//print_vector<<<1, 1>>>(temp_bs, N);
+	//cudaThreadSynchronize(); 
 
-	/*
+	/*	
         threads_per_block = 512;
         number_of_blocks = upit(N, threads_per_block);
         matrix_vector_multiply<<<number_of_blocks, threads_per_block>>>(Kinv, labels, temp_bs, N);
         cudaThreadSynchronize();
+
+	printf("\n\nokay DOT PRODUCT YEH AYA HAI\n");
+	print_vector<<<1, 1>>>(temp_bs, N);
+	cudaThreadSynchronize(); 
+	
+	vector_dot_product<<<1, 1>>>(temp_bs, labels, ll_dotprod, N);
+	cudaThreadSynchronize();
 	*/
+
 	
-	
-	/*vector_dot_product<<<1, 1>>>(temp_bs, labels, ll_dotprod, N);
-	cudaThreadSynchronize();*/
 
 	thrust::device_ptr<double> td1 = thrust::device_pointer_cast(temp_bs);
 	thrust::device_ptr<double> td2 = thrust::device_pointer_cast(labels);
@@ -1532,8 +1513,9 @@ void compute_chol_get_mul_and_det()
 	double ans = 0.0;
 	ans = thrust::inner_product(td1, td1 + N, td2, 0.0);
 	printf("\n\n ############# PRODUCT YEH AYA = %lf\n", ans);
-	//POTENTIAL IMPROVEMENT POSSIBLE
-	cudacall(cudaMemcpy(ll_dotprod, &ans, sizeof(double), cudaMemcpyHostToDevice)); 
+	//POTENTIAL IMPROVEMENT POSSIBLE, can return ans; instead of doing transfer shittt, 
+	cudacall(cudaMemcpy(ll_dotprod, &ans, sizeof(double), cudaMemcpyHostToDevice));
+
 }
 
 
@@ -1563,6 +1545,34 @@ double compute_log_likelihood()
 	double llans = evaluate_and_get_log_likelihood(); // kernel, or can be clubbed somewhere
 	printf("The value of loglikelihood = %lf\n", llans);
 	return llans; 
+}
+
+void compute_K_inverse_using_cublas()
+{
+	int threads_per_block, number_of_blocks;
+	
+	// make_identity(); -> did this in setup "identity" is a double *
+
+	// SUB: get_cholesky(K, N); //Set of kernels, the answer (a lower triangular matrix) is stored 
+	get_cholesky_using_cublas(K, N); // NOW result is in K
+
+	/* SUB:
+	threads_per_block = 512;
+	number_of_blocks = upit(N, threads_per_block);
+	forward_substitution_matrix<<<number_of_blocks, threads_per_block>>>(K, identity, tempfsforkinv, N); // kernel - need N threads
+	cudaThreadSynchronize();
+	
+	// matrix_transpose(); // kernel - Not NEEDED
+
+	// matrix_backward_substitution();
+	backward_substitution_matrix<<<number_of_blocks, threads_per_block>>>(K, tempfsforkinv, Kinv, N); // kernel - need N threads
+	cudaThreadSynchronize();
+	*/
+
+	get_inverse_by_cublas(K, N); //-> Now note that the result will be in lowermat_inv_store and not K (IMP)
+
+	matrix_multiply_cublas_withtranspose(lowermat_inv_store, lowermat_inv_store, Kinv, N);
+	//-> So the answer is in Kinv
 }
 
 void compute_K_inverse()
@@ -1629,6 +1639,9 @@ void compute_gradient_log_hyperparams(double *localhp_grad)
 	double *tt = get_loghyperparam(); //just for a MEMCPY from device to host
 	double noise_var = exp(lh_host[2] * 2); //noise variance
 
+	// TODO:DISCUSS WITH ABHISHEK ABOUT HAVING A STATE-ON/OFF TO GET POTENTIAL 
+	//	1/2 SAVING TO THIS COMPUTE_K_TRAIN
+
 	// compute_K_train(); // kernel - can reuse earlier matrix?
         threads_per_block = 512;
         number_of_blocks = upit((N * N), threads_per_block);
@@ -1657,17 +1670,22 @@ void compute_gradient_log_hyperparams(double *localhp_grad)
       	//cudaThreadSynchronize();
 
 	printf("Yahi hai Kinv\n");
-	compute_K_inverse(); // set of kernels
+	//SUB: compute_K_inverse(); // set of kernels
+	compute_K_inverse_using_cublas(); // set of kernels
 	//print_matrix_kernel<<<1,1>>>(Kinv, N, N);
       	//cudaThreadSynchronize();
 
+	/*SUB:
 	// vector_Kinvy_using_cholesky(); // set of kernels
 	// We don't need this: we already have Kinv, so we just need to multiply Kinv and y
         threads_per_block = 512;
         number_of_blocks = upit( N, threads_per_block);
 	matrix_vector_multiply<<<number_of_blocks, threads_per_block>>>(Kinv, labels, temp1dvec, N);
       	cudaThreadSynchronize();
+	*/
+	matrix_vector_multiply_cublas(Kinv, labels, temp1dvec, N); //can use temp_bs only
 
+	/*SUB	
 	// get_outer_product(); // kernel
 	// subtract_matrices(); // kernel
 	// -- Combining the above 2 in a single kernel call
@@ -1675,6 +1693,15 @@ void compute_gradient_log_hyperparams(double *localhp_grad)
         number_of_blocks = upit( N * N, threads_per_block);
 	outerprod_and_subtract<<<number_of_blocks, threads_per_block>>>(Kinv, temp1dvec, tempWmatrix, N);
       	cudaThreadSynchronize();
+	*/
+	
+        threads_per_block = 512;
+        number_of_blocks = upit((N * N), threads_per_block);
+	copy_Kmatrix<<<number_of_blocks, threads_per_block>>>(Kinv, tempWmatrix, N);
+     	const double alf = -1; //NOTE: we neeed to subtract, that's why -1
+     	const double *alpha = &alf;
+
+	cublasDger(blas_handle, N, N, alpha,  temp1dvec, 1, temp1dvec, 1, tempWmatrix, N);
 
         threads_per_block = 512;
         number_of_blocks = upit( N, threads_per_block);
