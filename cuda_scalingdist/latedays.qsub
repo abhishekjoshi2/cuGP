@@ -8,8 +8,6 @@
 # students to avoid taking up a lot of time on the cluster.
 #
 
-#PBS -lwalltime=0:60:00
-
 #
 # Ask for a specific number of lateday's 14 nodes for this job.  #
 #
@@ -21,7 +19,7 @@
 # on dedicated, on a machine with a Tesla K40.
 #
 
-#
+#PBS -q phi
 # Submit the job.  No need to modify this.
 #
 

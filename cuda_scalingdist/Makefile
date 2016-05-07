@@ -27,7 +27,7 @@ ifeq ($(HOSTNAME), latedays.andrew.cmu.edu)
 # Building on Latedays
 NVCCFLAGS=-O3 -m64 -arch compute_20 -G -lineinfo
 LIBS += GL glut cudart
-LDFLAGS=-L/usr/local/cuda/lib64/ -lcudart
+LDFLAGS=-L/usr/local/cuda/lib64/ -lcudart -lcusolver -lcublas
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64/:/usr/local/cuda/lib:$(shell printenv LD_LIBRARY_PATH)
 
 else
