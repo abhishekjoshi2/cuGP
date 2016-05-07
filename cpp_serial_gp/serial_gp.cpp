@@ -6,8 +6,8 @@
 #include "covkernel.h"
 #include "../common/cycleTimer.h"
 
-#define INPUT_FILE "../dataset/sine_256_input.txt"
-#define LABEL_FILE "../dataset/sine_256_labels.txt"
+#define INPUT_FILE "../chunked_dataset/sine_dataset_6000_10_chunk0.txt"
+#define LABEL_FILE "../chunked_dataset/sine_dataset_6000_10_label0.txt"
 int main()
 {
 	FILE *input_file, *label_file;
@@ -48,8 +48,8 @@ int main()
 
 	double inithypervalues[] = {0.5, 0.5, 0.5};
 
-	int total = 256;
-	int numtrain = 128;
+	int total = 6000;
+	int numtrain = 6000;
 	int numtest = total - numtrain;
 	Covsum kernelobj(numtrain, dim);
 	kernelobj.set_loghyperparam(inithypervalues);
@@ -73,6 +73,7 @@ int main()
 	
 	std::cout << "Done with solver" << std::endl;
 
+	return 0;
 //	double *new_hyper_params = kernelobj.get_loghyperparam();
 
 //	std::cout << "New hyper params: " << std::endl;
