@@ -441,7 +441,7 @@ where,  </p>
 
 <img src="images/3_singlenodespeedup.png" alt="singlenode" height="400" width="500" align="middle">
 
-<img src="images/7_parallelprediction.png" alt="parallelprediction" height="400" width="500" align="middle">
+<img src="images/parallelpredictionnew.png" alt="parallelprediction" height="400" width="500" align="middle">
 
 </li>
 
@@ -459,7 +459,7 @@ where,  </p>
 <p>The performance of the DAcuGP on the synthetic sine dataset in shown in Figure 5. The first bar corresponds the exact GP working on a dataset with 10000 points. As we move towards the right, the number of GPUs increase and the size of the dataset per GPU decreases. As one might expect, we obtain massive speedup due to both reduction of the problem size, and asymptotically lower complexity of the approximate method itself.</p>
 
 
-<img src="images/4_distributedspeedup.png" alt="distributed" height="400" width="500" align="middle">
+<img src="images/distributednew.png" alt="distributed" height="400" width="500" align="middle">
 
 </li>
 
@@ -480,7 +480,7 @@ where,  </p>
 
 <p>In order to demonstrate that DAScuGP enables us to handle large amounts of data, we applied our method to the US Flight delay dataset. Given the amount of time for running a job in latedays cluster (3 hours), we subsampled the original data to obtain 1 million samples. There are 7 attributes which are used to predict the flight arrival delay time. We divide this dataset into 200 shards each having 5000 samples. Figure 7 shows the time required for DAS-cuGP  while varying the number of shards. We find that it takes less than 3 hours to do the learning phase in DAS-cuGP.</p>
 
-<img src="images/5_scaling.png" alt="scaling" height="400" width="500" align="middle">
+<img src="images/scalingnew.png" alt="scaling" height="400" width="500" align="middle">
 </li>
 
 </ul>
