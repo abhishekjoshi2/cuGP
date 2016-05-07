@@ -397,6 +397,44 @@ where,  </p>
 
 <img src="images/2_optimizedmicrobench.png" alt="optimizemicrobench" height="400" width="500" align="middle">
 
+<table>
+  <tr>
+    <th></th>
+    <th>Log Likelihood</th>
+    <th>Gradient of hyper params</th>
+    <th>Cholesky</th>
+    <th>K inverse</th>
+    <th>K train</th>
+  </tr>
+  <tr>
+    <td><strong>1024</strong></td>
+    <td>4.63</td>
+    <td>23.95</td>
+    <td>16.4</td>
+    <td>192</td>
+    <td>1.7</td>
+  </tr>
+  <tr>
+    <td><strong>2048</strong></td>
+    <td>5.91</td>
+    <td>23.22</td>
+    <td>26.5</td>
+    <td>253</td>
+    <td>1.77</td>
+  </tr>
+  <tr>
+    <td><strong>4096</strong></td>
+    <td>33.4</td>
+    <td>28</td>
+    <td>84.8</td>
+    <td>511</td>
+    <td>1.42</td>
+  </tr>
+</table>
+
+</li>
+
+
 <p>Considering our earlier approach as a competitive baseline, the speedup obtained with our cuGP implementation for the traing phrase is gvien in table.</p>
 
 <p>Figure 3 compares the performance of cuGP with the baseline in the testing phase. The x-axis shows only the number of training points, the number of traning points for each experiment was 1000. We see signifiant speedup values over the baseline for both training as well as testing phaes.</p>
@@ -435,67 +473,15 @@ where,  </p>
 
 <p>To hide the latency of reading a shard each time, we implemented a prefetcher, which is responsible for bringing the next chunk of data to the memory in host, at the time when the device is performing necessary computaion with the shard in the device memory. We call this the Distributed Approximate Scalable cuGP (DAScuGP) approach.</p>
 
-<img src="images/5_scaling.png" alt="scaling" height="400" width="500" align="middle">
 
 <p>Figure 7 shows the improvement performance due to the preferethch on a dataset comprising of 24000 points which are divided inoto 16 shards, when employihng 4 GPUs. </p>
 <img src="images/6_latencyhiding.png" alt="latencyhiding" height="400" width="500" align="middle">
 
+
+<p>In order to demonstrate that DAScuGP enables us to handle large amounts of data, we applied our method to the US Flight delay dataset. Given the amount of time for running a job in latedays cluster (3 hours), we subsampled the original data to obtain 1 million samples. There are 7 attributes which are used to predict the flight arrival delay time. We divide this dataset into 200 shards each having 5000 samples. Figure 8 shows the time required for DAS-cuGP  while varying the number of shards. We find that it takes less than 3 hours to do the learning phase in DAS-cuGP.</p>
+
+<img src="images/5_scaling.png" alt="scaling" height="400" width="500" align="middle">
 </li>
-
-
-<li> Single Node Exact GP
-<p> Add description here </p>
-
-
-<table>
-  <tr>
-    <th></th>
-    <th>Log Likelihood</th>
-    <th>Gradient of hyper params</th>
-    <th>Cholesky</th>
-    <th>K inverse</th>
-    <th>K train</th>
-  </tr>
-  <tr>
-    <td><strong>1024</strong></td>
-    <td>4.63</td>
-    <td>23.95</td>
-    <td>16.4</td>
-    <td>192</td>
-    <td>1.7</td>
-  </tr>
-  <tr>
-    <td><strong>2048</strong></td>
-    <td>5.91</td>
-    <td>23.22</td>
-    <td>26.5</td>
-    <td>253</td>
-    <td>1.77</td>
-  </tr>
-  <tr>
-    <td><strong>4096</strong></td>
-    <td>33.4</td>
-    <td>28</td>
-    <td>84.8</td>
-    <td>511</td>
-    <td>1.42</td>
-  </tr>
-</table>
-
-</li>
-
-<li> DAcuGP: Distributed Approximate GP
-<p> Add description here </p>
-
-</li>
-
-<li> DAScuGP: Scalable DAcuGP - Scaling to large data sets
-<p> Add description here </p>
-</li>
-
-<li> Parallel Prediction
-<p> Add description here </p>
-
 
 </ul>
 
