@@ -366,13 +366,74 @@ where,  </p>
 
 <ul>
 
+<li> Serial implementation
+
+<p>In order to gain a better understanding of each of the operations involved in both learning (training) and inference (testing) phases, we implemented a serial single-threaded version of the GP regression algorithm. To accomplish this, we implemented our own mini matrix algebra library for all the required operations in GPR. This mini library has routines for Cholesky decomposition, forward substitution, backward substitution among other standard matrix-matrix/matrix-vector operations.  For minimizing the NLML in the training phase, we employed the conjugate gradient solver by REFERENCE.  To be precise, this is the only third party code that we used in our serial implementation, all other routines were written from scratch in native C++. Correctness was established by cross-checking outputs of each of the steps with the corresponding results as in the popular GPML framework (REF) which is written in Matlab. </p>
+
+</li>
+
+<li> GPR on CUDA: First attempt
+<p> After acquainting ourselves with the nitty gritty details at each step, we implemented GP regression on CUDA writing our own kernels for each task. As in the previous case, we implemented the kernels for the required matrix computations ourselves. More precisely, we wrote a recursive blocked version of Cholesky decomposition as described in the paper by ___ et al. One of the important steps in computing the likelihood as well as in computing the gradients,  is solving a triangular system of equations. An efficient method for solving such a system is to employ forward/backward substitution algorithm. Since both the algorithms are inherently sequential, we implemented a recursive algorithm for efficiently finding the inverse of a lower(upper) triangular matrix as given in []. We also implemented a reasonably fast matrix-matrix multiplication kernel that uses shared memory. Moreover, implementing the kernels ourselves gave us the opportunity to fuse different operations together. We benchmark our implementation on a synthetic sine dataset, wherein the input data lives in a 10 dimensional space, and the function to approximate is a sine function that depends only on the first dimension. In order to make the targets (function obsrevations) noisy, we add a Gaussian noise to the function values (the variance of this Gaussian is 0.05). Figure 1 shows the performance of the most crucial functions (some of which are implemented with a series of kernels), on the synthetic dataset. Note that all our experiments were performed using the K40 GPUs. </p>
+
+<p>We see that computation of the gradient of log hyperparameters takes the most amout of time. This is expected because the gradient compuatoin involves an inverse of  a lower traingular matrix and generation of the covariance matrix, in addition to vector-vector dot products and matrix-vector dot products and vector-vector dot product. In addition to providing significant insights, this implementation serves as strong baseline for our actual approach.  </p>
+</li>
+
+<li> cuGP
+
+<p>For  our final approach, we build on the version-1 of our CUDA implemenation. We replaced some of our kernels with routines from cuBLAS/cuSOLVER. More specifically, we employ the following routines from the cuBLAS library:</p>
+<p>DGEMM for efficient matrix multiplication</p>
+<p>DGEMV for matrix-vector product</p>
+<p>DGER: for vector outer product</p>
+<p>DTRSM: for solving the triangular system of equations.</p>
+
+
+<p>For fast Cholesky decomposition, we employ cuSOLVER’s DPTORF routine. Additionally, we use THRUST library routines for vector dot products and parallel reduce. However, we retain our important kernels like the one reponisibel for computing the covariance matrix, another which performs efficient elementwise matrix muliplication, and so on. </p>
+
+<p>Furthermore, we optimize our other kernels by ensuring …….(ABHISHEK FILL)</p>
+
+<p>The performance of the main components in our final single node GP implementation in CUDA of the training phase (referred to as cuGP) is given in figure 2. The results are obtained on the previously described sine dataset.</p>
+
+<p>Considering our earlier approach as a competitive baseline, the speedup obtained with our cuGP implementation for the traing phrase is gvien in table.</p>
+Figure 3 compares the performance of cuGP with the baseline in the testing phase. The x-axis shows only the number of training points, the number of traning points for each experiment was 1000. We see signifiant speedup values over the baseline for both training as well as testing phaes.
+
+</li>
+
+
+<li> DA-cuGP
+
+<p>The single node cuGP implementation performs well on datasets of the size O(10^4). Howerver, due to the O(N2) storage requirement, the GP implementation is limited by the amount of memory available on the device. To further scale , we have implemented a recent approach which is an approximation to the exact GP regreession. This was our stretch goal up till the checkpoint. We adapt the method to mulitple GPUs. The high level idea is of the approximate approach is to have several experts, each of whom is responsible for a subset of the original data. The approach basically approximates the originial covariance matrix to several blocks.</p>
+
+<p>Thus the negative log marginal likelihood can be approximated by the sum of the log marginal likelihood values of each individual expert. The subtle point in the learning (training) phase is that the hyperparameters have to be shared across the products.</p>
+
+<p>This approach is similar to the parameter-server approach as discussed in the class. So one node (a master node) is responsible for storing the current hyperparamters of the GP model. At each step of the log likelihood / gradient compuaation, each of the workers (experts in our context) need to get the latest value of the hyperparameters, and perform the required computation. The master then collects the partial results and updates the hyperparameters and broadcasts back the new parameters. </p>
+
+<p>So we have implemented this approach using mulitple GPUs (which can be thought of as individual experts). In order to communicate the hyper-parameters, we use socke programming for efficiently transferrring the information to and from the GPUs. We call our implementation Distributed Approximate cuGP (DAcuGP).</p>
+
+<p>The performance of the DAcuGP on the synthetic sine dataset in shown in Figure 4. The first bar corresponds the exact GP working on a dataset with 10000 points. As we move towards the right, the number of GPUs increase and the size of the dataset per GPU decreases. As one might expect, we obtain massive speedup due to both reduction of the problem size, and asymptotically lower complexity of the approximate method itself.</p>
+
+
+</li>
+
+<li> DAS-cuGP
+
+<p>The size of data that can be handled by DA-cuGP is limited by the number of GPUs available. In order to further scale up,  we wrote a decentralized scheduler which can handle arbitary sizes of data. The basic idea is the same, we shard the data into smaller subsets. And, we map each of the shards to the avalable GPUs in as similar way as is done in an ISPC gang. </p>
+
+<p>To provide a high level intuition, let’s suppose that we have 8 shards and only 2 GPUs are available. FOr computitgh the log likelihood at a single step requires input from all the experts (from all the shards), so the first GPU is assigned to compute the ll for shards 1 3 5 7, and the second GPU computes ll for the remaninig shards in an iteratiove fasthion (it is imortant to note that only 1 shard will fit in a GPU at one point of time).</p>
+
+<p>So essentially the data locality is not there at all. But the tradeoff is that we can manage greater volumes of data. </p>
+
+<p>To hide the latency of reading a shard each time, we implemented a prefetcher, which is responsible for bringing the next chunk of data to the memory in host, at the time when the device is performing necessary computaion with the shard in the device memory. We call this the Distributed Approximate Scalable cuGP (DAScuGP) approach.</p>
+
+<p>Figure 7 shows the improvement performance due to the preferethch on a dataset comprising of 24000 points which are divided inoto 16 shards, when employihng 4 GPUs. </p>
+
+</li>
+
+
 <li> Single Node Exact GP
 <p> Add description here </p>
 
 <img src="images/1_naiveparallelmicrobench.png" alt="naiveparallelmicrobench" height="400" width="500" align="middle">
 <img src="images/2_optimizedmicrobench.png" alt="optimizemicrobench" height="400" width="500" align="middle">
-
-
 
 
 <table>
@@ -409,20 +470,7 @@ where,  </p>
     <td>1.42</td>
   </tr>
 </table>
-
-
-
-
-
 <img src="images/3_singlenodespeedup.png" alt="singlenode" height="400" width="500" align="middle">
-
-
-
-
-
-
-
-
 
 </li>
 
