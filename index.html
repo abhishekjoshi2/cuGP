@@ -373,11 +373,11 @@ where,  </p>
 </li>
 
 <li> <u> GPR on CUDA: First attempt </u>
-<p> After acquainting ourselves with the nitty gritty details at each step, we implemented GP regression on CUDA writing our own kernels for each task. As in the previous case, we implemented the kernels for the required matrix computations ourselves. More precisely, we wrote a recursive blocked version of Cholesky decomposition as described in the paper by Dong et al [DH14]. One of the important steps in computing the likelihood as well as in computing the gradients,  is solving a triangular system of equations. An efficient method for solving such a system is to employ forward/backward substitution algorithm. Since both the algorithms are inherently sequential, we implemented a recursive algorithm for efficiently finding the inverse of a lower(upper) triangular matrix as given in []. We also implemented a reasonably fast matrix-matrix multiplication kernel that uses shared memory. Moreover, implementing the kernels ourselves gave us the opportunity to fuse different operations together. We benchmark our implementation on a synthetic sine dataset, wherein the input data lives in a 10 dimensional space, and the function to approximate is a sine function that depends only on the first dimension. In order to make the targets (function obsrevations) noisy, we add a Gaussian noise to the function values (the variance of this Gaussian is 0.05). Figure 1 shows the performance of the most crucial functions (some of which are implemented with a series of kernels), on the synthetic dataset. Note that all our experiments were performed using the K40 GPUs. </p>
+<p> After acquainting ourselves with the nitty gritty details at each step, we implemented GP regression on CUDA writing our own kernels for each task. As in the previous case, we implemented the kernels for the required matrix computations ourselves. More precisely, we wrote a recursive blocked version of Cholesky decomposition as described in the paper by Dong et al [DH14]. One of the important steps in computing the likelihood as well as in computing the gradients,  is solving a triangular system of equations. An efficient method for solving such a system is to employ forward/backward substitution algorithm. Since both the algorithms are inherently sequential, we implemented a recursive algorithm for efficiently finding the inverse of a lower (upper) triangular matrix as given in []. We also implemented a reasonably fast matrix-matrix multiplication kernel that uses shared memory. Moreover, implementing the kernels ourselves gave us the opportunity to fuse different operations together. We benchmark our implementation on a synthetic sine dataset, wherein the input data lives in a 10 dimensional space, and the function to approximate is a sine function that depends only on the first dimension. In order to make the targets (function obsrevations) noisy, we add a Gaussian noise to the function values (the variance of this Gaussian is 0.05). Figure 1 shows the performance of the most crucial functions (some of which are implemented with a series of kernels), on the synthetic dataset. Note that all our experiments were performed using the K40 GPUs in the latedays cluster. </p>
 
 <img src="images/1_naiveparallelmicrobench.png" alt="naiveparallelmicrobench" height="500" width="600" align="middle">
 
-<p>We see that computation of the gradient of log hyperparameters takes the most amout of time. This is expected because the gradient compuatoin involves an inverse of  a lower traingular matrix and generation of the covariance matrix, in addition to vector-vector dot products and matrix-vector dot products and vector-vector dot product. In addition to providing significant insights, this implementation serves as strong baseline for our actual approach.  </p>
+<p>We see that computation of the gradient of log hyperparameters takes the most amount of time. This is expected because the gradient computation involves an inverse of a lower triangular matrix and generation of the covariance matrix, in addition to vector-vector dot products and matrix-vector dot products and vector-vector dot product. In addition to providing significant insights, this implementation serves as strong baseline for our actual approach.</p>
 </li>
 
 <li> <u> cuGP </u>
@@ -389,7 +389,7 @@ where,  </p>
 <p>DTRSM: for solving the triangular system of equations.</p>
 
 
-<p>For fast Cholesky decomposition, we employ cuSOLVER’s DPTORF routine. Additionally, we use THRUST library routines for vector dot products and parallel reduce. However, we retain our important kernels like the one reponisibel for computing the covariance matrix, another which performs efficient elementwise matrix muliplication, and so on. </p>
+<p>For fast Cholesky decomposition, we employ cuSOLVER’s DPTORF routine. Additionally, we use THRUST library routines for vector dot products and parallel reduce. However, we retain our important kernels like the one reponisible for computing the covariance matrix, and another which performs efficient elementwise matrix muliplication, and so on. </p>
 
 <p>Furthermore, we optimize our other kernels by ensuring low bank contention on memory access conflicts by reading from addresses dictated by the logical location of a thread in the CUDA grid.</p>
 
@@ -402,7 +402,7 @@ where,  </p>
 
 <table>
   <tr>
-    <th></th>
+    <th>N vs kernel</th>
     <th>Log Likelihood</th>
     <th>Gradient of hyper params</th>
     <th>Cholesky</th>
@@ -436,7 +436,7 @@ where,  </p>
 </table>
 
 
-<p>Figures 3 and 4 compare the performance of cuGP with the baseline in the testing phase. The x-axis shows only the number of training points. In the case of prediction, the number of traning points for each experiment was 1000. We see signifiant speedup values over the baseline for both training as well as testing phaes.</p>
+<p>Figures 3 and 4 compare the performance of cuGP with the baseline in the training and prediction phases repsectively. The X-axis shows only the number of training points. In the case of prediction, the number of traning points for each experiment was 1000. We see signifiant speedup values over the baseline for both training as well as testing phases.</p>
 
 <img src="images/3_singlenodespeedup.png" alt="singlenode" height="400" width="500" align="middle">
 
