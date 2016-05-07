@@ -45,4 +45,4 @@ cat masternode
 #cuda-memcheck ./gp
 
 
-time cuda-memcheck ./gp $HOSTNAME $MASTER $PBS_NUM_NODES > $HOSTNAME.log
+time ./gp $HOSTNAME $MASTER $PBS_NUM_NODES
