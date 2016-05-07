@@ -22,6 +22,23 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+
+    <style>
+    table, td, th {    
+	border: 1px solid #ddd;
+	text-align: left;
+    }
+
+    table {
+	border-collapse: collapse;
+	width: 100%;
+	}
+
+	th, td {
+	padding: 15px;
+	}
+
+  </style>
   </head>
   <body>
     <section class="page-header">
@@ -359,112 +376,36 @@ where,  </p>
 
 
 
+<table>
+  <tr>
+    <th>Firstname</th>
+    <th>Lastname</th>
+    <th>Savings</th>
+  </tr>
+  <tr>
+    <td>Peter</td>
+    <td>Griffin</td>
+    <td>$100</td>
+  </tr>
+  <tr>
+    <td>Lois</td>
+    <td>Griffin</td>
+    <td>$150</td>
+  </tr>
+  <tr>
+    <td>Joe</td>
+    <td>Swanson</td>
+    <td>$300</td>
+  </tr>
+  <tr>
+    <td>Cleveland</td>
+    <td>Brown</td>
+    <td>$250</td>
+  </tr>
+</table>
 
-<div dir="ltr">
-<table class="my_table">
-<colgroup>
-<col width="143"/>
-<col width="141"/>
-<col width="101"/>
-<col width="*"/>
-</colgroup>
-<tbody>
-<tr>
-<td class="setup_column">
-<strong> <p> Setup vs. Dataset </p> </strong>
-</td>
-<td class="info_column">
-<p dir="ltr">
-<strong>Adult</strong>
-</p>
-</td>
-<td class="info_column">
-<p dir="ltr">
-<strong>MNIST (Even vs Odd)</strong>
-</p>
-</td>
-<td class="info_column">
-<p dir="ltr">
-<strong>Covertype</strong>
-</p>
-</td>
-</tr>
-<tr>
-<td class="setup_column">
-<p dir="ltr">
-<strong>REFERENCE:</strong> Speedup achieved using a single Tesla C1060.
-<sup>[2]</sup>
-</p>
-</td>
-<td class="info_column">
-<p dir="ltr">
-10.45x
-</p>
-</td>
-<td class="info_column">
-<p dir="ltr">
-32.79x
-</p>
-</td>
-<td class="info_column">
-<p dir="ltr">
--
-</p>
-</td>
-</tr>
-<tr>
-<td class="setup_column">
-<p dir="ltr">
-<strong>REFERENCE:</strong> Speedup achieved using a less-accurate, quicker chunking algorithm on three Tesla C1060s. <sup>[3]</sup>
-</p>
-</td>
-<td class="info_column">
-<p dir="ltr">
-13.53x
-</p>
-</td>
-<td class="info_column">
-<p dir="ltr">
-82.9x
-</p>
-</td>
-<td class="info_column">
-<p dir="ltr">
-(Note: 500,000 point subset of training data used) <br>
-Too large for LibSVM, <br>
-Runtime: 651 s.
-</p>
-</td>
-</tr>
-<tr>
-<td class="setup_column">
-<p dir="ltr">
-<strong>RESULT:</strong> Our Implementation: Single GPU calculations on GTX 780, multi-GPU calculations on latedays: 1 Tesla K40 on every node. CPU-based LibSVM times taken from [3] 
-</p>
-</td>
-<td class="info_column">
-	<p dir="ltr">
-<strong>14.23x</strong> (1 GPU)
-	</p>
-	</td>
-	<td class="info_column">
-	<p dir="ltr">
-<strong>102x</strong> (1 GPU) - <strong>304x</strong> (10 GPUs)
-	</p>
-	<p dir="ltr">
-	<em>(in ranges of 500x if tolerance is reduced)</em>
-	</p>
-	</td>
-	<td class="info_column">
-	<p dir="ltr">
-	(Note: Full 581,012 point dataset used.) <br>
-<strong>591 s.</strong> (10 GPUs)
-	</p>
-	</td>
-	</tr>
-	</tbody>
-	</table>
-	</div>
+
+
 
 
 <img src="images/3_singlenodespeedup.png" alt="singlenode" height="400" width="500">
