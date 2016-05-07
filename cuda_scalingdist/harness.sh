@@ -50,10 +50,10 @@ cat masternode
 #       printf("Number of traning points for each expert = %d, with D = %d\n", numtrain, dimensions);
 #       printf("Input file prefix: %s, Label file prefix = %s\n", prefix_input_file_name.c_str(), prefix_label_file_name.c_str());
 
-Numchunks=4
-Numtrain=32
-Dimensions=2
-IPprefix="../chunked_dataset/si32_chunk"
-LAprefix="../chunked_dataset/si32_label"
+Numchunks=16
+Numtrain=1500
+Dimensions=10
+IPprefix="../scaling_dataset/si24000_16sharded_chunk"
+LAprefix="../scaling_dataset/si24000_16sharded_label"
 
 ./gp $HOSTNAME $MASTER $PBS_NUM_NODES $Numchunks $Numtrain $Dimensions $IPprefix $LAprefix > $HOSTNAME.log
