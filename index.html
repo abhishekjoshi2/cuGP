@@ -486,7 +486,7 @@ where,  </p>
 
 
 <p>Figure 6 shows the improvement performance due to the prefetcher on a dataset comprising of 24000 points which are divided inoto 16 shards, when employing 4 GPUs. </p>
-<img src="images/6_latencyhiding.png" alt="latencyhiding" height="500" width="600" align="middle">
+<img src="images/6_latencyhiding.png" alt="latencyhiding" height="400" width="400" align="middle">
 
 
 <p>In order to demonstrate that DAScuGP enables us to handle large amounts of data, we applied our method to the US Flight delay dataset. Given the amount of time for running a job in latedays cluster (3 hours), we subsampled the original data to obtain 1 million samples. There are 7 attributes which are used to predict the flight arrival delay time. We divide this dataset into 200 shards each having 5000 samples. Figure 7 shows the time required for DAS-cuGP  while varying the number of shards. We find that it takes less than 3 hours to do the learning phase in DAS-cuGP.</p>
