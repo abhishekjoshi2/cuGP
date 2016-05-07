@@ -393,7 +393,7 @@ where,  </p>
 
 <p>The performance of the main components in our final single node GP implementation in CUDA of the training phase (referred to as cuGP) is given in figure 2. The results are obtained on the previously described sine dataset.</p>
 
-<img src="images/2_optimizedmicrobench.png" alt="optimizemicrobench" height="400" width="500" align="middle">
+<img src="images/2_optimizedmicrobench.png" alt="optimizemicrobench" height="500" width="600" align="middle">
 
 
 <p>Considering our earlier approach as a competitive baseline, the speedup obtained with our cuGP implementation for the crucial kernels in our training phase is given in the table below.</p>
@@ -436,18 +436,18 @@ where,  </p>
 
 <p>Figures 3 and 4 compare the performance of cuGP with the baseline in the testing phase. The x-axis shows only the number of training points. In the case of prediction, the number of traning points for each experiment was 1000. We see signifiant speedup values over the baseline for both training as well as testing phaes.</p>
 
-<img src="images/3_singlenodespeedup.png" alt="singlenode" height="400" width="500" align="middle">
+<img src="images/3_singlenodespeedup.png" alt="singlenode" height="500" width="600" align="middle">
 
 <br>
 <br>
-<img src="images/parallelpredictionnew.png" alt="parallelprediction" height="400" width="500" align="middle">
+<img src="images/parallelpredictionnew.png" alt="parallelprediction" height="500" width="600" align="middle">
 
 </li>
 
 
 <li> <u> DA-cuGP: Distributed Approximate cuGP </u>
 
-<p>The single node cuGP implementation performs well on datasets of the size O(10^4). Howerver, due to the O(N2) storage requirement, the GP implementation is limited by the amount of memory available on the device. To further scale , we have implemented a recent approach [DN14] which is an approximation to the exact GP regreession. This was our stretch goal up till the checkpoint. We adapt the method to mulitple GPUs. The high level idea is of the approximate approach is to have several experts, each of whom is responsible for a subset of the original data. The approach basically approximates the originial covariance matrix to several blocks.</p>
+<p>The single node cuGP implementation performs well on datasets of the size $ \mathcal{O}(10^4)$. Howerver, due to the $ \mathcal{O}(N^2) $ storage requirement, the GP implementation is limited by the amount of memory available on the device. To further scale , we have implemented a recent approach [DN14] which is an approximation to the exact GP regreession. This was our stretch goal up till the checkpoint. We adapt the method to mulitple GPUs. The high level idea is of the approximate approach is to have several experts, each of whom is responsible for a subset of the original data. The approach basically approximates the originial covariance matrix to several blocks.</p>
 
 <p>Thus the negative log marginal likelihood can be approximated by the sum of the log marginal likelihood values of each individual expert. The subtle point in the learning (training) phase is that the hyperparameters have to be shared across the products.</p>
 
@@ -458,7 +458,7 @@ where,  </p>
 <p>The performance of the DA-cuGP on the synthetic sine dataset in shown in Figure 5. The first bar corresponds the exact GP working on a dataset with 10000 points. As we move towards the right, the number of GPUs increase and the size of the dataset per GPU decreases. As one might expect, we obtain massive speedup due to both reduction of the problem size, and asymptotically lower complexity of the approximate method itself.</p>
 
 
-<img src="images/distributednew.png" alt="distributed" height="400" width="500" align="middle">
+<img src="images/distributednew.png" alt="distributed" height="500" width="600" align="middle">
 
 </li>
 
@@ -466,7 +466,7 @@ where,  </p>
 
 <p>The size of data that can be handled by DA-cuGP is limited by the number of GPUs available. In order to further scale up,  we wrote a decentralized scheduler which can handle arbitary sizes of data. The basic idea is the same, we shard the data into smaller subsets. And, we map each of the shards to the avalable GPUs in as similar way as is done in an ISPC gang. </p>
 
-<p>To provide a high level intuition, let’s suppose that we have 8 shards and only 2 GPUs are available. FOr computitgh the log likelihood at a single step requires input from all the experts (from all the shards), so the first GPU is assigned to compute the ll for shards 1 3 5 7, and the second GPU computes ll for the remaninig shards in an iteratiove fasthion (it is imortant to note that only 1 shard will fit in a GPU at one point of time).</p>
+<p>To provide a high level intuition, let’s suppose that we have 8 shards and only 2 GPUs are available. For computing the log likelihood at a single step requires input from all the experts (from all the shards), so the first GPU is assigned to compute the ll for shards 1 3 5 7, and the second GPU computes ll for the remaninig shards in an iteratiove fasthion (it is imortant to note that only 1 shard will fit in a GPU at one point of time).</p>
 
 <p>So essentially the data locality is not there at all. But the tradeoff is that we can manage greater volumes of data. </p>
 
@@ -474,12 +474,12 @@ where,  </p>
 
 
 <p>Figure 6 shows the improvement performance due to the prefetcher on a dataset comprising of 24000 points which are divided inoto 16 shards, when employing 4 GPUs. </p>
-<img src="images/6_latencyhiding.png" alt="latencyhiding" height="400" width="500" align="middle">
+<img src="images/6_latencyhiding.png" alt="latencyhiding" height="500" width="600" align="middle">
 
 
 <p>In order to demonstrate that DAScuGP enables us to handle large amounts of data, we applied our method to the US Flight delay dataset. Given the amount of time for running a job in latedays cluster (3 hours), we subsampled the original data to obtain 1 million samples. There are 7 attributes which are used to predict the flight arrival delay time. We divide this dataset into 200 shards each having 5000 samples. Figure 7 shows the time required for DAS-cuGP  while varying the number of shards. We find that it takes less than 3 hours to do the learning phase in DAS-cuGP.</p>
 
-<img src="images/scalingnew.png" alt="scaling" height="400" width="500" align="middle">
+<img src="images/scalingnew.png" alt="scaling" height="500" width="600" align="middle">
 </li>
 
 </ul>
