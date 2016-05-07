@@ -470,11 +470,11 @@ where,  </p>
 
 <li> <u> DAS-cuGP: Distributed Approximate Scalable cuGP </u>
 
-<p>The size of data that can be handled by DA-cuGP is limited by the number of GPUs available. In order to further scale up,  we wrote a decentralized scheduler which can handle arbitary sizes of data. The basic idea is the same, we shard the data into smaller subsets. And, we map each of the shards to the avalable GPUs in as similar way as is done in an ISPC gang. </p>
+<p>The size of data that can be handled by DA-cuGP is limited by the number of GPUs available. In order to further scale up, we wrote a decentralized scheduler which can handle arbitary sizes of data. The basic idea is the same, we shard the data into smaller subsets. And, we map each of the shards to the avalable GPUs in as similar way as is done in an ISPC gang. Implementing a distributed version of cuGP (DA-cuGP) was a stretch goal for us. However, once we implemented DA-cuGP, we realized that it would be interesting to further extend this to a highly scalable version of cuGP.</p>
 
-<p>To provide a high level intuition, let’s suppose that we have 8 shards and only 2 GPUs are available. For computing the log likelihood (LL) at a single step, we require input from all the experts (from all the shards). So the first GPU is assigned to compute the LL for shards 1, 3, 5, 7; and the second GPU computes the LL for the remaninig shards in an iterative fasthion (it is important to note that only 1 shard will fit in a GPU at one point of time).</p>
+<p>To provide a high level intuition, let’s suppose that we have 8 shards but only 2 GPUs. For computing the log likelihood (LL) at a single step, we require input from all the experts (from all the shards). So the first GPU is assigned to compute the LL for shards 1, 3, 5, 7; and the second GPU computes the LL for the remanining shards (2, 4, 6, 8) in an iterative fashion (it is important to note that only 1 shard will fit in a GPU at one point of time).</p>
 
-<p>So essentially the data locality is not there at all. But the tradeoff is that we can manage greater volumes of data. </p>
+<p>So essentially there is absolutely no data locality. But, the tradeoff is that we can now manage greater volumes of data - way more than what can fit even in host memory.</p>
 
 <p>To hide the latency of reading a shard each time, we implemented a prefetcher, which is responsible for bringing the next chunk of data to the memory in host, at the time when the device is performing necessary computation with the shard in the device memory. We call this the Distributed Approximate Scalable cuGP (DAS-cuGP) approach.</p>
 
