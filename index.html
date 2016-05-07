@@ -446,7 +446,7 @@ where,  </p>
 </br>
 
 
-<p>Figures 3 and 4 compare the performance of cuGP with the baseline in the training and prediction phases repsectively. The X-axis shows only the number of training points. In the case of prediction, the number of traning points for each experiment was 1000. We see signifiant speedup values over the baseline for both training as well as testing phases.</p>
+<p>Figures 3 and 4 compare the performance of cuGP with the baseline in the training and prediction phases respectively. The X-axis shows only the number of training points. In the case of prediction, the number of traning points for each experiment was 1000. We see signifiant speedup values over the baseline for both training as well as testing phases.</p>
 
 </br>
 
@@ -462,9 +462,9 @@ where,  </p>
 
 <li> <u> DA-cuGP: Distributed Approximate cuGP </u>
 
-<p>The single node cuGP implementation performs well on datasets of the size $ \mathcal{O}(10^4)$. Howerver, due to the $ \mathcal{O}(N^2) $ storage requirement, the GP implementation is limited by the amount of memory available on the device. To further scale, we have implemented a recent approach [DN14] which is an approximation to the exact GP regreession. This was our stretch goal up until the checkpoint. We extend the method suggested in [DN14] to multiple GPUs. The high level idea of the approximate approach is to have several "experts", each of which is responsible for a subset of the original data. The approach basically approximates the originial covariance matrix to several blocks.</p>
+<p>The single node cuGP implementation performs well on datasets of the size $ \mathcal{O}(10^4)$. Howerver, due to the $ \mathcal{O}(N^2) $ storage requirement, the cuGP implementation is limited by the amount of memory available on the device. To further scale, we have implemented a recent approach [DN14] which is an approximation to the exact GP regression. This was our stretch goal up until the checkpoint. We extend the method suggested in [DN14] to multiple GPUs. The high level idea of the approximate approach is to have several "experts", each of which is responsible for a subset of the original data. The approach basically approximates the originial covariance matrix to several blocks.</p>
 
-<p>Thus the negative log marginal likelihood can be approximated by the sum of the log marginal likelihood values of each individual expert. The subtle point in the learning (training) phase is that the hyperparameters have to be shared across the products.</p>
+<p>In this approach, the negative log marginal likelihood can be approximated by the sum of the log marginal likelihood values of each individual expert. The subtle point in the learning (training) phase is that the hyperparameters have to be shared across the experts.</p>
 
 <p>This approach is similar to the parameter-server approach as discussed in the class. So one node (a master node) is responsible for storing the current hyperparamters of the GP model. At each step of the log likelihood / gradient compuaation, each of the workers (experts in our context) need to get the latest value of the hyperparameters, and perform the required computation. The master then collects the partial results and updates the hyperparameters and broadcasts back the new parameters. </p>
 
