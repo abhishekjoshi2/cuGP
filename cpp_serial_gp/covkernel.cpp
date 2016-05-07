@@ -5,6 +5,7 @@
 #include <cstdio>
 #include "debug.h"
 #include <utility>
+#include "../common/cycleTimer.h"
 
 // Just for the sake of default constructor
 Covsum::Covsum(){ }
@@ -467,8 +468,10 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 	double f2 = 0, f4 = 0;
 	double d2 = 0, d4 = 0;
 
+	double startime, endtime;
 	for (int i = 0; i < n; ++i)
 	{
+		startime = CycleTimer::currentSeconds();
 		//copy current values
 		Eigen::VectorXd X0 = X;
 		double F0 = f0;
@@ -634,7 +637,8 @@ void Covsum::cg_solve(double **X_mat, double *y_vec, bool verbose=true) {
 			ls_failed = true;									// this line search failed
 		}
 
-
+		endtime = CycleTimer::currentSeconds();
+		printf("one iteration took = %lf s\n", endtime - startime);
 	}
 		 printkeliye = X ;
                                 printf("\n\n PLEASE-SEE 3 : %lf, %lf, %lf\n\n", printkeliye[0], printkeliye[1], printkeliye[2]);
