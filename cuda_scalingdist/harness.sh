@@ -51,9 +51,9 @@ cat masternode
 #       printf("Input file prefix: %s, Label file prefix = %s\n", prefix_input_file_name.c_str(), prefix_label_file_name.c_str());
 
 Numchunks=4
-Numtrain=32
-Dimensions=2
-IPprefix="../chunked_dataset/si32_chunk"
-LAprefix="../chunked_dataset/si32_label"
+Numtrain=5000
+Dimensions=7
+IPprefix="../flight_dataset/flight_200sharded_chunk"
+LAprefix="../flight_dataset/flight_200sharded_label"
 
 ./gp $HOSTNAME $MASTER $PBS_NUM_NODES $Numchunks $Numtrain $Dimensions $IPprefix $LAprefix > $HOSTNAME.log
