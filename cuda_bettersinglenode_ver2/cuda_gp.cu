@@ -107,16 +107,18 @@ double *get_loghyperparam();
 __global__ void generate_identity(double *M, int size){
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
 	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
+	
+	//if (i_index >= size * size)
+	//		return;
+//	int i = i_index / size;
+//	int j = i_index % size;
+//	if(i == j) M[i*size + i] = 1.0;
+//	else M[i*size + j] = 0.0;	
 
-	if (i_index >= size * size)
-		return;
-
-	int i = i_index / size;
-	int j = i_index % size;
-
-	if(i == j) M[i*size + i] = 1.0;
-	else M[i*size + j] = 0.0;	
-
+	if(i_index >= size || j_index >= size) return;
+	int mainpoint = j_index * size + i_index;
+	if(i_index == j_index) M[mainpoint] = 1.0;
+	else M[mainpoint] = 0.0;
 }
 __global__ void print_vector(double *input, int size){
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
@@ -141,63 +143,17 @@ __global__ void compute_NLPP(double *actualtestlabels, double * predicted_testme
         *ans_nlpp = (ans / Ntest);
 
 }
-__global__ void lowertriangular_matrixmultiply_noshare(double *a, double *output, int size)
-{
-
-        long long int row = blockIdx.y * blockDim.y + threadIdx.y;
-        long long int col = blockIdx.x * blockDim.x + threadIdx.x;
-
-        if (row >= size || col >= size)
-                return;
-
-        double sum = 0.0;
-        for (int i = 0; i < size; i++)
-        {
-                //sum += a[row * colsA + i] * b[i * colsB + col]; 
-                sum += a[i * size + row] * a[i * size + col];
-        }
-
-        output[row * size + col] = sum;
-}
-
-//FIXME: can do a shared memory reduce
-__global__ void vector_dot_product_with_loghp(double *x1, double *x2, double *ans, int N, double noisevar, double sigvar){
-
-	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
-	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
-
-	if (i_index >= 1)
-		return;
-
-	double val = 0.0;
-	for(int i = 0; i < N; i++) {
-		val += (x1[i]*x2[i]);
-	}
-	*ans = -val + noisevar + sigvar;
-}
-
-//FIXME: can do a shared memory reduce
-__global__ void vector_dot_product(double *x1, double *x2, double *ans, int N){
-
-	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
-	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
-
-	if (i_index >= 1)
-		return;
-
-	double val = 0.0;
-	for(int i = 0; i < N; i++) {
-		val += (x1[i]*x2[i]);
-	}
-	*ans = val;
-}
 
 __global__ void copy_Kmatrix(double *input, double *output, int size){
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
 	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
-	if (i_index >= size * size)
+	
+	/*(if (i_index >= size * size)
 		return;
-	output[i_index] = input[i_index];
+	output[i_index] = input[i_index];*/
+	if(i_index >= size || j_index >= size) return;
+	output[j_index * size + i_index] = input[j_index * size + i_index];
+
 }
 
 __global__ void gather_diagonal(double *inputMat, double *diagvec, int size){
@@ -209,128 +165,13 @@ __global__ void gather_diagonal(double *inputMat, double *diagvec, int size){
 	diagvec[i_index] = inputMat[i_index * size + i_index];
 
 }
-__global__ void make_identity(double *identity, int N){
-
-	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
-	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
-	if (i_index >= N)
-		return;
-	identity[i_index * N + i_index] = 1.0;
-}
-
-__global__ void outerprod_and_subtract(double *Mat1, double *vec, double *outputMat, int size){
-	
-	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
-	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
-	if (i_index >= size * size)
-		return;
-	
-	int i = i_index / size;
-	int j = i_index % size;
-	
-	outputMat[i*size + j] = Mat1[i*size + j] - vec[i]*vec[j];
-
-}
-
-
-// We want to solve for "output", such that 
-//	 lowert_mat * output = b;
-__global__ void forward_substitution_vector(double *lowert_mat, double *b, double *output, int N){
-
-	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
-	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
-	if (i_index >= 1)
-		return;
-
-	/*
-	// Forward solve L * temp = y
-	for (int i = 0; i < n; i++){
-	temp[i] = y[i];
-	for (int j = 0; j < i; j++)
-	{
-	temp[i] -= L[i][j] * temp[j];
-	}
-	temp[i] /= L[i][i];
-	}
-	 */
-	for(int i = 0 ; i < N ; i++){
-		output[i] = b[i];	
-		for (int j = 0 ; j < i; j++){
-			output[i] -= lowert_mat[i * N + j] * output[j];
-		}
-		output[i] /= lowert_mat[i*N + i];
-	}
-}
-
-
-// We want lower_mat.transpose() * output = b;
-// NOTE: WE ARE NOT PASSING AN UPPER TRIANGULAR MATRIX (which would have been the case in a general implementation)
-__global__ void backward_substitution_vector(double *lowert_mat, double *b, double *output, int N){
-
-	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
-	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
-	if (i_index >= 1)
-		return;
-
-	/*
-	// backward solve arr2 * y2 = b
-	for(int i = DIM - 1; i >= 0 ; i--) {
-	y2[i] = b[i];
-	for(int j = i + 1; j < DIM; j++) {
-	y2[i] = y2[i] - arr2[i][j] * y2[j];
-	}
-	y2[i] = y2[i] / arr2[i][i];
-	}
-	 */
-
-	for(int i = N - 1; i >= 0 ; i--) {
-		output[i] = b[i];
-		for(int j = i + 1; j < N; j++) {
-			output[i] = output[i] - lowert_mat[j * N + i] * output[j];
-		}
-		output[i] /= lowert_mat[i*N + i];
-	}
-}
-
-// We want: A.transpose() * output = B
-// NOTE: WE ARE NOT PASSING AN UPPER TRIANGULAR MATRIX (which would have been the case in a general implementation)
-__global__ void backward_substitution_matrix(double *A, double *B, double *output, int size){
-
-	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
-	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
-	if (i_index >= size)
-		return;
-
-	 /*
-	 for (int k = 0; k < DIM; k++) {
-                for (int i = DIM - 1; i >= 0 ; i--) {
-                        output[i][k] = B[i][k];
-                        for (int j = i + 1; j < DIM; j++) {
-                                output[i][k] = output[i][k] - A[i][j] * output[j][k];
-                        }
-                        output[i][k] = output[i][k] / A[i][i];
-                }
-        }
-	*/
-	int k = i_index;
-
-	for(int i = size - 1; i >= 0 ; i--) {
-		output[i*size + k] = B[i*size + k];
-		for(int j = i + 1; j < size; j++) {
-			// This is when A was proper: output[i*size + k] -= A[i*size + j] * output[j*size + k];  
-			// But we have to take A.transpose(), so we swap i,j 
-			output[i*size + k] -= A[j*size + i] * output[j*size + k];  
-		}
-		output[i*size + k] /= A[i*size + i]; //No need to change here, as only diagonal elements are accessed
-	}
-}
 
 __global__ void set_upper_zero(double *M, int dim){
 
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
 	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
 
-	if (i_index >= (dim * dim))
+/*	if (i_index >= (dim * dim))
 		return;
 
 	int rowN = i_index / dim;
@@ -338,43 +179,11 @@ __global__ void set_upper_zero(double *M, int dim){
 
 	if(rowN >= colN) return;
 
-	M[rowN * dim + colN] = 0.0;
-}
+	M[rowN * dim + colN] = 0.0;*/
 
-__global__ void matrixmultiply_noshare(double *a, int rowsA, int colsA, double *b, int rowsB, int colsB, double *c)
-{
 
-	long long int row = blockIdx.y * blockDim.y + threadIdx.y;
-	long long int col = blockIdx.x * blockDim.x + threadIdx.x;
-
-	if (row >= rowsA || col >= colsB)
-		return;
-
-	//printf("row: %d, col: %d\n", row, col);
-	double sum = 0.0;
-	for (int i = 0; i < colsA; i++)
-	{
-		sum += a[row * colsA + i] * b[i * colsB + col]; 
-	}
-
-	c[row * colsB + col] = sum;
-}
-
-__global__ void offseted_elementwise_subtraction(double *input, int size, double *M, int dim, int b, int start_id){
-	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
-	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
-
-	if (i_index >= size * size)
-		return;
-
-	// int input_row = i_index / size;
-	// int input_col = i_index % size;
-	// we want M[ input_row + start_id + b, input_col + start_id + b ] -= input[i_index];
-
-	int input_row = i_index / size;
-	int input_col = i_index % size;
-	M[ (input_row + start_id + b) * dim + (input_col + start_id + b) ] -= input[i_index];
-
+	if(i_index >= dim || j_index >= dim || j_index >= i_index) return;
+	M[j_index*dim + i_index] = 0.0;	
 }
 
 	__global__ void
@@ -397,7 +206,8 @@ elementwise_matrix_mult(double *mat1, double *mat2, double *mat3, int rows, int 
 {
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
 	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
-
+	
+	/*
 	int target_row, target_col;
 	double dot_product = 0.0;
 
@@ -408,6 +218,10 @@ elementwise_matrix_mult(double *mat1, double *mat2, double *mat3, int rows, int 
 		return;
 
 	mat3[target_row * cols + target_col] = mat1[target_row * cols + target_col] * mat2[target_row * cols + target_col];
+	*/
+
+	if(i_index >= cols || j_index >= rows) return;
+	mat3[j_index * rows + i_index ] = mat1[j_index * rows + i_index] * mat2[j_index * rows + i_index];
 }
 
 __global__ void
@@ -415,14 +229,13 @@ compute_K_train(double *M, double *K_output, double *loghyper, int n, int dim) {
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
 	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
 
-	if (i_index >= n * n) return;
+/*	if (i_index >= n * n) return;
 
 	double ell_sq = exp(loghyper[0] * 2); //l^2 after coverting back from the log form
 	double signal_var = exp(loghyper[1] * 2); // signal variance
 	double noise_var = exp(loghyper[2] * 2); //noise variance
 
 	int M_row, M_col;
-	double dot_product = 0.0;
 
 	M_row = i_index / n;
 	M_col = i_index % n;
@@ -441,6 +254,25 @@ compute_K_train(double *M, double *K_output, double *loghyper, int n, int dim) {
 	dot_product = signal_var * exp(-dot_product * 0.5 / ell_sq);
 
 	K_output[M_row * n + M_col] = K_output[M_col * n + M_row] = dot_product;
+*/
+	if (i_index >= n || j_index >= n || i_index > j_index) return;
+
+	double ell_sq = exp(loghyper[0] * 2); //l^2 after coverting back from the log form
+	double signal_var = exp(loghyper[1] * 2); // signal variance
+	double noise_var = exp(loghyper[2] * 2); //noise variance
+
+	double dot_product = 0.0;
+	if(i_index == j_index){
+		K_output[j_index * n + i_index] = signal_var + noise_var;
+		return;
+	}
+	for(int i = 0 ; i < dim;i++){
+		double val1 = M[i_index * dim + i];
+		double val2 = M[j_index * dim + i];
+		dot_product += (val1 - val2) * (val1 - val2);
+	}
+	dot_product = signal_var * exp(-dot_product * 0.5 / ell_sq);
+	K_output[j_index * n + i_index] = K_output[i_index * n + j_index] = dot_product;
 }
 
 __global__ void
@@ -501,7 +333,7 @@ compute_squared_distances(double *M, double *compute_squared_distances_matrix, d
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
 	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
 
-	if(i_index >= n * n) return;
+/*	if(i_index >= n * n) return;
 
 	int M_row, M_col;
 	double ell_sq = exp(loghyper[0] * 2); //l^2 after coverting back from the log form
@@ -523,156 +355,28 @@ compute_squared_distances(double *M, double *compute_squared_distances_matrix, d
 
 	compute_squared_distances_matrix[M_row * n + M_col] = compute_squared_distances_matrix[M_col * n + M_row] = dot_product / ell_sq;
 
-}
-
-__global__ void kernelSharedMemMatMult(double *A, int rowsA, int colsA, 
-		double *B, int rowsB,  int colsB, 
-		double *C)
-{
-	double tmp = 0.0;
-	__shared__ double M_shared[BLOCK_SIZE][BLOCK_SIZE] ;
-	__shared__ double N_shared[BLOCK_SIZE][BLOCK_SIZE] ;
-
-	int col = blockIdx.x * blockDim.x + threadIdx.x;
-	int row = blockIdx.y * blockDim.y + threadIdx.y;
-
-	for(int m = 0; m < (BLOCK_SIZE + colsA - 1)/BLOCK_SIZE; m++) 
-	{
-		if(m * BLOCK_SIZE + threadIdx.x < colsA && row < rowsA) 
-		{
-			M_shared[threadIdx.y][threadIdx.x] =  
-				A[row * colsA + m * BLOCK_SIZE + threadIdx.x];
-		}
-		else 
-		{
-			M_shared[threadIdx.y][threadIdx.x] = 0.0;
-		}
-
-		if(m * BLOCK_SIZE + threadIdx.y < rowsB && col < colsB) 
-		{
-			N_shared[threadIdx.y][threadIdx.x] =  
-				B[(m * BLOCK_SIZE + threadIdx.y) * colsB + col];
-		} 
-		else 
-		{
-			N_shared[threadIdx.y][threadIdx.x] = 0.0;
-		}
-		__syncthreads();
-
-
-		for(int tileIndex = 0; tileIndex < BLOCK_SIZE; tileIndex++) 
-		{
-			tmp += M_shared[threadIdx.y][tileIndex] * N_shared[tileIndex][threadIdx.x];
-		}
-		__syncthreads();
-	}
-
-	if(row < rowsA && col < colsB) 
-	{
-		C[((blockIdx.y * blockDim.y + threadIdx.y) * colsB) + 
-			(blockIdx.x * blockDim.x) + threadIdx.x] = tmp;
-	}
-}
-
-
-__global__ void inplace_lower_inverse_2x2(double *input_mat, int mat_dim) {
-	int row = blockIdx.x * blockDim.x + threadIdx.x;
-	int col = blockIdx.y * blockDim.y + threadIdx.y;
-	int start_row, start_col;
-	double m11, m22;
-
-	if (row >= mat_dim / 2)
+*/
+	if(i_index >= n || j_index >= n || i_index > j_index) return;
+	double ell_sq = exp(loghyper[0] * 2); //l^2 after coverting back from the log form
+	if(i_index == j_index){
+		compute_squared_distances_matrix[j_index * n + i_index] = 0.0;
 		return;
-
-	start_row = row * 2;
-	start_col = row * 2;
-
-	m11 = input_mat[start_row * mat_dim + start_col];
-	m22 = input_mat[(start_row + 1) * mat_dim + start_col + 1];
-	input_mat[(start_row + 1) * mat_dim + start_col] = -input_mat[(start_row + 1) * mat_dim + start_col] / (m11 * m22);
-
-	input_mat[start_row * mat_dim + start_col] = 1 / m11;
-	input_mat[(start_row + 1) * mat_dim + start_col + 1] = 1 / m22;
-}
-
-__global__ void first_offseted_mat_mult(double *orig, int mat_size, double *tmi_playground, int ltm_dim, int total_threads) {
-	
-	int row = blockIdx.x * blockDim.x + threadIdx.x;
-	int col = blockIdx.y * blockDim.y + threadIdx.y;
-
-	if (row >= total_threads)
-		return;
-	
-	int id, mat_num, ele, row_offset, col_offset, internal_row, internal_col, cur_row, cur_col;
-
-	id = row;
-	mat_num = id / (mat_size * mat_size);
-	ele = id % (mat_size * mat_size);
-	row_offset = mat_size * (2 * mat_num + 1);
-	col_offset = row_offset - mat_size;
-	internal_row = ele / mat_size;
-	internal_col = ele % mat_size;
-	cur_row = internal_row + row_offset;
-	cur_col = internal_col + col_offset;
-
-	double ans  = 0.0;
-	for(int i = 0;i < mat_size; i++){
-		ans += orig[(row_offset + i)*ltm_dim + cur_col] * orig[cur_row * ltm_dim + col_offset + mat_size + i];
+	}	
+	double dot_product = 0.0;
+	for (int i = 0; i < dim; i++){
+		double val1 = M[i_index * dim + i];
+		double val2 = M[j_index * dim + i];
+		dot_product += (val1 - val2) * (val1 - val2);
 	}
-	tmi_playground[cur_row * ltm_dim + cur_col] = ans;
+	dot_product /= ell_sq;
+	compute_squared_distances_matrix[i_index * n + j_index] = dot_product;
+	compute_squared_distances_matrix[j_index * n + i_index] = dot_product;
 }
 
-__global__ void second_offseted_mat_mult(double *orig, int mat_size, double *tmi_playground, int ltm_dim, int total_threads) {
-	
-	int row = blockIdx.x * blockDim.x + threadIdx.x;
-	int col = blockIdx.y * blockDim.y + threadIdx.y;
-
-	if (row >= total_threads)
-		return;
-	
-	int id, mat_num, ele, row_offset, col_offset, internal_row, internal_col, cur_row, cur_col;
-
-	id = row;
-	mat_num = id / (mat_size * mat_size);
-	ele = id % (mat_size * mat_size);
-	row_offset = mat_size * (2 * mat_num + 1);
-	col_offset = row_offset - mat_size;
-	internal_row = ele / mat_size;
-	internal_col = ele % mat_size;
-	cur_row = internal_row + row_offset;
-	cur_col = internal_col + col_offset;
-
-	double ans  = 0.0;
-	for(int i = 0;i < mat_size; i++){
-		ans += tmi_playground[cur_row * ltm_dim + col_offset  + i] * orig[(row_offset - mat_size + i)*ltm_dim + cur_col];
-	}
-	orig[cur_row * ltm_dim + cur_col] = -1.0 * ans;
-}
 __inline__ int upit(int x, int y) {
 	return (x + y - 1) / y;
 }
 
-
-void get_symmetric_matrix_1d(double *M, double **matrix1, double **matrix2, int dim) {
-
-	srand(time(NULL));
-	int setter = 1;
-	for (int i = 0; i < dim; i++)
-	{
-		for (int j = 0; j < dim; j++){
-			matrix1[i][j] = rand() % 100 + 1;
-			matrix2[j][i] = matrix1[i][j];
-		}
-	}
-	for (int i = 0; i < dim; i++){
-		for(int j = 0; j < dim; j++){
-			M[i * dim + j ] = 0.0;
-			for(int k = 0; k < dim; k++){
-				M[i * dim + j] += matrix1[i][k]*matrix2[k][j];
-			}
-		}
-	}
-}
 
 void init_and_print()
 {
@@ -797,10 +501,6 @@ void setup_gradienthp_data(){
 	cudacall(cudaMalloc(&identity, sizeof(double) * N *N));
 	cudacall(cudaMemset((void *)identity, 0.0, sizeof(double) * N * N));
 
-	threads_per_block = 512;
-        number_of_blocks = upit(N , threads_per_block);
-	make_identity<<<number_of_blocks, threads_per_block>>>(identity, N);  	
-
 	//matrix for storing forward substitution result
 	cudacall(cudaMalloc(&tempfsforkinv, sizeof(double) * N *N));
 		
@@ -891,78 +591,6 @@ void setup_cholesky(int dim, int b)
 }
 
 
-void check_cholesky(double *M1, double* targetoutput, int d){
-	double diff = 0.0, totaldiff = 0.0;	
-	for(int i = 0; i < d; i++){
-		for(int j = 0; j < d ;j++){ 
-			double tempval = 0.0;
-			for(int k = 0; k < d; k++){
-				tempval += M1[i*d + k] * M1[j * d + k];
-			}
-			diff = tempval - targetoutput[i * d + j];
-			totaldiff += abs(diff);
-		}
-	}
-	printf("FINAL ERROR = %lf\n", totaldiff);
-}
-
-void get_input(int dim){
-
-	double **m1, **m2;
-
-	temp_m = new double[dim * dim];
-
-	m1 = new double *[dim];
-	m2 = new double *[dim];
-
-	for (int i = 0; i < dim; i++)
-	{
-		m1[i] = new double[dim];
-		m2[i] = new double[dim];
-	}
-
-	get_symmetric_matrix_1d(temp_m, m1, m2, dim);
-
-	printf("Abhi input hua\n");
-	/*
-	   printf("Generated matrix in host is \n");
-	   for (int i = 0; i < dim; i++)
-	   {
-	   for (int j = 0; j < dim; j++)
-	   {
-	   printf("%lf ", temp_m[i * dim + j]);
-	   }
-	   printf("\n");
-	   }
-	 */
-
-	for(int i = 0 ; i < dim ; i++){
-		delete m1[i];
-		delete m2[i];
-	}
-	delete m1;
-	delete m2;
-
-}
-void initialize_random(int dim){
-	temp_m = new double[dim * dim];
-	srand(time(NULL));
-	for (int i = 0; i < dim; i++)
-	{
-		for (int j = 0; j < dim; j++){
-			temp_m[i*dim + j] = ((double) rand() / (RAND_MAX));
-			//temp_m[i*dim + j] = rand() % 10;
-		}
-	}
-
-}
-
-void generate_random_vector(double *b, int dim){
-	for(int i = 0 ; i < dim ; i++){
-		b[i] = rand() % 10;	
-	}
-}
-
 
 // M is a device pointer!!, n is the size of the matrix
 void get_cholesky_using_cublas(double *M, int n){
@@ -994,11 +622,16 @@ void get_cholesky_using_cublas(double *M, int n){
 	double endtime = CycleTimer::currentSeconds();
 	printf("Time taken for CUSOLVER cholesky: %lf\n", endtime - startime);
 	//now make upper vala 0
-	int threads_per_block = 1024;
+/*	int threads_per_block = 1024;
         int number_of_blocks = upit( (n * n), threads_per_block);
         set_upper_zero<<<number_of_blocks, threads_per_block>>>(M, n);
         cudaThreadSynchronize();
+*/
 
+	dim3 blockDim(32,32);
+ 	dim3 gridDim( upit(n, blockDim.x), upit(n, blockDim.y));
+        set_upper_zero<<<gridDim, blockDim>>>(M, n);
+        cudaThreadSynchronize();
 
 }
 
@@ -1007,10 +640,13 @@ void get_inverse_by_cublas(double *Lmat, int sizelmat){
         double al =1.0f;
 
 	int threads_per_block, number_of_blocks;
-	threads_per_block = 1024;
-	number_of_blocks = upit((sizelmat * sizelmat), threads_per_block);
-	
-	generate_identity<<<number_of_blocks, threads_per_block>>>(lowermat_inv_store, sizelmat);
+	//threads_per_block = 1024;
+	//number_of_blocks = upit((sizelmat * sizelmat), threads_per_block);
+	//generate_identity<<<number_of_blocks, threads_per_block>>>(lowermat_inv_store, sizelmat);
+
+	dim3 blockDim(32,32);
+ 	dim3 gridDim( upit(N, blockDim.x), upit(N, blockDim.y));
+	generate_identity<<<gridDim, blockDim>>>(lowermat_inv_store, sizelmat);
 	cudaThreadSynchronize(); 
 		
         double startime = CycleTimer::currentSeconds();
@@ -1151,28 +787,13 @@ double compute_log_likelihood()
 {
 	int threads_per_block, number_of_blocks;
 
-	threads_per_block = 1024;
-	number_of_blocks = upit((N * N), threads_per_block);
 
 	printf("compute_K_train hota hai\n");
-	compute_K_train<<<number_of_blocks, threads_per_block>>>(X, K, loghyper, N, DIM); // kernel
+
+	dim3 blockDim1(32,32);
+ 	dim3 gridDim1( upit(N, blockDim1.x), upit(N, blockDim1.y));
+	compute_K_train<<<gridDim1, blockDim1>>>(X, K, loghyper, N, DIM); // kernel
 	cudaThreadSynchronize();
-
-	
-/*	double *okaybhai = new double[N * N];
-	cudacall(cudaMemcpy(okaybhai, K, sizeof(double) * N * N , cudaMemcpyDeviceToHost)); 
-
-	printf("NEEECHE\n\n");
-	
-	for(int i = 0 ; i < N ;i++){
-		for(int j = 0 ; j < N;j++){
-
-			printf("%lf", okaybhai[i*N +j]);
-			if(j < N -1) printf(",");
-		}
-		printf("\n");
-	}
-*/
 
 	compute_chol_get_mul_and_det(); // set of kernels
 
@@ -1216,66 +837,38 @@ void compute_gradient_log_hyperparams(double *localhp_grad)
 	double *tt = get_loghyperparam(); //just for a MEMCPY from device to host
 	double noise_var = exp(lh_host[2] * 2); //noise variance
 
-	// TODO:DISCUSS WITH ABHISHEK ABOUT HAVING A STATE-ON/OFF TO GET POTENTIAL 
-	//	1/2 SAVING TO THIS COMPUTE_K_TRAIN
 
-	// compute_K_train(); // kernel - can reuse earlier matrix?
-        threads_per_block = 1024;
-        number_of_blocks = upit((N * N), threads_per_block);
-        compute_K_train<<<number_of_blocks, threads_per_block>>>(X, K, loghyper, N, DIM); // kernel
+	dim3 blockDim1(32,32);
+ 	dim3 gridDim1( upit(N, blockDim1.x), upit(N, blockDim1.y));
+        compute_K_train<<<gridDim1, blockDim1>>>(X, K, loghyper, N, DIM); // kernel
+        cudaThreadSynchronize();
+
+	dim3 blockDim2(32,32);
+ 	dim3 gridDim2( upit(N, blockDim2.x), upit(N, blockDim2.y));
+	copy_Kmatrix<<<gridDim2, blockDim2>>>(K, Kintact, N);
         cudaThreadSynchronize();
 	
-        threads_per_block = 1024;
-        number_of_blocks = upit((N * N), threads_per_block);
-	copy_Kmatrix<<<number_of_blocks, threads_per_block>>>(K, Kintact, N);
-        cudaThreadSynchronize();
-		
-	
-	//compute_squared_distance(); // kernel
-        threads_per_block = 1024;
-        number_of_blocks = upit((N * N), threads_per_block);
-   	compute_squared_distances<<<number_of_blocks, threads_per_block>>>(X,  Ksqdist,  loghyper,  N, DIM);
+	dim3 blockDim3(32,32);
+ 	dim3 gridDim3( upit(N, blockDim3.x), upit(N, blockDim3.y));
+   	compute_squared_distances<<<gridDim3, blockDim3>>>(X,  Ksqdist,  loghyper,  N, DIM);
    	cudaThreadSynchronize();
 
-	// elementwise_matrix_mult(); // kernel
-        threads_per_block = 1024;
-        number_of_blocks = upit((N * N), threads_per_block);
-	elementwise_matrix_mult<<<number_of_blocks, threads_per_block>>>(K, Ksqdist, matforell, N, N);
+	dim3 blockDim4(32,32);
+ 	dim3 gridDim4( upit(N, blockDim4.x), upit(N, blockDim4.y));
+	elementwise_matrix_mult<<<gridDim4, blockDim4>>>(K, Ksqdist, matforell, N, N);
 	cudaThreadSynchronize();
-	
-	//print_matrix_kernel<<<1,1>>>(matforell, N, N);
-      	//cudaThreadSynchronize();
 
-	printf("Yahi hai Kinv\n");
-	//SUB: compute_K_inverse(); // set of kernels
 	compute_K_inverse_using_cublas(); // set of kernels
-	//print_matrix_kernel<<<1,1>>>(Kinv, N, N);
-      	//cudaThreadSynchronize();
 
-	/*SUB:
-	// vector_Kinvy_using_cholesky(); // set of kernels
-	// We don't need this: we already have Kinv, so we just need to multiply Kinv and y
-        threads_per_block = 512;
-        number_of_blocks = upit( N, threads_per_block);
-	matrix_vector_multiply<<<number_of_blocks, threads_per_block>>>(Kinv, labels, temp1dvec, N);
-      	cudaThreadSynchronize();
-	*/
 	matrix_vector_multiply_cublas(Kinv, labels, temp1dvec, N); //can use temp_bs only
 
-	/*SUB	
-	// get_outer_product(); // kernel
-	// subtract_matrices(); // kernel
-	// -- Combining the above 2 in a single kernel call
-        threads_per_block = 512;
-        number_of_blocks = upit( N * N, threads_per_block);
-	outerprod_and_subtract<<<number_of_blocks, threads_per_block>>>(Kinv, temp1dvec, tempWmatrix, N);
-      	cudaThreadSynchronize();
-	*/
-	
-        threads_per_block = 1024;
-        number_of_blocks = upit((N * N), threads_per_block);
-	copy_Kmatrix<<<number_of_blocks, threads_per_block>>>(Kinv, tempWmatrix, N);
-     	const double alf = -1; //NOTE: we neeed to subtract, that's why -1
+	dim3 blockDim5(32,32);
+ 	dim3 gridDim5( upit(N, blockDim5.x), upit(N, blockDim5.y));
+	copy_Kmatrix<<<gridDim5, blockDim5>>>(Kinv, tempWmatrix, N);
+        cudaThreadSynchronize();
+
+
+	const double alf = -1; //NOTE: we neeed to subtract, that's why -1
      	const double *alpha = &alf;
 
 	cublasDger(blas_handle, N, N, alpha,  temp1dvec, 1, temp1dvec, 1, tempWmatrix, N);
@@ -1343,14 +936,15 @@ void setup_for_testing(int offset, int numtest){
 
 }
 
-//compute_test_means_and_variances is a set of kernels
+//compute_test_means_and_variances is a set of kernels: FIX testing code
 void compute_test_means_and_variances(){
 	int threads_per_block, number_of_blocks;
 
 	//Maybe can move the compute_K_train to setup in SCHEDULER-vala (THINK ABOUT IT SID)
         threads_per_block = 1024;
         number_of_blocks = upit((N * N), threads_per_block);
-        compute_K_train<<<number_of_blocks, threads_per_block>>>(X, K, loghyper, N, DIM); // populated in K
+    	// FIXME
+	//    compute_K_train<<<number_of_blocks, threads_per_block>>>(X, K, loghyper, N, DIM); // populated in K
         cudaThreadSynchronize();
 	
 	//compute_K_inverse(); //populates Kinv with K.inverse()
@@ -1376,16 +970,18 @@ void compute_test_means_and_variances(){
 		compute_K_test<<<number_of_blocks, threads_per_block>>>(X, Xtest + i * DIM, Ktest_vec, loghyper, N, DIM); //REUSE SOME ALREADY EXISTING MALLOC'ED 1D VECTOR
       		cudaThreadSynchronize();
 
-		vector_dot_product<<<1, 1>>>(Ktest_vec, temp1dvec, tmeanvec + i, N); //for mean
-      		cudaThreadSynchronize();
+		//FIXME
+		//vector_dot_product<<<1, 1>>>(Ktest_vec, temp1dvec, tmeanvec + i, N); //for mean
+      		//cudaThreadSynchronize();
 	
-		threads_per_block = 512;
-	        number_of_blocks = upit(N, threads_per_block);
-       		vector_matrix_multiply<<<number_of_blocks, threads_per_block>>>(Ktest_vec, Kinv, temp_fs, N); //REUSING temp_fs from likelihood computation
-        	cudaThreadSynchronize();
-		
-		vector_dot_product_with_loghp<<<1, 1>>>(Ktest_vec, temp_fs, tvarvec + i, N, sig_var, noise_var ); //for variance
-      		cudaThreadSynchronize();
+		//FIXME
+		//threads_per_block = 512;
+	       // number_of_blocks = upit(N, threads_per_block);
+       		//vector_matrix_multiply<<<number_of_blocks, threads_per_block>>>(Ktest_vec, Kinv, temp_fs, N); //REUSING temp_fs from likelihood computation
+        //	cudaThreadSynchronize();
+		//FIXME		
+//		vector_dot_product_with_loghp<<<1, 1>>>(Ktest_vec, temp_fs, tvarvec + i, N, sig_var, noise_var ); //for variance
+      //		cudaThreadSynchronize();
 		
 	}
 }
