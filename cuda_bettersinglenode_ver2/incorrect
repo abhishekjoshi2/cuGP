@@ -1,0 +1,1828 @@
+Trying to listen on port 15618
+Hostname compute-0-21.local is listening on port 15618 with listenfd = 3
+Node is compute-0-21.local and Master is compute-0-21.local. Number of workers is 1
+Master calling cg_solve()
+YEEEEEEEEEEEEEEEHH setup call huaa
+Inside read_input_and_copy_to_GPUs
+Reading inputs boy
+Number of inputs = 128
+reading labels 
+Okay boy.. reading and malloc done
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.640236
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000042
+Total threads launched: 256
+Time for iter 1: 0.000037
+Total threads launched: 512
+Time for iter 2: 0.000042
+Total threads launched: 1024
+Time for iter 3: 0.000057
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000141
+Total sum: 771121044968752.750000
+The value of loglikelihood = -646224253155708325508867544048234726615558764923782692864.000000
+Final ll_sum is -646224253155708325508867544048234726615558764923782692864.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006344 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE 1 : 1.500393, 1.499544, 1.491645
+
+Dekho bhai naya value AYAA
+
+1.500393
+1.499544
+1.491645
+----------------------------the values are:- 
+1.500393
+1.499544
+1.491645
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000511
+UPAR DEKH
+Determinant is 399.295346
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000041
+Total threads launched: 256
+Time for iter 1: 0.000039
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000071
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000143
+Total sum: 587278438417066.500000
+The value of loglikelihood = -3350116558992004071905293482806045236361981048224141541376.000000
+Final ll_sum is -3350116558992004071905293482806045236361981048224141541376.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.005985 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.036289
+Dekho bhai -5.625167
+6.507913
+119.010231
+Final gradients of log hyperparams are -5.625167, 6.507913, 119.010231
+3.35012e+57
+
+
+ PLEASE-SEE  2: 1.500039, 1.499954, 1.499164
+
+Dekho bhai naya value AYAA
+
+1.500039
+1.499954
+1.499164
+----------------------------the values are:- 
+1.500039
+1.499954
+1.499164
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000496
+UPAR DEKH
+Determinant is 401.125395
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000038
+Total threads launched: 256
+Time for iter 1: 0.000036
+Total threads launched: 512
+Time for iter 2: 0.000042
+Total threads launched: 1024
+Time for iter 3: 0.000056
+Total threads launched: 2048
+Time for iter 4: 0.000084
+Total threads launched: 4096
+Time for iter 5: 0.000141
+Total sum: -405965768688943.312500
+The value of loglikelihood = -762026154753722989311315997156179956124587855272002715648.000000
+Final ll_sum is -762026154753722989311315997156179956124587855272002715648.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006228 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.097395
+Dekho bhai -5.604520
+6.495676
+119.053021
+Final gradients of log hyperparams are -5.604520, 6.495676, 119.053021
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500004, 1.499995, 1.499916
+
+Dekho bhai naya value AYAA
+
+1.500004
+1.499995
+1.499916
+----------------------------the values are:- 
+1.500004
+1.499995
+1.499916
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000499
+UPAR DEKH
+Determinant is 401.308416
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000040
+Total threads launched: 256
+Time for iter 1: 0.000041
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000142
+Total sum: -141214579229887.093750
+The value of loglikelihood = -656966327347016125314808107244685715473219064417203781632.000000
+Final ll_sum is -656966327347016125314808107244685715473219064417203781632.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006153 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.103470
+Dekho bhai -5.602439
+6.494442
+119.057292
+Final gradients of log hyperparams are -5.602439, 6.494442, 119.057292
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.499992
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.499992
+----------------------------the values are:- 
+1.500000
+1.500000
+1.499992
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000501
+UPAR DEKH
+Determinant is 401.326718
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000041
+Total threads launched: 256
+Time for iter 1: 0.000038
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000090
+Total threads launched: 4096
+Time for iter 5: 0.000142
+Total sum: -610194452192999.750000
+The value of loglikelihood = -647290526611699527046382192773082786818635136652049121280.000000
+Final ll_sum is -647290526611699527046382192773082786818635136652049121280.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006018 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104077
+Dekho bhai -5.602231
+6.494319
+119.057720
+Final gradients of log hyperparams are -5.602231, 6.494319, 119.057720
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.499999
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.499999
+----------------------------the values are:- 
+1.500000
+1.500000
+1.499999
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000505
+UPAR DEKH
+Determinant is 401.328549
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000059
+Total threads launched: 256
+Time for iter 1: 0.000037
+Total threads launched: 512
+Time for iter 2: 0.000045
+Total threads launched: 1024
+Time for iter 3: 0.000056
+Total threads launched: 2048
+Time for iter 4: 0.000084
+Total threads launched: 4096
+Time for iter 5: 0.000143
+Total sum: -505484007923698.875000
+The value of loglikelihood = -646330801590776159014702857036818251674905323746852077568.000000
+Final ll_sum is -646330801590776159014702857036818251674905323746852077568.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006252 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104137
+Dekho bhai -5.602210
+6.494307
+119.057762
+Final gradients of log hyperparams are -5.602210, 6.494307, 119.057762
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000499
+UPAR DEKH
+Determinant is 401.328732
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000040
+Total threads launched: 256
+Time for iter 1: 0.000039
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000143
+Total sum: 511246932668304.500000
+The value of loglikelihood = -646234907210543035096200060265071833462859635315015942144.000000
+Final ll_sum is -646234907210543035096200060265071833462859635315015942144.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.005982 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057766
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057766
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000507
+UPAR DEKH
+Determinant is 401.328750
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000038
+Total threads launched: 256
+Time for iter 1: 0.000037
+Total threads launched: 512
+Time for iter 2: 0.000042
+Total threads launched: 1024
+Time for iter 3: 0.000056
+Total threads launched: 2048
+Time for iter 4: 0.000084
+Total threads launched: 4096
+Time for iter 5: 0.000141
+Total sum: -272860932572192.500000
+The value of loglikelihood = -646225318553266059356671453149268655051849922764083298304.000000
+Final ll_sum is -646225318553266059356671453149268655051849922764083298304.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006230 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000504
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000040
+Total threads launched: 256
+Time for iter 1: 0.000038
+Total threads launched: 512
+Time for iter 2: 0.000045
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000143
+Total sum: -168793543285236.625000
+The value of loglikelihood = -646224359695403163849638668665808806041485859110650904576.000000
+Final ll_sum is -646224359695403163849638668665808806041485859110650904576.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006195 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000505
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000040
+Total threads launched: 256
+Time for iter 1: 0.000038
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000142
+Total sum: -27878366171990.023438
+The value of loglikelihood = -646224263809662852163450173275642909234606889484381323264.000000
+Final ll_sum is -646224263809662852163450173275642909234606889484381323264.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006025 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000504
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000039
+Total threads launched: 256
+Time for iter 1: 0.000036
+Total threads launched: 512
+Time for iter 2: 0.000042
+Total threads launched: 1024
+Time for iter 3: 0.000056
+Total threads launched: 2048
+Time for iter 4: 0.000083
+Total threads launched: 4096
+Time for iter 5: 0.000140
+Total sum: -70170689911215.382812
+The value of loglikelihood = -646224254221085658818852000839673047106367050586118946816.000000
+Final ll_sum is -646224254221085658818852000839673047106367050586118946816.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006239 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000508
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000040
+Total threads launched: 256
+Time for iter 1: 0.000038
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000142
+Total sum: 1270704159556.479004
+The value of loglikelihood = -646224253262272784889189853771049742877006970510758641664.000000
+Final ll_sum is -646224253262272784889189853771049742877006970510758641664.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.005980 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000506
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000038
+Total threads launched: 256
+Time for iter 1: 0.000036
+Total threads launched: 512
+Time for iter 2: 0.000041
+Total threads launched: 1024
+Time for iter 3: 0.000056
+Total threads launched: 2048
+Time for iter 4: 0.000084
+Total threads launched: 4096
+Time for iter 5: 0.000140
+Total sum: 740055821638021.875000
+The value of loglikelihood = -646224253166297782099018251390844974462986137865300213760.000000
+Final ll_sum is -646224253166297782099018251390844974462986137865300213760.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006231 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000506
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000040
+Total threads launched: 256
+Time for iter 1: 0.000042
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000142
+Total sum: 642978629403151.500000
+The value of loglikelihood = -646224253156792525019574232077998607668767286436686725120.000000
+Final ll_sum is -646224253156792525019574232077998607668767286436686725120.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006171 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000574
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000042
+Total threads launched: 256
+Time for iter 1: 0.000039
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000143
+Total sum: 1195048182061080.500000
+The value of loglikelihood = -646224253155835422334041982248092150884932960077834354688.000000
+Final ll_sum is -646224253155835422334041982248092150884932960077834354688.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006036 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000508
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000037
+Total threads launched: 256
+Time for iter 1: 0.000037
+Total threads launched: 512
+Time for iter 2: 0.000042
+Total threads launched: 1024
+Time for iter 3: 0.000056
+Total threads launched: 2048
+Time for iter 4: 0.000083
+Total threads launched: 4096
+Time for iter 5: 0.000140
+Total sum: 771121044968752.750000
+The value of loglikelihood = -646224253155708325508867544048234726615558764923782692864.000000
+Final ll_sum is -646224253155708325508867544048234726615558764923782692864.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006242 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000501
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000040
+Total threads launched: 256
+Time for iter 1: 0.000038
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000142
+Total sum: 217226442462759.812500
+The value of loglikelihood = -646224253155757631062704920347836715742677198410549821440.000000
+Final ll_sum is -646224253155757631062704920347836715742677198410549821440.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.005982 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000506
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000038
+Total threads launched: 256
+Time for iter 1: 0.000036
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000056
+Total threads launched: 2048
+Time for iter 4: 0.000083
+Total threads launched: 4096
+Time for iter 5: 0.000141
+Total sum: 771121044968752.750000
+The value of loglikelihood = -646224253155708325508867544048234726615558764923782692864.000000
+Final ll_sum is -646224253155708325508867544048234726615558764923782692864.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006200 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000509
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000040
+Total threads launched: 256
+Time for iter 1: 0.000038
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000085
+Total threads launched: 4096
+Time for iter 5: 0.000142
+Total sum: 771121044968752.750000
+The value of loglikelihood = -646224253155708325508867544048234726615558764923782692864.000000
+Final ll_sum is -646224253155708325508867544048234726615558764923782692864.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006194 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000504
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000040
+Total threads launched: 256
+Time for iter 1: 0.000038
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000143
+Total sum: 771121044968752.750000
+The value of loglikelihood = -646224253155708325508867544048234726615558764923782692864.000000
+Final ll_sum is -646224253155708325508867544048234726615558764923782692864.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006021 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000506
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000038
+Total threads launched: 256
+Time for iter 1: 0.000036
+Total threads launched: 512
+Time for iter 2: 0.000042
+Total threads launched: 1024
+Time for iter 3: 0.000055
+Total threads launched: 2048
+Time for iter 4: 0.000083
+Total threads launched: 4096
+Time for iter 5: 0.000141
+Total sum: 771121044968752.750000
+The value of loglikelihood = -646224253155708325508867544048234726615558764923782692864.000000
+Final ll_sum is -646224253155708325508867544048234726615558764923782692864.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006236 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+6.46224e+56
+
+
+ PLEASE-SEE 1 : 1.500393, 1.499544, 1.491645
+
+Dekho bhai naya value AYAA
+
+1.500393
+1.499544
+1.491645
+----------------------------the values are:- 
+1.500393
+1.499544
+1.491645
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000516
+UPAR DEKH
+Determinant is 399.295346
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000041
+Total threads launched: 256
+Time for iter 1: 0.000038
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000142
+Total sum: 587278438417066.500000
+The value of loglikelihood = -3350116558992004071905293482806045236361981048224141541376.000000
+Final ll_sum is -3350116558992004071905293482806045236361981048224141541376.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006022 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.036289
+Dekho bhai -5.625167
+6.507913
+119.010231
+Final gradients of log hyperparams are -5.625167, 6.507913, 119.010231
+3.35012e+57
+
+
+ PLEASE-SEE  2: 1.500039, 1.499954, 1.499164
+
+Dekho bhai naya value AYAA
+
+1.500039
+1.499954
+1.499164
+----------------------------the values are:- 
+1.500039
+1.499954
+1.499164
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000499
+UPAR DEKH
+Determinant is 401.125395
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000039
+Total threads launched: 256
+Time for iter 1: 0.000037
+Total threads launched: 512
+Time for iter 2: 0.000042
+Total threads launched: 1024
+Time for iter 3: 0.000056
+Total threads launched: 2048
+Time for iter 4: 0.000084
+Total threads launched: 4096
+Time for iter 5: 0.000140
+Total sum: -405965768688943.312500
+The value of loglikelihood = -762026154753722989311315997156179956124587855272002715648.000000
+Final ll_sum is -762026154753722989311315997156179956124587855272002715648.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006191 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.097395
+Dekho bhai -5.604520
+6.495676
+119.053021
+Final gradients of log hyperparams are -5.604520, 6.495676, 119.053021
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500004, 1.499995, 1.499916
+
+Dekho bhai naya value AYAA
+
+1.500004
+1.499995
+1.499916
+----------------------------the values are:- 
+1.500004
+1.499995
+1.499916
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000506
+UPAR DEKH
+Determinant is 401.308416
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000040
+Total threads launched: 256
+Time for iter 1: 0.000039
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000085
+Total threads launched: 4096
+Time for iter 5: 0.000143
+Total sum: -141214579229887.093750
+The value of loglikelihood = -656966327347016125314808107244685715473219064417203781632.000000
+Final ll_sum is -656966327347016125314808107244685715473219064417203781632.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006185 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.103470
+Dekho bhai -5.602439
+6.494442
+119.057292
+Final gradients of log hyperparams are -5.602439, 6.494442, 119.057292
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.499992
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.499992
+----------------------------the values are:- 
+1.500000
+1.500000
+1.499992
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000497
+UPAR DEKH
+Determinant is 401.326718
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000040
+Total threads launched: 256
+Time for iter 1: 0.000038
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000061
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000142
+Total sum: -610194452192999.750000
+The value of loglikelihood = -647290526611699527046382192773082786818635136652049121280.000000
+Final ll_sum is -647290526611699527046382192773082786818635136652049121280.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006042 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104077
+Dekho bhai -5.602231
+6.494319
+119.057720
+Final gradients of log hyperparams are -5.602231, 6.494319, 119.057720
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.499999
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.499999
+----------------------------the values are:- 
+1.500000
+1.500000
+1.499999
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000515
+UPAR DEKH
+Determinant is 401.328549
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000038
+Total threads launched: 256
+Time for iter 1: 0.000036
+Total threads launched: 512
+Time for iter 2: 0.000042
+Total threads launched: 1024
+Time for iter 3: 0.000056
+Total threads launched: 2048
+Time for iter 4: 0.000083
+Total threads launched: 4096
+Time for iter 5: 0.000140
+Total sum: -505484007923698.875000
+The value of loglikelihood = -646330801590776159014702857036818251674905323746852077568.000000
+Final ll_sum is -646330801590776159014702857036818251674905323746852077568.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006230 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104137
+Dekho bhai -5.602210
+6.494307
+119.057762
+Final gradients of log hyperparams are -5.602210, 6.494307, 119.057762
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000499
+UPAR DEKH
+Determinant is 401.328732
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000040
+Total threads launched: 256
+Time for iter 1: 0.000038
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000142
+Total sum: 511246932668304.500000
+The value of loglikelihood = -646234907210543035096200060265071833462859635315015942144.000000
+Final ll_sum is -646234907210543035096200060265071833462859635315015942144.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006005 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057766
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057766
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000505
+UPAR DEKH
+Determinant is 401.328750
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000038
+Total threads launched: 256
+Time for iter 1: 0.000036
+Total threads launched: 512
+Time for iter 2: 0.000043
+Total threads launched: 1024
+Time for iter 3: 0.000056
+Total threads launched: 2048
+Time for iter 4: 0.000083
+Total threads launched: 4096
+Time for iter 5: 0.000140
+Total sum: -272860932572192.500000
+The value of loglikelihood = -646225318553266059356671453149268655051849922764083298304.000000
+Final ll_sum is -646225318553266059356671453149268655051849922764083298304.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006182 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000499
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000040
+Total threads launched: 256
+Time for iter 1: 0.000038
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000087
+Total threads launched: 4096
+Time for iter 5: 0.000143
+Total sum: -168793543285236.625000
+The value of loglikelihood = -646224359695403163849638668665808806041485859110650904576.000000
+Final ll_sum is -646224359695403163849638668665808806041485859110650904576.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006229 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000582
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000041
+Total threads launched: 256
+Time for iter 1: 0.000038
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000142
+Total sum: -27878366171990.023438
+The value of loglikelihood = -646224263809662852163450173275642909234606889484381323264.000000
+Final ll_sum is -646224263809662852163450173275642909234606889484381323264.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006001 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000504
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000038
+Total threads launched: 256
+Time for iter 1: 0.000037
+Total threads launched: 512
+Time for iter 2: 0.000042
+Total threads launched: 1024
+Time for iter 3: 0.000057
+Total threads launched: 2048
+Time for iter 4: 0.000085
+Total threads launched: 4096
+Time for iter 5: 0.000140
+Total sum: -70170689911215.382812
+The value of loglikelihood = -646224254221085658818852000839673047106367050586118946816.000000
+Final ll_sum is -646224254221085658818852000839673047106367050586118946816.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006234 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000503
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000040
+Total threads launched: 256
+Time for iter 1: 0.000039
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000143
+Total sum: 1270704159556.479004
+The value of loglikelihood = -646224253262272784889189853771049742877006970510758641664.000000
+Final ll_sum is -646224253262272784889189853771049742877006970510758641664.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006033 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000504
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000037
+Total threads launched: 256
+Time for iter 1: 0.000036
+Total threads launched: 512
+Time for iter 2: 0.000042
+Total threads launched: 1024
+Time for iter 3: 0.000055
+Total threads launched: 2048
+Time for iter 4: 0.000083
+Total threads launched: 4096
+Time for iter 5: 0.000143
+Total sum: 740055821638021.875000
+The value of loglikelihood = -646224253166297782099018251390844974462986137865300213760.000000
+Final ll_sum is -646224253166297782099018251390844974462986137865300213760.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006185 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000509
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000040
+Total threads launched: 256
+Time for iter 1: 0.000038
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000142
+Total sum: 642978629403151.500000
+The value of loglikelihood = -646224253156792525019574232077998607668767286436686725120.000000
+Final ll_sum is -646224253156792525019574232077998607668767286436686725120.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006231 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000500
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000039
+Total threads launched: 256
+Time for iter 1: 0.000038
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000059
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000142
+Total sum: 1195048182061080.500000
+The value of loglikelihood = -646224253155835422334041982248092150884932960077834354688.000000
+Final ll_sum is -646224253155835422334041982248092150884932960077834354688.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.005984 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000504
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000040
+Total threads launched: 256
+Time for iter 1: 0.000037
+Total threads launched: 512
+Time for iter 2: 0.000042
+Total threads launched: 1024
+Time for iter 3: 0.000056
+Total threads launched: 2048
+Time for iter 4: 0.000083
+Total threads launched: 4096
+Time for iter 5: 0.000140
+Total sum: 771121044968752.750000
+The value of loglikelihood = -646224253155708325508867544048234726615558764923782692864.000000
+Final ll_sum is -646224253155708325508867544048234726615558764923782692864.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006240 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000504
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000044
+Total threads launched: 256
+Time for iter 1: 0.000039
+Total threads launched: 512
+Time for iter 2: 0.000065
+Total threads launched: 1024
+Time for iter 3: 0.000059
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000142
+Total sum: 217226442462759.812500
+The value of loglikelihood = -646224253155757631062704920347836715742677198410549821440.000000
+Final ll_sum is -646224253155757631062704920347836715742677198410549821440.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006049 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000502
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000041
+Total threads launched: 256
+Time for iter 1: 0.000036
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000084
+Total threads launched: 4096
+Time for iter 5: 0.000140
+Total sum: 771121044968752.750000
+The value of loglikelihood = -646224253155708325508867544048234726615558764923782692864.000000
+Final ll_sum is -646224253155708325508867544048234726615558764923782692864.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006138 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000499
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000040
+Total threads launched: 256
+Time for iter 1: 0.000039
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000143
+Total sum: 771121044968752.750000
+The value of loglikelihood = -646224253155708325508867544048234726615558764923782692864.000000
+Final ll_sum is -646224253155708325508867544048234726615558764923782692864.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006254 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000505
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000040
+Total threads launched: 256
+Time for iter 1: 0.000039
+Total threads launched: 512
+Time for iter 2: 0.000044
+Total threads launched: 1024
+Time for iter 3: 0.000058
+Total threads launched: 2048
+Time for iter 4: 0.000086
+Total threads launched: 4096
+Time for iter 5: 0.000143
+Total sum: 771121044968752.750000
+The value of loglikelihood = -646224253155708325508867544048234726615558764923782692864.000000
+Final ll_sum is -646224253155708325508867544048234726615558764923782692864.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.005966 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+
+
+ PLEASE-SEE  2: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------ABEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+Haaaar REE call hua
+Time taken for CUSOLVER cholesky: 0.000510
+UPAR DEKH
+Determinant is 401.328752
+num_iters is 6
+Total threads launched: 128
+Time for iter 0: 0.000038
+Total threads launched: 256
+Time for iter 1: 0.000036
+Total threads launched: 512
+Time for iter 2: 0.000043
+Total threads launched: 1024
+Time for iter 3: 0.000055
+Total threads launched: 2048
+Time for iter 4: 0.000085
+Total threads launched: 4096
+Time for iter 5: 0.000140
+Total sum: 771121044968752.750000
+The value of loglikelihood = -646224253155708325508867544048234726615558764923782692864.000000
+Final ll_sum is -646224253155708325508867544048234726615558764923782692864.000000
+Yahi hai Kinv
+Total time taken in cholesky = 0.006268 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 251.104144
+Dekho bhai -5.602208
+6.494305
+119.057767
+Final gradients of log hyperparams are -5.602208, 6.494305, 119.057767
+6.46224e+56
+6.46224e+56
+
+
+compute-0-21.local: PLEASE-SEE  3: 1.500000, 1.500000, 1.500000
+
+Dekho bhai naya value AYAA
+
+1.500000
+1.500000
+1.500000
+----------------------------the values are:- 
+1.500000
+1.500000
+1.500000
+
+----------------------------
