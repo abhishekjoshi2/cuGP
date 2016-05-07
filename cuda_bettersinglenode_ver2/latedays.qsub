@@ -19,7 +19,7 @@
 # on dedicated, on a machine with a Tesla K40.
 #
 
-#
+#PBS -q phi
 # Submit the job.  No need to modify this.
 #
 

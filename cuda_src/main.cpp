@@ -171,9 +171,10 @@ int main(int argc, char *argv[])
 		printf("Host %s got worker id as %d\n", argv[1], worker_id);
 	}
 
-	int numtrain = 16;
-	std::string prefix_input_file_name = "../chunked_dataset/si32_chunk";
-	std::string prefix_label_file_name = "../chunked_dataset/si32_label";
+	int numtrain = 4096;
+	int numtest = 1000;
+	std::string prefix_input_file_name = "../chunked_dataset/fortesting/sine_dataset_5096_10_chunk";
+	std::string prefix_label_file_name = "../chunked_dataset/fortesting/sine_dataset_5096_10_label";
 
 	std::string ipfile = prefix_input_file_name + std::to_string(worker_id) + std::string(".txt");
 	std::string opfile = prefix_label_file_name + std::to_string(worker_id) + std::string(".txt");
@@ -187,14 +188,15 @@ int main(int argc, char *argv[])
 		BCM_log_hyperparams = new double[3];
 
 		Eigen::VectorXd initval(3);
-		for(int i = 0 ; i < 3; i++){
-			initval[i] = 1.5;
-		}
+                initval[0] = 3.762111;
+                initval[1] = -1.152105;
+                initval[2] = -0.384461;
+
 		set_loghyper_eigen_multinode(initval);
 		
 	//	cg_solve(argv[1]);
 	
-		testing_phase(numtrain, numtrain);
+		testing_phase(numtrain, numtest);
 	}
 	else
 	{
