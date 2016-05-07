@@ -455,6 +455,7 @@ where,  </p>
 
 </li>
 
+</br>
 
 <li> <u> DA-cuGP: Distributed Approximate cuGP </u>
 
@@ -464,7 +465,7 @@ where,  </p>
 
 <p>This approach is similar to the parameter-server approach as discussed in the class. So one node (a master node) is responsible for storing the current hyperparamters of the GP model. At each step of the log likelihood / gradient compuaation, each of the workers (experts in our context) need to get the latest value of the hyperparameters, and perform the required computation. The master then collects the partial results and updates the hyperparameters and broadcasts back the new parameters. </p>
 
-<p>We have implemented this approach using mulitple GPUs (which can be thought of as individual experts). In order to communicate the hyper-parameters, we use low-level socket programming for efficiently transferring the information to and from the GPUs. We call our implementation Distributed Approximate cuGP (DAcuGP).</p>
+<p>We have implemented this approach using mulitple GPUs (which can be thought of as individual experts). In order to communicate the hyper-parameters, we use low-level socket programming for efficiently transferring the information to and from the GPUs. We call our implementation Distributed Approximate cuGP (DA-cuGP).</p>
 
 <p>The performance of the DA-cuGP on the synthetic sine dataset is shown in Figure 5. The first bar corresponds to the exact GP working on a dataset with 10000 points. As we move towards the right, the number of GPUs increase and the size of the dataset per GPU decreases. As one might expect, we obtain massive speedup due to both reduction of the problem size, and asymptotically lower complexity of the approximate method itself.</p>
 
