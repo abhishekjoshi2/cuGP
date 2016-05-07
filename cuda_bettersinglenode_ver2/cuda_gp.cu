@@ -787,18 +787,24 @@ double compute_log_likelihood()
 {
 	int threads_per_block, number_of_blocks;
 
+	double compute_ll_start = CycleTimer::currentSeconds();
 
 	printf("compute_K_train hota hai\n");
 
 	dim3 blockDim1(32,32);
  	dim3 gridDim1( upit(N, blockDim1.x), upit(N, blockDim1.y));
+	double ckts = CycleTimer::currentSeconds();
 	compute_K_train<<<gridDim1, blockDim1>>>(X, K, loghyper, N, DIM); // kernel
 	cudaThreadSynchronize();
+	double ckte = CycleTimer::currentSeconds();
+	printf("compute_K_train time: %lf\n", ckte - ckts);
 
 	compute_chol_get_mul_and_det(); // set of kernels
 
 	double llans = evaluate_and_get_log_likelihood(); // kernel, or can be clubbed somewhere
 	printf("The value of loglikelihood = %lf\n", llans);
+	double compute_ll_end = CycleTimer::currentSeconds();
+	printf("compute_log_likelihood Time: %lf\n", compute_ll_end - compute_ll_start);
 	return llans; 
 }
 
@@ -807,9 +813,13 @@ void compute_K_inverse_using_cublas()
 	int threads_per_block, number_of_blocks;
 	
 	// make_identity(); -> did this in setup "identity" is a double *
+	double st = CycleTimer::currentSeconds();
 
 	// SUB: get_cholesky(K, N); //Set of kernels, the answer (a lower triangular matrix) is stored 
+	double chol_st = CycleTimer::currentSeconds();
 	get_cholesky_using_cublas(K, N); // NOW result is in K
+	double chol_end = CycleTimer::currentSeconds();
+	printf("get_cholesky_using_cublas time: %lf\n", chol_end - chol_st);
 
 	/* SUB:
 	threads_per_block = 512;
@@ -827,11 +837,14 @@ void compute_K_inverse_using_cublas()
 	get_inverse_by_cublas(K, N); //-> Now note that the result will be in lowermat_inv_store and not K (IMP)
 
 	matrix_multiply_cublas_withtranspose(lowermat_inv_store, lowermat_inv_store, Kinv, N);
+	double end = CycleTimer::currentSeconds();
+	printf("compute_K_inverse_using_cublas time: %lf\n", end - st);
 	//-> So the answer is in Kinv
 }
 
 void compute_gradient_log_hyperparams(double *localhp_grad)
 {
+	double start = CycleTimer::currentSeconds();
 	int threads_per_block, number_of_blocks;
 
 	double *tt = get_loghyperparam(); //just for a MEMCPY from device to host
@@ -901,6 +914,8 @@ void compute_gradient_log_hyperparams(double *localhp_grad)
 	localhp_grad[1] = para2/2.0;
 	localhp_grad[2] = para3/2.0;
 	printf("Dekho bhai %lf\n%lf\n%lf\n", localhp_grad[0], localhp_grad[1], localhp_grad[2]);
+	double end = CycleTimer::currentSeconds();
+	printf("compute_gradient_hyperparam time: %lf\n", end - start);
 
 }
 

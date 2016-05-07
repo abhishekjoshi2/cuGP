@@ -8,12 +8,13 @@
 #include "csapp.h"
 #include "../cuda_src/Eigen/src/Core/util/DisableStupidWarnings.h"
 #include "../common/opcodes.h"
+#include <mutex>
+#include <atomic>
 
 double compute_log_likelihood();
 void compute_gradient_log_hyperparams(double *);
 double *get_loghyperparam();
 void set_loghyper_eigen(Eigen::VectorXd initval);
-void read_trainingdata_and_copy_to_GPU(std::string inputfilename, std::string labelfilename);
 
 extern int total_workers;
 extern std::vector<int> worker_conn_fds;
@@ -25,6 +26,48 @@ extern int numchunks ;
 //extern int dimensions ;
 
 extern double *BCM_log_hyperparams; 
+
+std::atomic<bool> done_reading(false);
+extern double *X_host;
+extern double *labels_host;
+extern double *X_host_buffers[2];
+extern double *labels_host_buffers[2];
+
+void read_trainingdata_and_copy_to_GPU(std::string, std::string);
+
+void read_trainingdata_into_dram(std::string inputfilename, std::string labelfilename, double *X_cur, double *labels_cur);
+
+void copy_training_data_to_GPU(double *X_cur, double *labels_cur);
+
+void *background_reader(void *ign)
+{
+	int cur_pointer = 0;
+	for (int i = worker_id; i < numchunks; i += total_workers)
+	{
+		std::string ipfile = prefix_input_file_name +  std::to_string(i) + std::string(".txt");
+		std::string labfile = prefix_label_file_name +  std::to_string(i) + std::string(".txt");
+
+		printf("Trying to read first file. IPfile is %s and labfile is %s\n", ipfile.c_str(), labfile.c_str());
+		read_trainingdata_into_dram(ipfile, labfile, X_host_buffers[cur_pointer], labels_host_buffers[cur_pointer]);
+		printf("Reader: Data is now in buffers: %d\n", cur_pointer);
+
+		done_reading = true;
+
+		printf("Setting done reading to true\n");
+		while(1) // wait until compute-ll says "I've accepted data"
+		{
+			if (done_reading == false)
+			{
+				break;
+			}
+		}
+		cur_pointer = cur_pointer + 1;
+		cur_pointer %= 2;
+		printf("Got notification that input has been picked up. Cur pointer is %d\n", cur_pointer);
+	}
+	printf("Thread returning\n");
+	return NULL;
+}
 
 double compute_log_likelihood_multinode()
 {
@@ -40,12 +83,45 @@ double compute_log_likelihood_multinode()
 	// TODO now call getll on self
 	double ll_sum = 0.0;
 
-	for(int i = worker_id; i < numchunks; i+=total_workers){
+	pthread_t reader_thread;
+
+	done_reading = false;
+
+	pthread_create(&reader_thread, NULL, background_reader, NULL);
+
+	int cur_pointer = 0;
+	for (int i = worker_id; i < numchunks; i += total_workers)
+	{
+		while (1) // wait while thread is reading data
+		{
+			if (done_reading == true)
+			{
+				break;
+			}
+		}
+
+		printf("cur_pointer in log likelihood is %d\n", cur_pointer);
+
+		X_host = X_host_buffers[cur_pointer];
+		labels_host = labels_host_buffers[cur_pointer];
+
+		cur_pointer = cur_pointer + 1;
+		cur_pointer %= 2;
+
+		copy_training_data_to_GPU(X_host, labels_host);
+		done_reading = false;
+		ll_sum += compute_log_likelihood();
+	}
+	printf("Waiting for join!\n");
+
+	pthread_join(reader_thread, NULL);
+
+	/* for(int i = worker_id; i < numchunks; i+=total_workers){
 		std::string ipfile = prefix_input_file_name +  std::to_string(i) + std::string(".txt");
 		std::string labfile = prefix_label_file_name +  std::to_string(i) + std::string(".txt");
 		read_trainingdata_and_copy_to_GPU(ipfile, labfile);
 		ll_sum += compute_log_likelihood();
-	}
+	} */
 
 	//ll_sum = compute_log_likelihood();
 
@@ -79,7 +155,36 @@ void compute_gradient_log_hyperparams_multinode(double *arg)
 	for(int j = 0; j < 3; j++) {
 		arg[j] = 0.0;
 	}
-	for(int i = worker_id; i < numchunks; i+=total_workers){
+
+	pthread_t reader_thread;
+
+	done_reading = false;
+
+	pthread_create(&reader_thread, NULL, background_reader, NULL);
+
+	int cur_pointer = 0;
+	for (int i = worker_id; i < numchunks; i += total_workers)
+	{
+		while (!done_reading); // wait while thread is reading data
+
+		printf("cur_pointer in log likelihood is %d\n", cur_pointer);
+		X_host = X_host_buffers[cur_pointer];
+		labels_host = labels_host_buffers[cur_pointer];
+
+		cur_pointer = cur_pointer + 1;
+		cur_pointer %= 2;
+
+		copy_training_data_to_GPU(X_host, labels_host);
+		done_reading = false;
+		compute_gradient_log_hyperparams(temp);
+		for(int j = 0; j < 3; j++){
+			arg[j] += temp[j];
+		}
+	}
+
+	pthread_join(reader_thread, NULL);
+
+	/* for(int i = worker_id; i < numchunks; i+=total_workers){
 		std::string ipfile = prefix_input_file_name +  std::to_string(i) + std::string(".txt");
 		std::string labfile = prefix_label_file_name +  std::to_string(i) + std::string(".txt");
 		read_trainingdata_and_copy_to_GPU(ipfile, labfile);
@@ -87,7 +192,7 @@ void compute_gradient_log_hyperparams_multinode(double *arg)
 		for(int j = 0 ; j < 3; j++){
 			arg[j] += temp[j];
 		}
-	}
+	} */
 
 	//compute_gradient_log_hyperparams(arg);
 

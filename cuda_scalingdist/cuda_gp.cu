@@ -16,7 +16,9 @@
 #define BLOCK_SIZE 32
 
 double *X_host; //input dataset in host!
+double *X_host_buffers[2];
 double *labels_host; //labels in host!
+double *labels_host_buffers[2];
 
 bool correct = true;
 double *temp_m; 
@@ -915,8 +917,14 @@ void setup_input_datastructures(int chunksize, int dim ){
 	N = chunksize;
 
 	//for HOST
-	X_host = new double[N * DIM];
-	labels_host = new double[N];
+	X_host = new double[N * DIM]; // for slaves
+	X_host_buffers[0] = new double[N * DIM];
+	X_host_buffers[1] = new double[N * DIM];
+
+	labels_host = new double[N]; // for slaves
+	labels_host_buffers[0] = new double[N];
+	labels_host_buffers[1] = new double[N];
+
 	lh_host = new double[3];
 	for (int i = 0 ; i < 3 ; i++){
 		lh_host[i] = 0.5;
@@ -958,12 +966,54 @@ void read_trainingdata_and_copy_to_GPU(std::string inputfilename, std::string la
 	fclose(label_file);
 }
 
+void read_trainingdata_into_dram(std::string inputfilename, std::string labelfilename, double *X_cur, double *labels_cur)
+{
+	printf("Reading training data for %s and %s into ram\n", inputfilename.c_str(), labelfilename.c_str());
+
+	FILE *input_file, *label_file;
+
+	input_file = fopen(inputfilename.c_str(), "r");
+	label_file = fopen(labelfilename.c_str(), "r");
+
+	if (input_file == NULL || label_file == NULL)
+	{
+		printf("Open input file failed.\n");
+		exit(0);
+	}
+
+	int temp1, temp2;
+	fscanf(input_file, "%d%d", &temp1, &temp2);
+
+	// Reading inputs
+	for (int i = 0; i < N; i++)
+		for (int j = 0; j < DIM; j++)
+			fscanf(input_file, "%lf", &X_cur[i * DIM + j]);
+
+	// Reading labels (target values)
+	for (int i = 0; i < N; i++) {
+                fscanf(label_file, "%lf", &labels_cur[i]);
+        }
+	
+	/* cudacall(cudaMemcpy(X, X_host, sizeof(double) * N * DIM, cudaMemcpyHostToDevice));
+	cudacall(cudaMemcpy(labels, labels_host, sizeof(double) * N , cudaMemcpyHostToDevice));
+	cudacall(cudaMemcpy(loghyper, lh_host, sizeof(double) * 3 , cudaMemcpyHostToDevice)); */
+	
+	fclose(input_file);
+	fclose(label_file);
+}
+
+void copy_training_data_to_GPU(double *X_cur, double *labels_cur)
+{
+	cudacall(cudaMemcpy(X, X_cur, sizeof(double) * N * DIM, cudaMemcpyHostToDevice));
+	cudacall(cudaMemcpy(labels, labels_cur, sizeof(double) * N , cudaMemcpyHostToDevice));
+	cudacall(cudaMemcpy(loghyper, lh_host, sizeof(double) * 3 , cudaMemcpyHostToDevice));
+}
+
 void setup_loglikelihood_data()
 {
 	// this is the covariance matrix
 	cudacall(cudaMalloc(&K, sizeof(double) * N * N));
 	
-
 	// this is the log determinant
 	cudacall(cudaMalloc(&log_det, sizeof(double)));
 
@@ -1394,8 +1444,12 @@ void compute_chol_get_mul_and_det()
 double evaluate_and_get_log_likelihood(){
 	double term1_ll;
 	double term2_ll;
-	cudacall(cudaMemcpy(&term1_ll, ll_dotprod,  sizeof(double), cudaMemcpyDeviceToHost));
+	printf("Before memcopy 1\n");
+	printf("Before memcopy 2\n");
 	cudacall(cudaMemcpy(&term2_ll, log_det ,  sizeof(double), cudaMemcpyDeviceToHost));
+	cudacall(cudaMemcpy(&term1_ll, ll_dotprod,  sizeof(double), cudaMemcpyDeviceToHost));
+
+	printf("After both memcopys\n");
 	return -0.5 * ( term1_ll + term2_ll + N * 1.83787);
 }
 double compute_log_likelihood()
@@ -1408,10 +1462,12 @@ double compute_log_likelihood()
 	compute_K_train<<<number_of_blocks, threads_per_block>>>(X, K, loghyper, N, DIM); // kernel
 	cudaThreadSynchronize();
 
+	printf("compute k train done\n");
 	/* print_matrix_kernel<<<1,1>>>(K, N, N);
 	   cudaThreadSynchronize(); */
 
 	compute_chol_get_mul_and_det(); // set of kernels
+	printf("compute chol get mul and det done\n");
 
 	double llans = evaluate_and_get_log_likelihood(); // kernel, or can be clubbed somewhere
 	printf("The value of loglikelihood = %lf\n", llans);
