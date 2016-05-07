@@ -366,7 +366,8 @@ where,  </p>
 
 <li> <u> Serial implementation </u>
 
-<p>In order to gain a better understanding of each of the operations involved in both learning (training) and inference (testing) phases, we implemented a serial single-threaded version of the GP regression algorithm. To accomplish this, we implemented our own mini matrix algebra library for all the required operations in GPR. This mini library has routines for Cholesky decomposition, forward substitution, backward substitution among other standard matrix-matrix/matrix-vector operations.  For maximizing the LML in the training phase, we employed the conjugate gradient solver by Joao Cunha.  To be precise, this is the only third party code that we used in our serial implementation, all other routines were written from scratch in C++. Correctness was established by cross-checking outputs of each of the steps with the corresponding results as in the popular GPML framework which is written in Matlab. </p>
+<p>In order to gain a better understanding of each of the operations involved in both learning (training) and inference (testing) phases, we implemented a serial single-threaded version of the GP regression algorithm. To accomplish this, we implemented our own mini matrix algebra library for all the required operations in GPR. This mini library has routines for Cholesky decomposition, forward substitution, backward substitution among other standard matrix-matrix/matrix-vector operations.</p>
+<p>For maximizing the LML in the training phase, we employed the conjugate gradient solver by Joao Cunha.  To be precise, this is the only third party code that we used in our serial implementation, all other routines were written from scratch in C++. Correctness was established by cross-checking outputs of each of the steps with the corresponding results as in the popular GPML framework which is written in Matlab. </p>
 
 </li>
 
