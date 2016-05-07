@@ -839,7 +839,6 @@ double compute_log_likelihood()
 {
 	int threads_per_block, number_of_blocks;
 
-
 	printf("compute_K_train hota hai\n");
 
 	dim3 blockDim1(32,32);

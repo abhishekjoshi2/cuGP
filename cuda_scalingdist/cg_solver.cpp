@@ -297,7 +297,7 @@ void cg_solve(char *hostname)
 	const double RATIO = 10;	// maximum allowed slope ratio
 	const double SIG = 0.1, RHO = SIG/2;
 
-	int n = 100;
+	int n = 200;
 	bool ls_failed = false;									//prev line-search failed
 
 	//double f0 = -1.0 * compute_log_likelihood();

@@ -7,7 +7,9 @@
 //#include <mpi.h>
 #include "../common/opcodes.h"
 #include "csapp.h"
+#include <atomic>
 #include<string>
+#include "../common/cycleTimer.h"
 
 int numtrain = 0;
 int numchunks = 0;
@@ -22,6 +24,10 @@ void set_loghyper_eigen_multinode(Eigen::VectorXd initval);
 void run_kernel();
 
 void read_trainingdata_and_copy_to_GPU(std::string inputfilename, std::string labelfilename);
+
+void read_trainingdata_into_dram(std::string inputfilename, std::string labelfilename, double *X_cur, double *labels_cur);
+
+void copy_training_data_to_GPU(double *X_cur, double *labels_cur);
 
 void run_gp();
 
@@ -51,6 +57,14 @@ int total_workers = -1;
 
 double *BCM_log_hyperparams;
 
+void *background_reader(void *);
+
+extern double *X_host;
+extern double *labels_host;
+extern double *X_host_buffers[2];
+extern double *labels_host_buffers[2];
+extern std::atomic<bool> done_reading;
+
 
 void *accept_commands(char *hostname, int connfd)
 {
@@ -69,12 +83,45 @@ void *accept_commands(char *hostname, int connfd)
 				
 					double ll = 0.0;
 			
-					for(int i = worker_id; i < numchunks; i+=total_workers){ 
-						std::string ipfile = prefix_input_file_name +  std::to_string(i) + std::string(".txt");
-						std::string labfile = prefix_label_file_name +  std::to_string(i) + std::string(".txt");
-						read_trainingdata_and_copy_to_GPU(ipfile, labfile);
+					/* for(int i = worker_id; i < numchunks; i+=total_workers){ 
+					   std::string ipfile = prefix_input_file_name +  std::to_string(i) + std::string(".txt");
+					   std::string labfile = prefix_label_file_name +  std::to_string(i) + std::string(".txt");
+					   read_trainingdata_and_copy_to_GPU(ipfile, labfile);
+					   ll += compute_log_likelihood();
+					   } */
+
+					pthread_t reader_thread;
+
+					done_reading = false;
+
+					pthread_create(&reader_thread, NULL, background_reader, NULL);
+
+					int cur_pointer = 0;
+					for (int i = worker_id; i < numchunks; i += total_workers)
+					{
+						while (1) // wait while thread is reading data
+						{
+							if (done_reading == true)
+							{
+								break;
+							}
+						}
+
+						printf("cur_pointer in log likelihood is %d\n", cur_pointer);
+
+						X_host = X_host_buffers[cur_pointer];
+						labels_host = labels_host_buffers[cur_pointer];
+
+						cur_pointer = cur_pointer + 1;
+						cur_pointer %= 2;
+
+						copy_training_data_to_GPU(X_host, labels_host);
+						done_reading = false;
 						ll += compute_log_likelihood();
 					}
+					printf("Waiting for join!\n");
+
+					pthread_join(reader_thread, NULL);
 
 					Rio_writen (connfd, (void *)&ll, sizeof(double));
 					break;
@@ -86,17 +133,47 @@ void *accept_commands(char *hostname, int connfd)
 
 					double grads[3] = {0.0};
 					double temp[3];
-				
-					for(int i = worker_id; i < numchunks; i+=total_workers){ 
-						std::string ipfile = prefix_input_file_name +  std::to_string(i) + std::string(".txt");
-						std::string labfile = prefix_label_file_name +  std::to_string(i) + std::string(".txt");
-						read_trainingdata_and_copy_to_GPU(ipfile, labfile);
+
+					/* for(int i = worker_id; i < numchunks; i+=total_workers){ 
+					   std::string ipfile = prefix_input_file_name +  std::to_string(i) + std::string(".txt");
+					   std::string labfile = prefix_label_file_name +  std::to_string(i) + std::string(".txt");
+					   read_trainingdata_and_copy_to_GPU(ipfile, labfile);
+					   compute_gradient_log_hyperparams(temp);
+					   for(int j = 0 ; j < 3; j++){
+					   grads[j] += temp[j];
+					   }
+					   } */
+
+
+					pthread_t reader_thread;
+
+					done_reading = false;
+
+					pthread_create(&reader_thread, NULL, background_reader, NULL);
+
+					int cur_pointer = 0;
+					for (int i = worker_id; i < numchunks; i += total_workers)
+					{
+						while (!done_reading); // wait while thread is reading data
+
+						printf("cur_pointer in log likelihood is %d\n", cur_pointer);
+						X_host = X_host_buffers[cur_pointer];
+						labels_host = labels_host_buffers[cur_pointer];
+
+						cur_pointer = cur_pointer + 1;
+						cur_pointer %= 2;
+
+						copy_training_data_to_GPU(X_host, labels_host);
+						done_reading = false;
 						compute_gradient_log_hyperparams(temp);
-						for(int j = 0 ; j < 3; j++){
+						for(int j = 0; j < 3; j++){
 							grads[j] += temp[j];
 						}
-					}	
-					
+					}
+
+					pthread_join(reader_thread, NULL);
+
+					 
 					//compute_gradient_log_hyperparams(grads);
 
 					Rio_writen (connfd, (void *)&grads[0], sizeof(double));
@@ -223,7 +300,10 @@ int main(int argc, char *argv[])
 		}                                                         
 		set_loghyper_eigen_multinode(initval);                    
 		
+		double st = CycleTimer::currentSeconds();
 		cg_solve(argv[1]);
+		double end = CycleTimer::currentSeconds();
+		printf("Total training time: %lf\n", end - st);
 	
 		// testing_phase(numtrain,numtrain);
 	}
