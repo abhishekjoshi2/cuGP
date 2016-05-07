@@ -318,7 +318,7 @@ We will use the C++ programming language for this project along with the Nvidia 
 <h3>
 <a id="Summary" class="anchor" href="#summary" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Summary</h3>
 
-<p>We have parallelized the training and prediction phases of Gaussian Process Regression on a GPU. We also took it a step further and implemented a Distributed Approximate version: DAcuGP. This version effectively parallelizes all computation across several GPUs in a cluster while also managing light-weight communication between the participating nodes. We were able to obtain significant speedups against strong baselines. Furthermore, to be able to handle arbitrary sized data sets, we extended the approach by adding a decentralized computation-scheduler that appropriately dispatches work across nodes.</p>
+<p>We have parallelized the training and prediction phases of Gaussian Process Regression on a GPU. We took it a step further and also implemented an approximate algorithm for a distributed setting: DA-cuGP. This version effectively parallelizes all computation across several GPUs in a cluster while also managing light-weight communication between the participating nodes. We were able to obtain significant speedups against strong baselines. Furthermore, to be able to handle arbitrary sized data sets, we extended the approach by adding a decentralized computation-scheduler that appropriately dispatches work across nodes.</p>
 
 <h3>
 <a id="background" class="anchor" href="#background" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Background</h3>
@@ -468,11 +468,11 @@ where,  </p>
 
 <p>The size of data that can be handled by DA-cuGP is limited by the number of GPUs available. In order to further scale up,  we wrote a decentralized scheduler which can handle arbitary sizes of data. The basic idea is the same, we shard the data into smaller subsets. And, we map each of the shards to the avalable GPUs in as similar way as is done in an ISPC gang. </p>
 
-<p>To provide a high level intuition, let’s suppose that we have 8 shards and only 2 GPUs are available. For computing the log likelihood at a single step requires input from all the experts (from all the shards), so the first GPU is assigned to compute the ll for shards 1 3 5 7, and the second GPU computes ll for the remaninig shards in an iteratiove fasthion (it is imortant to note that only 1 shard will fit in a GPU at one point of time).</p>
+<p>To provide a high level intuition, let’s suppose that we have 8 shards and only 2 GPUs are available. For computing the log likelihood (LL) at a single step, we require input from all the experts (from all the shards). So the first GPU is assigned to compute the LL for shards 1, 3, 5, 7; and the second GPU computes the LL for the remaninig shards in an iterative fasthion (it is important to note that only 1 shard will fit in a GPU at one point of time).</p>
 
 <p>So essentially the data locality is not there at all. But the tradeoff is that we can manage greater volumes of data. </p>
 
-<p>To hide the latency of reading a shard each time, we implemented a prefetcher, which is responsible for bringing the next chunk of data to the memory in host, at the time when the device is performing necessary computaion with the shard in the device memory. We call this the Distributed Approximate Scalable cuGP (DAS-cuGP) approach.</p>
+<p>To hide the latency of reading a shard each time, we implemented a prefetcher, which is responsible for bringing the next chunk of data to the memory in host, at the time when the device is performing necessary computation with the shard in the device memory. We call this the Distributed Approximate Scalable cuGP (DAS-cuGP) approach.</p>
 
 
 <p>Figure 6 shows the improvement performance due to the prefetcher on a dataset comprising of 24000 points which are divided inoto 16 shards, when employing 4 GPUs. </p>
