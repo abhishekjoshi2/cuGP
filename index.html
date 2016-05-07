@@ -375,6 +375,8 @@ where,  </p>
 <li> GPR on CUDA: First attempt
 <p> After acquainting ourselves with the nitty gritty details at each step, we implemented GP regression on CUDA writing our own kernels for each task. As in the previous case, we implemented the kernels for the required matrix computations ourselves. More precisely, we wrote a recursive blocked version of Cholesky decomposition as described in the paper by ___ et al. One of the important steps in computing the likelihood as well as in computing the gradients,  is solving a triangular system of equations. An efficient method for solving such a system is to employ forward/backward substitution algorithm. Since both the algorithms are inherently sequential, we implemented a recursive algorithm for efficiently finding the inverse of a lower(upper) triangular matrix as given in []. We also implemented a reasonably fast matrix-matrix multiplication kernel that uses shared memory. Moreover, implementing the kernels ourselves gave us the opportunity to fuse different operations together. We benchmark our implementation on a synthetic sine dataset, wherein the input data lives in a 10 dimensional space, and the function to approximate is a sine function that depends only on the first dimension. In order to make the targets (function obsrevations) noisy, we add a Gaussian noise to the function values (the variance of this Gaussian is 0.05). Figure 1 shows the performance of the most crucial functions (some of which are implemented with a series of kernels), on the synthetic dataset. Note that all our experiments were performed using the K40 GPUs. </p>
 
+<img src="images/1_naiveparallelmicrobench.png" alt="naiveparallelmicrobench" height="400" width="500" align="middle">
+
 <p>We see that computation of the gradient of log hyperparameters takes the most amout of time. This is expected because the gradient compuatoin involves an inverse of  a lower traingular matrix and generation of the covariance matrix, in addition to vector-vector dot products and matrix-vector dot products and vector-vector dot product. In addition to providing significant insights, this implementation serves as strong baseline for our actual approach.  </p>
 </li>
 
@@ -389,12 +391,19 @@ where,  </p>
 
 <p>For fast Cholesky decomposition, we employ cuSOLVER’s DPTORF routine. Additionally, we use THRUST library routines for vector dot products and parallel reduce. However, we retain our important kernels like the one reponisibel for computing the covariance matrix, another which performs efficient elementwise matrix muliplication, and so on. </p>
 
-<p>Furthermore, we optimize our other kernels by ensuring …….(ABHISHEK FILL)</p>
+<p>Furthermore, we optimize our other kernels by ensuring low bank contention on memory access conflicts by reading from addresses dictated by the logical location of a thread in the CUDA grid.</p>
 
 <p>The performance of the main components in our final single node GP implementation in CUDA of the training phase (referred to as cuGP) is given in figure 2. The results are obtained on the previously described sine dataset.</p>
 
+<img src="images/2_optimizedmicrobench.png" alt="optimizemicrobench" height="400" width="500" align="middle">
+
 <p>Considering our earlier approach as a competitive baseline, the speedup obtained with our cuGP implementation for the traing phrase is gvien in table.</p>
-Figure 3 compares the performance of cuGP with the baseline in the testing phase. The x-axis shows only the number of training points, the number of traning points for each experiment was 1000. We see signifiant speedup values over the baseline for both training as well as testing phaes.
+
+<p>Figure 3 compares the performance of cuGP with the baseline in the testing phase. The x-axis shows only the number of training points, the number of traning points for each experiment was 1000. We see signifiant speedup values over the baseline for both training as well as testing phaes.</p>
+
+<img src="images/3_singlenodespeedup.png" alt="singlenode" height="400" width="500" align="middle">
+
+<img src="images/7_parallelprediction.png" alt="parallelprediction" height="400" width="500" align="middle">
 
 </li>
 
@@ -412,6 +421,8 @@ Figure 3 compares the performance of cuGP with the baseline in the testing phase
 <p>The performance of the DAcuGP on the synthetic sine dataset in shown in Figure 4. The first bar corresponds the exact GP working on a dataset with 10000 points. As we move towards the right, the number of GPUs increase and the size of the dataset per GPU decreases. As one might expect, we obtain massive speedup due to both reduction of the problem size, and asymptotically lower complexity of the approximate method itself.</p>
 
 
+<img src="images/4_distributedspeedup.png" alt="distributed" height="400" width="500" align="middle">
+
 </li>
 
 <li> DAS-cuGP
@@ -424,16 +435,16 @@ Figure 3 compares the performance of cuGP with the baseline in the testing phase
 
 <p>To hide the latency of reading a shard each time, we implemented a prefetcher, which is responsible for bringing the next chunk of data to the memory in host, at the time when the device is performing necessary computaion with the shard in the device memory. We call this the Distributed Approximate Scalable cuGP (DAScuGP) approach.</p>
 
+<img src="images/5_scaling.png" alt="scaling" height="400" width="500" align="middle">
+
 <p>Figure 7 shows the improvement performance due to the preferethch on a dataset comprising of 24000 points which are divided inoto 16 shards, when employihng 4 GPUs. </p>
+<img src="images/6_latencyhiding.png" alt="latencyhiding" height="400" width="500" align="middle">
 
 </li>
 
 
 <li> Single Node Exact GP
 <p> Add description here </p>
-
-<img src="images/1_naiveparallelmicrobench.png" alt="naiveparallelmicrobench" height="400" width="500" align="middle">
-<img src="images/2_optimizedmicrobench.png" alt="optimizemicrobench" height="400" width="500" align="middle">
 
 
 <table>
@@ -470,25 +481,20 @@ Figure 3 compares the performance of cuGP with the baseline in the testing phase
     <td>1.42</td>
   </tr>
 </table>
-<img src="images/3_singlenodespeedup.png" alt="singlenode" height="400" width="500" align="middle">
 
 </li>
 
 <li> DAcuGP: Distributed Approximate GP
 <p> Add description here </p>
 
-<img src="images/4_distributedspeedup.png" alt="distributed" height="400" width="500" align="middle">
 </li>
 
 <li> DAScuGP: Scalable DAcuGP - Scaling to large data sets
 <p> Add description here </p>
-<img src="images/5_scaling.png" alt="scaling" height="400" width="500" align="middle">
-<img src="images/6_latencyhiding.png" alt="latencyhiding" height="400" width="500" align="middle">
 </li>
 
 <li> Parallel Prediction
 <p> Add description here </p>
-<img src="images/7_parallelprediction.png" alt="parallelprediction" height="400" width="500" align="middle">
 
 
 </ul>
