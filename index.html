@@ -35,7 +35,6 @@
     <section class="main-content">
 
 
-<!--
       <h3>
 <a id="Checkpoint Update" class="anchor" href="#checkpoint" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Checkpoint Update</h3>
 
@@ -296,8 +295,6 @@ We will use the C++ programming language for this project along with the Nvidia 
 </ul>
 </ul>
 
--->
-
 
 <h3>
 <a id="Summary" class="anchor" href="#summary" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Summary</h3>
@@ -342,6 +339,16 @@ where,  </p>
 <p>The main bottlenecks for both training and prediction phases are the compute- and memory-intensive matrix computations, which take $\mathcal{O}(n^3)$ flops, thus limiting the application of GPs for large datasets having $ n &gt; 10000$ samples.</p>
 
 <p>Our main task in this project was to exploit the data parallelism available while handling all matrix computations. If time permits we would like to look at recent approximate approaches that might be more suitable for distributed GPU setting. [DN15, WN15]</p>
+
+
+
+<h3>
+<a id="approach" class="anchor" href="#approach" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Approach</h3>
+
+
+
+
+
 
 <h3>
 <a id="references" class="anchor" href="#references" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>References</h3>
