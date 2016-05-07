@@ -318,7 +318,7 @@ We will use the C++ programming language for this project along with the Nvidia 
 <h3>
 <a id="Summary" class="anchor" href="#summary" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Summary</h3>
 
-<p>We have parallelized the training and prediction phases of Gaussian Process Regression on a GPU. We also took it a step further and implemented a Distributed Approximate version: DAcuGP. This version effectively parallelizes all computation across several GPUs in a cluster while also managing light-weight communication between the participating nodes. We were able to obtain significant speedups against strong baselines. Furthermore, to be able to handle arbitrary sized data sets, we extended the approach by adding a decentralized computation-scheduler that appropriately dispatches work across nodes.</p>
+<p>We have parallelized the training and prediction phases of Gaussian Process Regression on a GPU. We took it a step further and also implemented an approximate algorithm for a distributed setting: DA-cuGP. This version effectively parallelizes all computation across several GPUs in a cluster while also managing light-weight communication between the participating nodes. We were able to obtain significant speedups against strong baselines. Furthermore, to be able to handle arbitrary sized data sets, we extended the approach by adding a decentralized computation-scheduler that appropriately dispatches work across nodes.</p>
 
 <h3>
 <a id="background" class="anchor" href="#background" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Background</h3>
