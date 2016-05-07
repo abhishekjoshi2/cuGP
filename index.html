@@ -472,7 +472,7 @@ where,  </p>
 
 <p>In our implementation, experts are nothing but nodes on the latedays cluster, each with its own GPU. The host on one of these experts is assigned to be the master, and is responsible for initiating all communication. The other nodes are notified about the identity of the master at program launch.  We call our implementation Distributed Approximate cuGP (DA-cuGP).</p>
 
-<p>The performance of the DA-cuGP on the synthetic sine dataset is shown in Figure 5. The first bar corresponds to the exact GP working on a dataset with 10000 points. As we move towards the right, the number of GPUs increase and the size of the dataset per GPU decreases. As one might expect, we obtain massive speedup due to both reduction of the problem size, and asymptotically lower complexity of the approximate method itself.</p>
+<p>The performance of the DA-cuGP on the synthetic sine dataset is shown in Figure 5. The first bar corresponds to the exact GP working on a dataset with 10000 points. As we move towards the right, the number of GPUs increases and the size of the dataset per GPU decreases. As one might expect, we obtain massive speedup due to both reduction of the problem size, and asymptotically lower complexity of the approximate method itself.</p>
 
 
 <img src="images/distributednew.png" alt="distributed" height="500" width="600" align="middle">
@@ -481,26 +481,29 @@ where,  </p>
 
 <li> <u> DAS-cuGP: Distributed Approximate Scalable cuGP </u>
 
-<p>The size of data that can be handled by DA-cuGP is limited by the number of GPUs available. In order to further scale up, we wrote a decentralized scheduler which can handle arbitary sizes of data. The basic idea is the same, we shard the data into smaller subsets. And, we map each of the shards to the avalable GPUs in as similar way as is done in an ISPC gang. Implementing a distributed version of cuGP (DA-cuGP) was a stretch goal for us. However, once we implemented DA-cuGP, we realized that it would be interesting to further extend this to a highly scalable version of cuGP.</p>
+<p>The size of data that can be handled by DA-cuGP is limited by the number of GPUs available. In order to further scale up, we wrote a decentralized scheduler which can handle arbitary sizes of data. The basic idea is the same - we shard the data into smaller subsets and map each of the shards to the avalable GPUs. Implementing a distributed version of cuGP (DA-cuGP) was a stretch goal for us. However, once we implemented DA-cuGP, we realized that it would be interesting to further extend this to a highly scalable version of cuGP.</p>
 
-<p>To provide a high level intuition, let’s suppose that we have 8 shards but only 2 GPUs. For computing the log likelihood (LL) at a single step, we require input from all the experts (from all the shards). So the first GPU is assigned to compute the LL for shards 1, 3, 5, 7; and the second GPU computes the LL for the remanining shards (2, 4, 6, 8) in an iterative fashion (it is important to note that only 1 shard will fit in a GPU at one point of time).</p>
+<p>To provide a high level intuition, let’s suppose that we have 8 shards but only 2 GPUs. For computing the log likelihood (LL) at a single step, we require input from all the experts (from all the shards). So the first GPU is assigned to compute the LL for shards 1, 3, 5, 7; and the second GPU computes the LL for the remaining shards (2, 4, 6, 8) in an iterative fashion (it is important to note that only 1 shard can fit in a GPU at one point of time).</p>
 
-<p>So essentially there is absolutely no data locality. But, the tradeoff is that we can now manage greater volumes of data - way more than what can fit even in host memory.</p>
+<p>So essentially there is no data locality. But, the tradeoff is that we can now manage greater volumes of data - way more than what can fit even in host memory.</p>
 
-<p>To hide the latency of reading a shard each time, we implemented a prefetcher, which is responsible for bringing the next chunk of data to the memory in host, at the time when the device is performing necessary computation with the shard in the device memory. We call this the Distributed Approximate Scalable cuGP (DAS-cuGP) approach.</p>
+<p>To hide the latency of reading a shard each time, we implemented a prefetcher, which is responsible for bringing the next chunk of data to host memory, at the time when the device is performing necessary computation with the shard in the device memory. Our prefetcher is a pthread that runs in the background whose primary task is just to read data from disk to DRAM. We thus effectively hide the disk I/O latency by bringing the data in while computations are being performed on the device. We call this the Distributed Approximate Scalable cuGP (DAS-cuGP) approach.</p>
 
-
-<p>Figure 6 shows the improvement performance due to the prefetcher on a dataset comprising of 24000 points which are divided inoto 16 shards, when employing 4 GPUs. </p>
+<p>Figure 6 shows the improved performance due to the prefetcher on a dataset comprising of 24000 points which are divided into 16 shards, while employing 4 GPUs. </p>
 <img src="images/6_latencyhiding.png" alt="latencyhiding" height="400" width="400" align="middle">
 
+<br>
 
-<p>In order to demonstrate that DAScuGP enables us to handle large amounts of data, we applied our method to the US Flight delay dataset. Given the amount of time for running a job in latedays cluster (3 hours), we subsampled the original data to obtain 1 million samples. There are 7 attributes which are used to predict the flight arrival delay time. We divide this dataset into 200 shards each having 5000 samples. Figure 7 shows the time required for DAS-cuGP  while varying the number of shards. We find that it takes less than 3 hours to do the learning phase in DAS-cuGP.</p>
+<p>In order to demonstrate that DAS-cuGP enables us to handle large amounts of data, we applied our method to the US Flight Delay dataset. Given the amount of time for running a job in latedays cluster (3 hours), we subsampled the original data to obtain 1 million samples. There are 7 attributes in the data set which are used to predict the flight arrival delay time. We divide this dataset into 200 shards each having 5000 samples. Figure 7 shows the time required for DAS-cuGP  while varying the number of shards. We find that it takes less than 3 hours to do the learning phase in DAS-cuGP (result corresponding to 200 shards).</p>
 
 <img src="images/scalingnew.png" alt="scaling" height="500" width="600" align="middle">
 </li>
 
 </ul>
 
+<li> The Bottom Line
+We have implemented a fast single-GPU exact GP for regression, and extended it to a distributed approximate setting which can scale to modern data sets.
+</li>
 
 <h3>
 <a id="references" class="anchor" href="#references" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>References</h3>
