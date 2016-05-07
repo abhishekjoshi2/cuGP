@@ -357,8 +357,6 @@ where,  </p>
 
 <p>The main bottlenecks for both training and prediction phases are the compute- and memory-intensive matrix computations, which take $\mathcal{O}(n^3)$ flops, thus limiting the application of GPs for large datasets having $ n &gt; 10000$ samples.</p>
 
-<p>Our main task in this project was to exploit the data parallelism available while handling all matrix computations. If time permits we would like to look at recent approximate approaches that might be more suitable for distributed GPU setting. [DN15, WN15]</p>
-
 
 
 <h3>
@@ -368,12 +366,12 @@ where,  </p>
 
 <li> <u> Serial implementation </u>
 
-<p>In order to gain a better understanding of each of the operations involved in both learning (training) and inference (testing) phases, we implemented a serial single-threaded version of the GP regression algorithm. To accomplish this, we implemented our own mini matrix algebra library for all the required operations in GPR. This mini library has routines for Cholesky decomposition, forward substitution, backward substitution among other standard matrix-matrix/matrix-vector operations.  For minimizing the NLML in the training phase, we employed the conjugate gradient solver by Joao Cunha.  To be precise, this is the only third party code that we used in our serial implementation, all other routines were written from scratch in C++. Correctness was established by cross-checking outputs of each of the steps with the corresponding results as in the popular GPML framework which is written in Matlab. </p>
+<p>In order to gain a better understanding of each of the operations involved in both learning (training) and inference (testing) phases, we implemented a serial single-threaded version of the GP regression algorithm. To accomplish this, we implemented our own mini matrix algebra library for all the required operations in GPR. This mini library has routines for Cholesky decomposition, forward substitution, backward substitution among other standard matrix-matrix/matrix-vector operations.  For maximizing the LML in the training phase, we employed the conjugate gradient solver by Joao Cunha.  To be precise, this is the only third party code that we used in our serial implementation, all other routines were written from scratch in C++. Correctness was established by cross-checking outputs of each of the steps with the corresponding results as in the popular GPML framework which is written in Matlab. </p>
 
 </li>
 
 <li> <u> GPR on CUDA: First attempt </u>
-<p> After acquainting ourselves with the nitty gritty details at each step, we implemented GP regression on CUDA writing our own kernels for each task. As in the previous case, we implemented the kernels for the required matrix computations ourselves. More precisely, we wrote a recursive blocked version of Cholesky decomposition as described in the paper by Dong et al [DH14]. One of the important steps in computing the likelihood as well as in computing the gradients,  is solving a triangular system of equations. An efficient method for solving such a system is to employ forward/backward substitution algorithm. Since both the algorithms are inherently sequential, we implemented a recursive algorithm for efficiently finding the inverse of a lower (upper) triangular matrix as given in []. We also implemented a reasonably fast matrix-matrix multiplication kernel that uses shared memory. Moreover, implementing the kernels ourselves gave us the opportunity to fuse different operations together. We benchmark our implementation on a synthetic sine dataset, wherein the input data lives in a 10 dimensional space, and the function to approximate is a sine function that depends only on the first dimension. In order to make the targets (function obsrevations) noisy, we add a Gaussian noise to the function values (the variance of this Gaussian is 0.05). Figure 1 shows the performance of the most crucial functions (some of which are implemented with a series of kernels), on the synthetic dataset. Note that all our experiments were performed using the K40 GPUs in the latedays cluster. </p>
+<p> After acquainting ourselves with the nitty gritty details at each step, we implemented GP regression on CUDA writing our own kernels for each task. As in the previous case, we implemented the kernels for the required matrix computations ourselves. More precisely, we wrote a recursive blocked version of Cholesky decomposition as described in the paper by Dong et al [DH14]. One of the important steps in computing the likelihood as well as in computing the gradients,  is solving a triangular system of equations. An efficient method for solving such a system is to employ forward/backward substitution algorithm. Since both the algorithms are inherently sequential, we implemented a recursive algorithm for efficiently finding the inverse of a lower(upper) triangular matrix as given in [K09]. We also implemented a reasonably fast matrix-matrix multiplication kernel that uses shared memory. Moreover, implementing the kernels ourselves gave us the opportunity to fuse different operations together. We benchmark our implementation on a synthetic sine dataset, wherein the input data lives in a 10 dimensional space, and the function to approximate is a sine function that depends only on the first dimension. In order to make the targets (function obsrevations) noisy, we add a Gaussian noise to the function values (the variance of this Gaussian is 0.05). Figure 1 shows the performance of the most crucial functions (some of which are implemented with a series of kernels), on the synthetic dataset. Note that all our experiments were performed using the K40 GPUs. </p>
 
 <img src="images/1_naiveparallelmicrobench.png" alt="naiveparallelmicrobench" height="500" width="600" align="middle">
 
@@ -449,7 +447,7 @@ where,  </p>
 
 <li> <u> DA-cuGP: Distributed Approximate cuGP </u>
 
-<p>The single node cuGP implementation performs well on datasets of the size O(10^4). Howerver, due to the O(N2) storage requirement, the GP implementation is limited by the amount of memory available on the device. To further scale , we have implemented a recent approach which is an approximation to the exact GP regreession. This was our stretch goal up till the checkpoint. We adapt the method to mulitple GPUs. The high level idea is of the approximate approach is to have several experts, each of whom is responsible for a subset of the original data. The approach basically approximates the originial covariance matrix to several blocks.</p>
+<p>The single node cuGP implementation performs well on datasets of the size O(10^4). Howerver, due to the O(N2) storage requirement, the GP implementation is limited by the amount of memory available on the device. To further scale , we have implemented a recent approach [DN14] which is an approximation to the exact GP regreession. This was our stretch goal up till the checkpoint. We adapt the method to mulitple GPUs. The high level idea is of the approximate approach is to have several experts, each of whom is responsible for a subset of the original data. The approach basically approximates the originial covariance matrix to several blocks.</p>
 
 <p>Thus the negative log marginal likelihood can be approximated by the sum of the log marginal likelihood values of each individual expert. The subtle point in the learning (training) phase is that the hyperparameters have to be shared across the products.</p>
 
@@ -457,7 +455,7 @@ where,  </p>
 
 <p>So we have implemented this approach using mulitple GPUs (which can be thought of as individual experts). In order to communicate the hyper-parameters, we use socke programming for efficiently transferrring the information to and from the GPUs. We call our implementation Distributed Approximate cuGP (DAcuGP).</p>
 
-<p>The performance of the DAcuGP on the synthetic sine dataset in shown in Figure 5. The first bar corresponds the exact GP working on a dataset with 10000 points. As we move towards the right, the number of GPUs increase and the size of the dataset per GPU decreases. As one might expect, we obtain massive speedup due to both reduction of the problem size, and asymptotically lower complexity of the approximate method itself.</p>
+<p>The performance of the DA-cuGP on the synthetic sine dataset in shown in Figure 5. The first bar corresponds the exact GP working on a dataset with 10000 points. As we move towards the right, the number of GPUs increase and the size of the dataset per GPU decreases. As one might expect, we obtain massive speedup due to both reduction of the problem size, and asymptotically lower complexity of the approximate method itself.</p>
 
 
 <img src="images/distributednew.png" alt="distributed" height="400" width="500" align="middle">
@@ -472,10 +470,10 @@ where,  </p>
 
 <p>So essentially the data locality is not there at all. But the tradeoff is that we can manage greater volumes of data. </p>
 
-<p>To hide the latency of reading a shard each time, we implemented a prefetcher, which is responsible for bringing the next chunk of data to the memory in host, at the time when the device is performing necessary computaion with the shard in the device memory. We call this the Distributed Approximate Scalable cuGP (DAScuGP) approach.</p>
+<p>To hide the latency of reading a shard each time, we implemented a prefetcher, which is responsible for bringing the next chunk of data to the memory in host, at the time when the device is performing necessary computaion with the shard in the device memory. We call this the Distributed Approximate Scalable cuGP (DAS-cuGP) approach.</p>
 
 
-<p>Figure 6 shows the improvement performance due to the preferethch on a dataset comprising of 24000 points which are divided inoto 16 shards, when employihng 4 GPUs. </p>
+<p>Figure 6 shows the improvement performance due to the prefetcher on a dataset comprising of 24000 points which are divided inoto 16 shards, when employing 4 GPUs. </p>
 <img src="images/6_latencyhiding.png" alt="latencyhiding" height="400" width="500" align="middle">
 
 
@@ -497,6 +495,8 @@ where,  </p>
 <p>[DN15]: Deisenroth, Marc Peter, and Jun Wei Ng. "Distributed Gaussian Processes." arXiv preprint arXiv:1502.02843 (2015).</p>
 
 <p>[DA14]: Dong, Tingxing, et al. "A fast batched Cholesky factorization on a GPU." Parallel Processing (ICPP), 2014 43rd International Conference on. IEEE (2014)</p>
+
+<p> [K09]: Knight, Nicholas. "Triangular Matrix Inversion a survey of sequential approaches." (2009). </p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/abhishekjoshi2/cuGP">cuGP</a> is maintained by <a href="https://github.com/sidgoyal78">sidgoyal78</a> and <a href="https://github.com/abhishekjoshi2">abhishekjoshi2</a>.</span>
