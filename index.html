@@ -34,6 +34,8 @@
 
     <section class="main-content">
 
+
+<!--
       <h3>
 <a id="Checkpoint Update" class="anchor" href="#checkpoint" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Checkpoint Update</h3>
 
@@ -293,6 +295,15 @@ We will use the C++ programming language for this project along with the Nvidia 
 <li>Finish writeup</li>
 </ul>
 </ul>
+
+-->
+
+
+<h3>
+<a id="Summary" class="anchor" href="#summary" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Summary</h3>
+
+<p>We have parallelized the training and prediction phases of Gaussian Process Regression on a GPU. We also took it a step further and implemented a Distributed Approximate version: DAcuGP. This version effectively parallelizes all computation across several GPUs in a cluster while also managing light-weight communication between the participating nodes. We were able to obtain significant speedups against strong baselines. Furthermore, to be able to handle arbitrary sized data sets, we extended the approach by adding a decentralized computation-scheduler that appropriately dispatches work across nodes.</p>
+
 
 <h3>
 <a id="references" class="anchor" href="#references" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>References</h3>
