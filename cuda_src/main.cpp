@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
 		printf("Host %s got worker id as %d\n", argv[1], worker_id);
 	}
 
-	int numtrain = 32;
+	int numtrain = 16;
 	std::string prefix_input_file_name = "../chunked_dataset/si32_chunk";
 	std::string prefix_label_file_name = "../chunked_dataset/si32_label";
 
@@ -192,10 +192,9 @@ int main(int argc, char *argv[])
 		}
 		set_loghyper_eigen_multinode(initval);
 		
-		
-		cg_solve(argv[1]);
+	//	cg_solve(argv[1]);
 	
-		// testing_phase(numtrain,numtrain);
+		testing_phase(numtrain, numtrain);
 	}
 	else
 	{
