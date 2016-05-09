@@ -2072,8 +2072,10 @@ void testing_phase(int offset, int numtest){
 	printf("TRYING TO Start compute_test_means PHASE\n");	
 	printf("---------------------------------------\n");
 	// Now calling testing phase
+	double startime = CycleTimer::currentSeconds();
 	compute_test_means_and_variances();
-
+	double endtime = CycleTimer::currentSeconds();
+	printf("TESTING PHASE took: %lf\n", endtime - startime);
 		
 	printf("\n---------------------------------------\n");
 	printf("Now result time\n");	

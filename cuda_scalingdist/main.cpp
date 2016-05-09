@@ -18,6 +18,7 @@ int dimensions = 0;
 std::string prefix_input_file_name;
 std::string prefix_label_file_name;
 
+void destruct_cublas_cusoler();
 
 void set_loghyper_eigen_multinode(Eigen::VectorXd initval);
 
@@ -300,11 +301,11 @@ int main(int argc, char *argv[])
 		}                                                         
 		set_loghyper_eigen_multinode(initval);                    
 		
-		double st = CycleTimer::currentSeconds();
-		cg_solve(argv[1]);
-		double end = CycleTimer::currentSeconds();
-		printf("Total training time: %lf\n", end - st);
-	
+		double startime = CycleTimer::currentSeconds();
+                cg_solve(argv[1]);
+                double endtime = CycleTimer::currentSeconds();
+                printf("TOTAL training time = %lf\n", endtime - startime);
+		destruct_cublas_cusoler();
 		// testing_phase(numtrain,numtrain);
 	}
 	else

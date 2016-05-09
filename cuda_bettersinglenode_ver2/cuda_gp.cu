@@ -136,10 +136,10 @@ __global__ void compute_NLPP(double *actualtestlabels, double * predicted_testme
 	double ans = 0.0;
         for(int i = 0; i < Ntest; i++) {
                 double val = 0.5 * log(6.283185 * predicted_testvar[i]) + pow( (predicted_testmean[i] - actualtestlabels[i]) , 2) / (2 * predicted_testvar[i]);
-		//printf("predvar = %lf, predmean = %lf, actualmean = %lf, lpp = %lf\n", predicted_testvar[i], predicted_testmean[i], actualtestlabels[i], val);
+		printf("predvar = %lf, predmean = %lf, actualmean = %lf, lpp = %lf\n", predicted_testvar[i], predicted_testmean[i], actualtestlabels[i], val);
                 ans += val;
         }
-	//printf("TO FINAL ANSWER YEH HONA CHAHHIYE: %lf\n", ans / Ntest);
+	printf("TO FINAL ANSWER YEH HONA CHAHHIYE: %lf\n", ans / Ntest);
         *ans_nlpp = (ans / Ntest);
 
 }
@@ -1026,8 +1026,10 @@ void testing_phase(int offset, int numtest){
 	printf("TRYING TO Start compute_test_means PHASE\n");	
 	printf("---------------------------------------\n");
 	// Now calling testing phase
+	double startime = CycleTimer::currentSeconds();	
 	compute_test_means_and_variances();
-
+	double endtime = CycleTimer::currentSeconds();
+	printf("TESTING TIME = %lf\n", endtime - startime);
 		
 	printf("\n---------------------------------------\n");
 	printf("Now result time\n");	
