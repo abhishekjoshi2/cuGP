@@ -1,5 +1,0 @@
-CUDA Error:
-File = cuda_gp.cu
-Line = 1404
-Reason = an illegal memory access was encountered
-pbsdsh(): task 0 exit status 1

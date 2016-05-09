@@ -2,11 +2,11 @@
 #include <vector>
 #include<iostream>
 #include<cstdlib>
-#include "./Eigen/Dense"
+#include "../cuda_src/Eigen/Dense"
 //#include <mpi.h>
 
 #include "csapp.h"
-#include "./Eigen/src/Core/util/DisableStupidWarnings.h"
+#include "../cuda_src/Eigen/src/Core/util/DisableStupidWarnings.h"
 #include "../common/opcodes.h"
 
 double compute_log_likelihood();

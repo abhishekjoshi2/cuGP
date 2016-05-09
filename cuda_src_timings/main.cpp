@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "./Eigen/Dense"
+#include "../cuda_src/Eigen/Dense"
 
 #include <iostream>
 #include <vector>
@@ -170,9 +170,10 @@ int main(int argc, char *argv[])
 		printf("Host %s got worker id as %d\n", argv[1], worker_id);
 	}
 
-	int numtrain = 256;
-	std::string prefix_input_file_name = "../chunked_dataset/sine_dataset_256_10_chunk";
-	std::string prefix_label_file_name = "../chunked_dataset/sine_dataset_256_10_label";
+	int numtrain = 4096;
+        int numtest = 1000;
+        std::string prefix_input_file_name = "../chunked_dataset/fortesting/sine_dataset_5096_10_chunk";
+        std::string prefix_label_file_name = "../chunked_dataset/fortesting/sine_dataset_5096_10_label";
 
 	printf("worker_id is %d\n", worker_id);
 	std::string ipfile = prefix_input_file_name + std::to_string(worker_id) + std::string(".txt");
@@ -194,7 +195,7 @@ int main(int argc, char *argv[])
 		double end = CycleTimer::currentSeconds();
 		printf("Total train time: %lf\n", end - start);
 	
-		// testing_phase(numtrain,numtrain);
+	        testing_phase(numtrain,numtest);
 	}
 	else
 	{
