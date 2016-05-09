@@ -7,6 +7,7 @@
 
 #include "csapp.h"
 #include "../cuda_src/Eigen/src/Core/util/DisableStupidWarnings.h"
+#include "../common/cycleTimer.h"
 #include "../common/opcodes.h"
 
 double compute_log_likelihood();
@@ -18,10 +19,14 @@ extern int total_workers;
 extern std::vector<int> worker_conn_fds;
 
 extern double *BCM_log_hyperparams;
+double total_ll_comm_time = 0;
+double total_gradient_comm_time = 0;
+double total_set_loghyper_time = 0;
 
 double compute_log_likelihood_multinode()
 {
 	int ll_opcode = COMPUTE_LOG_LIKELIHOOD;
+	double start = CycleTimer::currentSeconds();
 	for (int i = 0; i < total_workers - 1; i++)
 	{
 		printf("\n\n");
@@ -30,11 +35,14 @@ double compute_log_likelihood_multinode()
 		Rio_writen (worker_conn_fds[i], (void *)&ll_opcode, sizeof(int));
 
 	}
+	double end = CycleTimer::currentSeconds();
+	total_ll_comm_time += (end - start);
 	// TODO now call getll on self
 	double ll_sum;
 
 	ll_sum = compute_log_likelihood();
 
+	start = CycleTimer::currentSeconds();
 	for (int i = 0; i < total_workers - 1; i++)
 	{
 		double ll = 0.0;
@@ -43,6 +51,8 @@ double compute_log_likelihood_multinode()
 		printf("Got %lf as log likelihood from node %d\n", ll, i);
 		ll_sum += ll;
 	}
+	end = CycleTimer::currentSeconds();
+	total_ll_comm_time += (end - start);
 	printf("Final ll_sum is %lf\n", ll_sum);
 
 	return ll_sum;
@@ -51,6 +61,7 @@ double compute_log_likelihood_multinode()
 void compute_gradient_log_hyperparams_multinode(double *arg)
 {
 	int gradient_loghyper_opcode = COMPUTE_GRADIENT_LOG_HYPERPARAMS;
+	double start = CycleTimer::currentSeconds();
 	for (int i = 0; i < total_workers - 1; i++)
 	{
 		printf("\n\n");
@@ -59,9 +70,13 @@ void compute_gradient_log_hyperparams_multinode(double *arg)
 		Rio_writen (worker_conn_fds[i], (void *)&gradient_loghyper_opcode, sizeof(int));
 
 	}
+	double end = CycleTimer::currentSeconds();
+	total_gradient_comm_time += (end - start);
 	// TODO now call compute_grad_log_hyperparams on self
 	compute_gradient_log_hyperparams(arg);
 
+
+	start = CycleTimer::currentSeconds();
 	for (int i = 0; i < total_workers - 1; i++)
 	{
 		double grad1, grad2, grad3;
@@ -75,6 +90,9 @@ void compute_gradient_log_hyperparams_multinode(double *arg)
 		arg[1] += grad2;
 		arg[2] += grad3;
 	}
+	end = CycleTimer::currentSeconds();
+	total_gradient_comm_time += (end - start);
+
 	printf("Final gradients of log hyperparams are %lf, %lf, %lf\n", arg[0], arg[1], arg[2]);
 }
 
@@ -126,6 +144,7 @@ void set_loghyper_eigen_multinode(Eigen::VectorXd initval)
 		BCM_log_hyperparams[i] = initval[i];
 	}
 
+	double start = CycleTimer::currentSeconds();
 	for (int i = 0; i < total_workers - 1; i++)
 	{
 		printf("\n\n");
@@ -133,6 +152,8 @@ void set_loghyper_eigen_multinode(Eigen::VectorXd initval)
 
 		Rio_writen (worker_conn_fds[i], (void *)&set_loghyper_opcode, sizeof(int));
 	}
+	double end = CycleTimer::currentSeconds();
+	total_set_loghyper_time += (end - start);
 
 	set_loghyper_eigen(initval);
 	printf("----------------------------");
@@ -143,6 +164,7 @@ void set_loghyper_eigen_multinode(Eigen::VectorXd initval)
 	}
 	printf("\n");
 	printf("----------------------------");
+	start = CycleTimer::currentSeconds();
 	for (int i = 0; i < total_workers - 1; i++)
 	{
 		printf("Tell node %d to set log hyperparams\n", i);
@@ -151,6 +173,8 @@ void set_loghyper_eigen_multinode(Eigen::VectorXd initval)
 		Rio_writen (worker_conn_fds[i], (void *)&new_loghyper_params[1], sizeof(double));
 		Rio_writen (worker_conn_fds[i], (void *)&new_loghyper_params[2], sizeof(double));
 	}
+	end = CycleTimer::currentSeconds();
+	total_set_loghyper_time += (end - start);
 }
 
 void send_done_message()
@@ -395,4 +419,7 @@ compute_gradient_log_hyperparams_multinode(df3_temp);
 set_loghyper_eigen_multinode(X);
 	
 	send_done_message();
+	printf("Total LL Comm Time: %lf\n", total_ll_comm_time);
+	printf("Total Gradient Comm Time: %lf\n", total_gradient_comm_time);
+	printf("Total Set loghyper Comm Time: %lf\n", total_set_loghyper_time);
 }
