@@ -5,6 +5,7 @@
 #include <vector>
 #include <cstdlib>
 //#include <mpi.h>
+#include "../common/cycleTimer.h"
 #include "../common/opcodes.h"
 #include "csapp.h"
 #include <string>
@@ -172,9 +173,10 @@ int main(int argc, char *argv[])
 		printf("Host %s got worker id as %d\n", argv[1], worker_id);
 	}
 
-	int numtrain = 6000;
-	std::string prefix_input_file_name = "../chunked_dataset/sine_dataset_6000_10_chunk";
-	std::string prefix_label_file_name = "../chunked_dataset/sine_dataset_6000_10_label"; 
+	int numtrain = 1024;
+	std::string prefix_input_file_name = "../chunked_dataset/sine_dataset_1024_10_chunk";
+	std::string prefix_label_file_name = "../chunked_dataset/sine_dataset_1024_10_label"; 
+
 	std::string ipfile = prefix_input_file_name + std::to_string(worker_id) + std::string(".txt");
 	std::string opfile = prefix_label_file_name + std::to_string(worker_id) + std::string(".txt");
 
@@ -192,7 +194,10 @@ int main(int argc, char *argv[])
 		}
 		set_loghyper_eigen_multinode(initval);
 		
+		double st = CycleTimer::currentSeconds();
 		cg_solve(argv[1]);
+		double end = CycleTimer::currentSeconds();
+		printf("Total train time: %lf\n", end - st);
 		destruct_cublas_cusoler();	
 		// testing_phase(numtrain,numtrain);
 	}
