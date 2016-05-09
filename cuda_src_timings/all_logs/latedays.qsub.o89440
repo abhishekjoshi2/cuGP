@@ -1,0 +1,1161 @@
+/home/abj1/cuGP/cuda_src_timings
+Username is  abj1
+Master is  compute-0-35
+List of nodes is  compute-0-35
+Also check out the nodes file
+Spawning process on compute-0-35.local (0 of 1)
+Hostname is  compute-0-35.local
+compute-0-35.local
+========= CUDA-MEMCHECK
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (127,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (126,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (125,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (124,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (123,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (122,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (121,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (120,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (119,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (118,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (117,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (116,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (115,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (114,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (113,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (112,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (111,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (110,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (109,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (108,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (107,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (106,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (105,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (104,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (103,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (102,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (101,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (100,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (99,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (98,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (97,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (96,0,0) in block (5,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (127,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (126,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (125,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (124,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (123,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (122,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (121,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (120,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (119,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (118,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (117,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (116,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (115,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (114,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (113,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (112,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (111,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (110,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (109,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (108,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (107,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (106,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (105,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (104,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (103,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (102,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (101,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (100,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (99,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (98,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (97,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0Trying to listen on port 15618
+Hostname compute-0-35.local is listening on port 15618 with listenfd = 3
+Node is compute-0-35.local and Master is compute-0-35.local. Number of workers is 1
+Master calling cg_solve()
+YEEEEEEEEEEEEEEEHH setup call huaa
+Inside read_input_and_copy_to_GPUs
+Reading inputs boy
+Number of inputs = 4096
+reading labels 
+Okay boy.. reading and malloc done
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 4096) = 73.720181
+Total time for get_inverse_by_tmi (N = 4096) = 29.313183
+Total time for lowertriangular_matrixmultiply_noshare = 87.423654
+x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Invalid __global__ read of size 8
+=========     at 0x000005d0 in /home/abj1/cuGP/cuda_src_timings/cuda_gp.cu:679:matrix_vector_multiply(double*, double*, double*, int)
+=========     by thread (96,0,0) in block (0,0,0)
+=========     Address 0x00000000 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========     Host Frame:/usr/lib64/libcuda.so.1 (cuLaunchKernel + 0x2cd) [0x150cad]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 [0x131b0]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x143) [0x2d653]
+=========     Host Frame:./gp [0x6225]
+=========     Host Frame:./gp [0x967e]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Program hit cudaErrorLaunchFailure (error 4) due to "unspecified launch failure" on CUDA API call to cudaThreadSynchronize. 
+=========     Saved host backtrace up to driver entry point at error
+=========     Host Frame:/usr/lib64/libcuda.so.1 [0x2e40d3]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaThreadSynchronize + 0x166) [0x2f8a6]
+=========     Host Frame:./gp [0x9683]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Program hit cudaErrorLaunchFailure (error 4) due to "unspecified launch failure" on CUDA API call to cudaLaunch. 
+=========     Saved host backtrace up to driver entry point at error
+=========     Host Frame:/usr/lib64/libcuda.so.1 [0x2e40d3]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaLaunch + 0x17e) [0x2d68e]
+=========     Host Frame:./gp [0x6d45]
+=========     Host Frame:./gp [0x96e6]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Program hit cudaErrorLaunchFailure (error 4) due to "unspecified launch failure" on CUDA API call to cudaThreadSynchronize. 
+=========     Saved host backtrace up to driver entry point at error
+=========     Host Frame:/usr/lib64/libcuda.so.1 [0x2e40d3]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaThreadSynchronize + 0x166) [0x2f8a6]
+=========     Host Frame:./gp [0x98f5]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= Program hit cudaErrorLaunchFailure (error 4) due to "unspecified launch failure" on CUDA API call to cudaMemcpy. 
+=========     Saved host backtrace up to driver entry point at error
+=========     Host Frame:/usr/lib64/libcuda.so.1 [0x2e40d3]
+=========     Host Frame:/usr/local/cuda/lib64/libcudart.so.7.0 (cudaMemcpy + 0x1df) [0x3348f]
+=========     Host Frame:./gp [0x863d]
+=========     Host Frame:./gp [0x992a]
+=========     Host Frame:./gp [0x107da]
+=========     Host Frame:./gp [0x10d6b]
+=========     Host Frame:./gp [0x496f]
+=========     Host Frame:/lib64/libc.so.6 (__libc_start_main + 0xfd) [0x1ed5d]
+=========     Host Frame:./gp [0x3c55]
+=========
+========= ERROR SUMMARY: 68 errors

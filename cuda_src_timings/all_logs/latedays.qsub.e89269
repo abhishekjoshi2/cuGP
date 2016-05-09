@@ -1,0 +1,2 @@
+=>> PBS: job killed: walltime 1241 exceeded limit 1200
+pbsdsh(): Event poll failed, error TM_ENOTCONNECTED

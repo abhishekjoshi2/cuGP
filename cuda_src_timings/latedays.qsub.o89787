@@ -1,0 +1,948 @@
+/home/abj1/cuGP/cuda_src_timings
+Username is  abj1
+Master is  compute-0-33
+List of nodes is  compute-0-33
+Also check out the nodes file
+Spawning process on compute-0-33.local (0 of 1)
+Hostname is  compute-0-33.local
+compute-0-33.local
+Trying to listen on port 15618
+Hostname compute-0-33.local is listening on port 15618 with listenfd = 3
+Node is compute-0-33.local and Master is compute-0-33.local. Number of workers is 1
+worker_id is 0
+Master calling cg_solve()
+YEEEEEEEEEEEEEEEHH setup call huaa
+Inside read_input_and_copy_to_GPUs
+Reading inputs boy
+Number of inputs = 2048
+reading labels 
+Okay boy.. reading and malloc done
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.087808
+Total time for get_inverse_by_tmi (N = 2048) = 0.259226
+Total time for lowertriangular_matrixmultiply_noshare = 0.673243
+Time for compute_k_train: 0.009342. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.032019
+Total Time for get_log_likelihood: 3.041378
+
+Total time for get_cholesky (n = 2048) = 2.042926
+Time for forward_substitution_matrix = 4.063567
+Time for backward_substitution_matrix = 4.043496
+Time for Compute_K_inverse = 10.151522
+Total time for compute_gradient_log_hp = 10.263253
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.045388
+Total time for get_inverse_by_tmi (N = 2048) = 0.258735
+Total time for lowertriangular_matrixmultiply_noshare = 0.673596
+Time for compute_k_train: 0.007670. DIM is 10
+Time for compute_chol_get_mul_and_det: 2.989457
+Total Time for get_log_likelihood: 2.997144
+
+Total time for get_cholesky (n = 2048) = 2.046106
+Time for forward_substitution_matrix = 4.060278
+Time for backward_substitution_matrix = 4.044025
+Time for Compute_K_inverse = 10.151942
+Total time for compute_gradient_log_hp = 10.262559
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.046974
+Total time for get_inverse_by_tmi (N = 2048) = 0.259005
+Total time for lowertriangular_matrixmultiply_noshare = 0.674349
+Time for compute_k_train: 0.007665. DIM is 10
+Time for compute_chol_get_mul_and_det: 2.992080
+Total Time for get_log_likelihood: 2.999763
+
+Total time for get_cholesky (n = 2048) = 2.047118
+Time for forward_substitution_matrix = 4.069006
+Time for backward_substitution_matrix = 4.047423
+Time for Compute_K_inverse = 10.165082
+Total time for compute_gradient_log_hp = 10.275878
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.048124
+Total time for get_inverse_by_tmi (N = 2048) = 0.259199
+Total time for lowertriangular_matrixmultiply_noshare = 0.674919
+Time for compute_k_train: 0.007687. DIM is 10
+Time for compute_chol_get_mul_and_det: 2.993994
+Total Time for get_log_likelihood: 3.001698
+
+Total time for get_cholesky (n = 2048) = 2.048322
+Time for forward_substitution_matrix = 4.073144
+Time for backward_substitution_matrix = 4.045630
+Time for Compute_K_inverse = 10.168632
+Total time for compute_gradient_log_hp = 10.279218
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.048684
+Total time for get_inverse_by_tmi (N = 2048) = 0.259181
+Total time for lowertriangular_matrixmultiply_noshare = 0.675153
+Time for compute_k_train: 0.007686. DIM is 10
+Time for compute_chol_get_mul_and_det: 2.994778
+Total Time for get_log_likelihood: 3.002482
+
+Total time for get_cholesky (n = 2048) = 2.049142
+Time for forward_substitution_matrix = 4.073084
+Time for backward_substitution_matrix = 4.048268
+Time for Compute_K_inverse = 10.172032
+Total time for compute_gradient_log_hp = 10.283191
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.049517
+Total time for get_inverse_by_tmi (N = 2048) = 0.258824
+Total time for lowertriangular_matrixmultiply_noshare = 0.675272
+Time for compute_k_train: 0.007698. DIM is 10
+Time for compute_chol_get_mul_and_det: 2.995362
+Total Time for get_log_likelihood: 3.003076
+
+Total time for get_cholesky (n = 2048) = 2.050255
+Time for forward_substitution_matrix = 4.080457
+Time for backward_substitution_matrix = 4.047725
+Time for Compute_K_inverse = 10.179975
+Total time for compute_gradient_log_hp = 10.290695
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.050634
+Total time for get_inverse_by_tmi (N = 2048) = 0.259552
+Total time for lowertriangular_matrixmultiply_noshare = 0.677084
+Time for compute_k_train: 0.007700. DIM is 10
+Time for compute_chol_get_mul_and_det: 2.999034
+Total Time for get_log_likelihood: 3.006752
+
+Total time for get_cholesky (n = 2048) = 2.051211
+Time for forward_substitution_matrix = 4.077862
+Time for backward_substitution_matrix = 4.058351
+Time for Compute_K_inverse = 10.188961
+Total time for compute_gradient_log_hp = 10.299856
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.051422
+Total time for get_inverse_by_tmi (N = 2048) = 0.259128
+Total time for lowertriangular_matrixmultiply_noshare = 0.677242
+Time for compute_k_train: 0.007699. DIM is 10
+Time for compute_chol_get_mul_and_det: 2.999811
+Total Time for get_log_likelihood: 3.007527
+
+Total time for get_cholesky (n = 2048) = 2.051662
+Time for forward_substitution_matrix = 4.083054
+Time for backward_substitution_matrix = 4.052652
+Time for Compute_K_inverse = 10.188906
+Total time for compute_gradient_log_hp = 10.299637
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.051905
+Total time for get_inverse_by_tmi (N = 2048) = 0.259136
+Total time for lowertriangular_matrixmultiply_noshare = 0.674901
+Time for compute_k_train: 0.007698. DIM is 10
+Time for compute_chol_get_mul_and_det: 2.997961
+Total Time for get_log_likelihood: 3.005676
+
+Total time for get_cholesky (n = 2048) = 2.052201
+Time for forward_substitution_matrix = 4.088527
+Time for backward_substitution_matrix = 4.063942
+Time for Compute_K_inverse = 10.206207
+Total time for compute_gradient_log_hp = 10.317212
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.051934
+Total time for get_inverse_by_tmi (N = 2048) = 0.258391
+Total time for lowertriangular_matrixmultiply_noshare = 0.677219
+Time for compute_k_train: 0.007707. DIM is 10
+Time for compute_chol_get_mul_and_det: 2.999300
+Total Time for get_log_likelihood: 3.007025
+
+Total time for get_cholesky (n = 2048) = 2.052350
+Time for forward_substitution_matrix = 4.088728
+Time for backward_substitution_matrix = 4.049272
+Time for Compute_K_inverse = 10.191888
+Total time for compute_gradient_log_hp = 10.302743
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.052929
+Total time for get_inverse_by_tmi (N = 2048) = 0.258375
+Total time for lowertriangular_matrixmultiply_noshare = 0.675332
+Time for compute_k_train: 0.007701. DIM is 10
+Time for compute_chol_get_mul_and_det: 2.998394
+Total Time for get_log_likelihood: 3.006113
+
+Total time for get_cholesky (n = 2048) = 2.053155
+Time for forward_substitution_matrix = 4.085431
+Time for backward_substitution_matrix = 4.053552
+Time for Compute_K_inverse = 10.193676
+Total time for compute_gradient_log_hp = 10.304360
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.054065
+Total time for get_inverse_by_tmi (N = 2048) = 0.258389
+Total time for lowertriangular_matrixmultiply_noshare = 0.674974
+Time for compute_k_train: 0.007706. DIM is 10
+Time for compute_chol_get_mul_and_det: 2.999191
+Total Time for get_log_likelihood: 3.006915
+
+Total time for get_cholesky (n = 2048) = 2.053801
+Time for forward_substitution_matrix = 4.088873
+Time for backward_substitution_matrix = 4.059684
+Time for Compute_K_inverse = 10.203898
+Total time for compute_gradient_log_hp = 10.314650
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.053666
+Total time for get_inverse_by_tmi (N = 2048) = 0.258740
+Total time for lowertriangular_matrixmultiply_noshare = 0.677521
+Time for compute_k_train: 0.007716. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.001688
+Total Time for get_log_likelihood: 3.009421
+
+Total time for get_cholesky (n = 2048) = 2.053874
+Time for forward_substitution_matrix = 4.093548
+Time for backward_substitution_matrix = 4.056464
+Time for Compute_K_inverse = 10.205427
+Total time for compute_gradient_log_hp = 10.316303
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.053946
+Total time for get_inverse_by_tmi (N = 2048) = 0.258526
+Total time for lowertriangular_matrixmultiply_noshare = 0.677942
+Time for compute_k_train: 0.007709. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.002173
+Total Time for get_log_likelihood: 3.009899
+
+Total time for get_cholesky (n = 2048) = 2.054186
+Time for forward_substitution_matrix = 4.093247
+Time for backward_substitution_matrix = 4.073250
+Time for Compute_K_inverse = 10.222247
+Total time for compute_gradient_log_hp = 10.333033
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.054028
+Total time for get_inverse_by_tmi (N = 2048) = 0.259415
+Total time for lowertriangular_matrixmultiply_noshare = 0.677777
+Time for compute_k_train: 0.007707. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.002978
+Total Time for get_log_likelihood: 3.010703
+
+Total time for get_cholesky (n = 2048) = 2.054465
+Time for forward_substitution_matrix = 4.090980
+Time for backward_substitution_matrix = 4.060830
+Time for Compute_K_inverse = 10.207815
+Total time for compute_gradient_log_hp = 10.318733
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.054100
+Total time for get_inverse_by_tmi (N = 2048) = 0.258613
+Total time for lowertriangular_matrixmultiply_noshare = 0.677565
+Time for compute_k_train: 0.007707. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.002296
+Total Time for get_log_likelihood: 3.010020
+
+Total time for get_cholesky (n = 2048) = 2.054584
+Time for forward_substitution_matrix = 4.092721
+Time for backward_substitution_matrix = 4.053503
+Time for Compute_K_inverse = 10.202347
+Total time for compute_gradient_log_hp = 10.313054
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.054506
+Total time for get_inverse_by_tmi (N = 2048) = 0.258857
+Total time for lowertriangular_matrixmultiply_noshare = 0.677845
+Time for compute_k_train: 0.007707. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.003228
+Total Time for get_log_likelihood: 3.010953
+
+Total time for get_cholesky (n = 2048) = 2.054834
+Time for forward_substitution_matrix = 4.097533
+Time for backward_substitution_matrix = 4.061896
+Time for Compute_K_inverse = 10.215804
+Total time for compute_gradient_log_hp = 10.326648
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.054862
+Total time for get_inverse_by_tmi (N = 2048) = 0.258682
+Total time for lowertriangular_matrixmultiply_noshare = 0.675285
+Time for compute_k_train: 0.007697. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.000590
+Total Time for get_log_likelihood: 3.008304
+
+Total time for get_cholesky (n = 2048) = 2.054861
+Time for forward_substitution_matrix = 4.090033
+Time for backward_substitution_matrix = 4.058663
+Time for Compute_K_inverse = 10.205098
+Total time for compute_gradient_log_hp = 10.316149
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.054837
+Total time for get_inverse_by_tmi (N = 2048) = 0.259422
+Total time for lowertriangular_matrixmultiply_noshare = 0.681581
+Time for compute_k_train: 0.007718. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.007628
+Total Time for get_log_likelihood: 3.015363
+
+Total time for get_cholesky (n = 2048) = 2.070839
+Time for forward_substitution_matrix = 4.118210
+Time for backward_substitution_matrix = 4.078644
+Time for Compute_K_inverse = 10.269244
+Total time for compute_gradient_log_hp = 10.380305
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.070455
+Total time for get_inverse_by_tmi (N = 2048) = 0.260194
+Total time for lowertriangular_matrixmultiply_noshare = 0.682911
+Time for compute_k_train: 0.007780. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.025421
+Total Time for get_log_likelihood: 3.033218
+
+Total time for get_cholesky (n = 2048) = 2.070727
+Time for forward_substitution_matrix = 4.120282
+Time for backward_substitution_matrix = 4.082994
+Time for Compute_K_inverse = 10.275555
+Total time for compute_gradient_log_hp = 10.386686
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.070572
+Total time for get_inverse_by_tmi (N = 2048) = 0.260176
+Total time for lowertriangular_matrixmultiply_noshare = 0.683865
+Time for compute_k_train: 0.007767. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.026471
+Total Time for get_log_likelihood: 3.034255
+
+Total time for get_cholesky (n = 2048) = 2.070585
+Time for forward_substitution_matrix = 4.111586
+Time for backward_substitution_matrix = 4.079071
+Time for Compute_K_inverse = 10.262820
+Total time for compute_gradient_log_hp = 10.373987
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.070222
+Total time for get_inverse_by_tmi (N = 2048) = 0.260051
+Total time for lowertriangular_matrixmultiply_noshare = 0.683901
+Time for compute_k_train: 0.007771. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.026032
+Total Time for get_log_likelihood: 3.033820
+
+Total time for get_cholesky (n = 2048) = 2.070308
+Time for forward_substitution_matrix = 4.119469
+Time for backward_substitution_matrix = 4.082914
+Time for Compute_K_inverse = 10.274241
+Total time for compute_gradient_log_hp = 10.385601
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.070342
+Total time for get_inverse_by_tmi (N = 2048) = 0.260121
+Total time for lowertriangular_matrixmultiply_noshare = 0.682581
+Time for compute_k_train: 0.007768. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.024904
+Total Time for get_log_likelihood: 3.032690
+
+Total time for get_cholesky (n = 2048) = 2.070215
+Time for forward_substitution_matrix = 4.109473
+Time for backward_substitution_matrix = 4.084134
+Time for Compute_K_inverse = 10.265374
+Total time for compute_gradient_log_hp = 10.376856
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.070241
+Total time for get_inverse_by_tmi (N = 2048) = 0.260482
+Total time for lowertriangular_matrixmultiply_noshare = 0.682662
+Time for compute_k_train: 0.007774. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.025250
+Total Time for get_log_likelihood: 3.033041
+
+Total time for get_cholesky (n = 2048) = 2.070614
+Time for forward_substitution_matrix = 4.113293
+Time for backward_substitution_matrix = 4.087147
+Time for Compute_K_inverse = 10.272606
+Total time for compute_gradient_log_hp = 10.384157
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.070201
+Total time for get_inverse_by_tmi (N = 2048) = 0.260048
+Total time for lowertriangular_matrixmultiply_noshare = 0.681840
+Time for compute_k_train: 0.007772. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.023947
+Total Time for get_log_likelihood: 3.031736
+
+Total time for get_cholesky (n = 2048) = 2.070354
+Time for forward_substitution_matrix = 4.115591
+Time for backward_substitution_matrix = 4.085412
+Time for Compute_K_inverse = 10.272908
+Total time for compute_gradient_log_hp = 10.384148
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.070410
+Total time for get_inverse_by_tmi (N = 2048) = 0.260190
+Total time for lowertriangular_matrixmultiply_noshare = 0.681974
+Time for compute_k_train: 0.007781. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.024432
+Total Time for get_log_likelihood: 3.032230
+
+Total time for get_cholesky (n = 2048) = 2.070537
+Time for forward_substitution_matrix = 4.117956
+Time for backward_substitution_matrix = 4.076542
+Time for Compute_K_inverse = 10.266587
+Total time for compute_gradient_log_hp = 10.377466
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.054612
+Total time for get_inverse_by_tmi (N = 2048) = 0.258298
+Total time for lowertriangular_matrixmultiply_noshare = 0.677883
+Time for compute_k_train: 0.007705. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.002558
+Total Time for get_log_likelihood: 3.010280
+
+Total time for get_cholesky (n = 2048) = 2.054991
+Time for forward_substitution_matrix = 4.096721
+Time for backward_substitution_matrix = 4.074653
+Time for Compute_K_inverse = 10.227905
+Total time for compute_gradient_log_hp = 10.338984
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.054958
+Total time for get_inverse_by_tmi (N = 2048) = 0.259224
+Total time for lowertriangular_matrixmultiply_noshare = 0.677612
+Time for compute_k_train: 0.007707. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.003566
+Total Time for get_log_likelihood: 3.011290
+
+Total time for get_cholesky (n = 2048) = 2.055208
+Time for forward_substitution_matrix = 4.096153
+Time for backward_substitution_matrix = 4.061919
+Time for Compute_K_inverse = 10.214819
+Total time for compute_gradient_log_hp = 10.325819
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055321
+Total time for get_inverse_by_tmi (N = 2048) = 0.259395
+Total time for lowertriangular_matrixmultiply_noshare = 0.677638
+Time for compute_k_train: 0.007721. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.004125
+Total Time for get_log_likelihood: 3.011863
+
+Total time for get_cholesky (n = 2048) = 2.055464
+Time for forward_substitution_matrix = 4.095226
+Time for backward_substitution_matrix = 4.069994
+Time for Compute_K_inverse = 10.222225
+Total time for compute_gradient_log_hp = 10.333037
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055381
+Total time for get_inverse_by_tmi (N = 2048) = 0.259033
+Total time for lowertriangular_matrixmultiply_noshare = 0.677746
+Time for compute_k_train: 0.007701. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.003930
+Total Time for get_log_likelihood: 3.011648
+
+Total time for get_cholesky (n = 2048) = 2.055511
+Time for forward_substitution_matrix = 4.094722
+Time for backward_substitution_matrix = 4.065903
+Time for Compute_K_inverse = 10.217677
+Total time for compute_gradient_log_hp = 10.328461
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.054954
+Total time for get_inverse_by_tmi (N = 2048) = 0.259312
+Total time for lowertriangular_matrixmultiply_noshare = 0.678006
+Time for compute_k_train: 0.007707. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.004037
+Total Time for get_log_likelihood: 3.011761
+
+Total time for get_cholesky (n = 2048) = 2.054920
+Time for forward_substitution_matrix = 4.093916
+Time for backward_substitution_matrix = 4.072939
+Time for Compute_K_inverse = 10.223315
+Total time for compute_gradient_log_hp = 10.334017
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055105
+Total time for get_inverse_by_tmi (N = 2048) = 0.259115
+Total time for lowertriangular_matrixmultiply_noshare = 0.677834
+Time for compute_k_train: 0.007723. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.003829
+Total Time for get_log_likelihood: 3.011569
+
+Total time for get_cholesky (n = 2048) = 2.055235
+Time for forward_substitution_matrix = 4.099974
+Time for backward_substitution_matrix = 4.068053
+Time for Compute_K_inverse = 10.224800
+Total time for compute_gradient_log_hp = 10.335973
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055275
+Total time for get_inverse_by_tmi (N = 2048) = 0.259856
+Total time for lowertriangular_matrixmultiply_noshare = 0.677797
+Time for compute_k_train: 0.007706. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.004705
+Total Time for get_log_likelihood: 3.012428
+
+Total time for get_cholesky (n = 2048) = 2.055543
+Time for forward_substitution_matrix = 4.102231
+Time for backward_substitution_matrix = 4.076566
+Time for Compute_K_inverse = 10.235877
+Total time for compute_gradient_log_hp = 10.346787
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055336
+Total time for get_inverse_by_tmi (N = 2048) = 0.258772
+Total time for lowertriangular_matrixmultiply_noshare = 0.677752
+Time for compute_k_train: 0.007712. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.003630
+Total Time for get_log_likelihood: 3.011360
+
+Total time for get_cholesky (n = 2048) = 2.055413
+Time for forward_substitution_matrix = 4.100773
+Time for backward_substitution_matrix = 4.068716
+Time for Compute_K_inverse = 10.226441
+Total time for compute_gradient_log_hp = 10.337435
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055424
+Total time for get_inverse_by_tmi (N = 2048) = 0.259938
+Total time for lowertriangular_matrixmultiply_noshare = 0.678008
+Time for compute_k_train: 0.007707. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.005140
+Total Time for get_log_likelihood: 3.012864
+
+Total time for get_cholesky (n = 2048) = 2.055766
+Time for forward_substitution_matrix = 4.104253
+Time for backward_substitution_matrix = 4.063089
+Time for Compute_K_inverse = 10.224648
+Total time for compute_gradient_log_hp = 10.335527
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055446
+Total time for get_inverse_by_tmi (N = 2048) = 0.258912
+Total time for lowertriangular_matrixmultiply_noshare = 0.678246
+Time for compute_k_train: 0.007712. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.004404
+Total Time for get_log_likelihood: 3.012134
+
+Total time for get_cholesky (n = 2048) = 2.055742
+Time for forward_substitution_matrix = 4.102739
+Time for backward_substitution_matrix = 4.068609
+Time for Compute_K_inverse = 10.228630
+Total time for compute_gradient_log_hp = 10.339313
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055252
+Total time for get_inverse_by_tmi (N = 2048) = 0.259125
+Total time for lowertriangular_matrixmultiply_noshare = 0.677965
+Time for compute_k_train: 0.007711. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.004115
+Total Time for get_log_likelihood: 3.011843
+
+Total time for get_cholesky (n = 2048) = 2.055719
+Time for forward_substitution_matrix = 4.098640
+Time for backward_substitution_matrix = 4.065055
+Time for Compute_K_inverse = 10.220955
+Total time for compute_gradient_log_hp = 10.332304
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055269
+Total time for get_inverse_by_tmi (N = 2048) = 0.258627
+Total time for lowertriangular_matrixmultiply_noshare = 0.677673
+Time for compute_k_train: 0.007708. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.003339
+Total Time for get_log_likelihood: 3.011064
+
+Total time for get_cholesky (n = 2048) = 2.055749
+Time for forward_substitution_matrix = 4.102394
+Time for backward_substitution_matrix = 4.083247
+Time for Compute_K_inverse = 10.242929
+Total time for compute_gradient_log_hp = 10.353694
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055146
+Total time for get_inverse_by_tmi (N = 2048) = 0.259624
+Total time for lowertriangular_matrixmultiply_noshare = 0.677711
+Time for compute_k_train: 0.007716. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.004252
+Total Time for get_log_likelihood: 3.011985
+
+Total time for get_cholesky (n = 2048) = 2.055645
+Time for forward_substitution_matrix = 4.095496
+Time for backward_substitution_matrix = 4.079088
+Time for Compute_K_inverse = 10.231770
+Total time for compute_gradient_log_hp = 10.342805
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055766
+Total time for get_inverse_by_tmi (N = 2048) = 0.259383
+Total time for lowertriangular_matrixmultiply_noshare = 0.675978
+Time for compute_k_train: 0.007708. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.002897
+Total Time for get_log_likelihood: 3.010622
+
+Total time for get_cholesky (n = 2048) = 2.056101
+Time for forward_substitution_matrix = 4.102793
+Time for backward_substitution_matrix = 4.071414
+Time for Compute_K_inverse = 10.231849
+Total time for compute_gradient_log_hp = 10.342596
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055597
+Total time for get_inverse_by_tmi (N = 2048) = 0.258822
+Total time for lowertriangular_matrixmultiply_noshare = 0.678587
+Time for compute_k_train: 0.007714. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.004773
+Total Time for get_log_likelihood: 3.012504
+
+Total time for get_cholesky (n = 2048) = 2.055564
+Time for forward_substitution_matrix = 4.099423
+Time for backward_substitution_matrix = 4.069601
+Time for Compute_K_inverse = 10.226127
+Total time for compute_gradient_log_hp = 10.337087
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055393
+Total time for get_inverse_by_tmi (N = 2048) = 0.259011
+Total time for lowertriangular_matrixmultiply_noshare = 0.677809
+Time for compute_k_train: 0.007710. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.003983
+Total Time for get_log_likelihood: 3.011710
+
+Total time for get_cholesky (n = 2048) = 2.055624
+Time for forward_substitution_matrix = 4.104586
+Time for backward_substitution_matrix = 4.079210
+Time for Compute_K_inverse = 10.240960
+Total time for compute_gradient_log_hp = 10.351597
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055374
+Total time for get_inverse_by_tmi (N = 2048) = 0.259095
+Total time for lowertriangular_matrixmultiply_noshare = 0.675682
+Time for compute_k_train: 0.007708. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.001944
+Total Time for get_log_likelihood: 3.009669
+
+Total time for get_cholesky (n = 2048) = 2.055778
+Time for forward_substitution_matrix = 4.098533
+Time for backward_substitution_matrix = 4.066024
+Time for Compute_K_inverse = 10.221875
+Total time for compute_gradient_log_hp = 10.332674
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055126
+Total time for get_inverse_by_tmi (N = 2048) = 0.259096
+Total time for lowertriangular_matrixmultiply_noshare = 0.677729
+Time for compute_k_train: 0.007720. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.003721
+Total Time for get_log_likelihood: 3.011458
+
+Total time for get_cholesky (n = 2048) = 2.055332
+Time for forward_substitution_matrix = 4.099366
+Time for backward_substitution_matrix = 4.065454
+Time for Compute_K_inverse = 10.221692
+Total time for compute_gradient_log_hp = 10.332634
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055912
+Total time for get_inverse_by_tmi (N = 2048) = 0.259287
+Total time for lowertriangular_matrixmultiply_noshare = 0.677774
+Time for compute_k_train: 0.007709. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.004742
+Total Time for get_log_likelihood: 3.012469
+
+Total time for get_cholesky (n = 2048) = 2.055240
+Time for forward_substitution_matrix = 4.101818
+Time for backward_substitution_matrix = 4.063573
+Time for Compute_K_inverse = 10.222169
+Total time for compute_gradient_log_hp = 10.333153
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055102
+Total time for get_inverse_by_tmi (N = 2048) = 0.258577
+Total time for lowertriangular_matrixmultiply_noshare = 0.678335
+Time for compute_k_train: 0.007714. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.003777
+Total Time for get_log_likelihood: 3.011507
+
+Total time for get_cholesky (n = 2048) = 2.055181
+Time for forward_substitution_matrix = 4.097569
+Time for backward_substitution_matrix = 4.062222
+Time for Compute_K_inverse = 10.216513
+Total time for compute_gradient_log_hp = 10.327461
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055144
+Total time for get_inverse_by_tmi (N = 2048) = 0.259680
+Total time for lowertriangular_matrixmultiply_noshare = 0.677651
+Time for compute_k_train: 0.007707. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.004246
+Total Time for get_log_likelihood: 3.011971
+
+Total time for get_cholesky (n = 2048) = 2.054998
+Time for forward_substitution_matrix = 4.094842
+Time for backward_substitution_matrix = 4.061919
+Time for Compute_K_inverse = 10.213298
+Total time for compute_gradient_log_hp = 10.324072
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055456
+Total time for get_inverse_by_tmi (N = 2048) = 0.258766
+Total time for lowertriangular_matrixmultiply_noshare = 0.675739
+Time for compute_k_train: 0.007711. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.001734
+Total Time for get_log_likelihood: 3.009462
+
+Total time for get_cholesky (n = 2048) = 2.055325
+Time for forward_substitution_matrix = 4.101758
+Time for backward_substitution_matrix = 4.060777
+Time for Compute_K_inverse = 10.219401
+Total time for compute_gradient_log_hp = 10.330400
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055005
+Total time for get_inverse_by_tmi (N = 2048) = 0.258713
+Total time for lowertriangular_matrixmultiply_noshare = 0.677689
+Time for compute_k_train: 0.007722. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.003178
+Total Time for get_log_likelihood: 3.010916
+
+Total time for get_cholesky (n = 2048) = 2.055373
+Time for forward_substitution_matrix = 4.099027
+Time for backward_substitution_matrix = 4.075017
+Time for Compute_K_inverse = 10.230957
+Total time for compute_gradient_log_hp = 10.341756
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055379
+Total time for get_inverse_by_tmi (N = 2048) = 0.258379
+Total time for lowertriangular_matrixmultiply_noshare = 0.677726
+Time for compute_k_train: 0.007718. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.003255
+Total Time for get_log_likelihood: 3.010990
+
+Total time for get_cholesky (n = 2048) = 2.055296
+Time for forward_substitution_matrix = 4.101029
+Time for backward_substitution_matrix = 4.065961
+Time for Compute_K_inverse = 10.223825
+Total time for compute_gradient_log_hp = 10.334663
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055118
+Total time for get_inverse_by_tmi (N = 2048) = 0.259568
+Total time for lowertriangular_matrixmultiply_noshare = 0.677660
+Time for compute_k_train: 0.007708. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.004116
+Total Time for get_log_likelihood: 3.011841
+
+Total time for get_cholesky (n = 2048) = 2.055361
+Time for forward_substitution_matrix = 4.105091
+Time for backward_substitution_matrix = 4.083701
+Time for Compute_K_inverse = 10.245692
+Total time for compute_gradient_log_hp = 10.356934
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.054941
+Total time for get_inverse_by_tmi (N = 2048) = 0.258724
+Total time for lowertriangular_matrixmultiply_noshare = 0.677707
+Time for compute_k_train: 0.007716. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.003143
+Total Time for get_log_likelihood: 3.010876
+
+Total time for get_cholesky (n = 2048) = 2.055231
+Time for forward_substitution_matrix = 4.098558
+Time for backward_substitution_matrix = 4.062163
+Time for Compute_K_inverse = 10.217492
+Total time for compute_gradient_log_hp = 10.328148
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055056
+Total time for get_inverse_by_tmi (N = 2048) = 0.259604
+Total time for lowertriangular_matrixmultiply_noshare = 0.675590
+Time for compute_k_train: 0.007702. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.002022
+Total Time for get_log_likelihood: 3.009742
+
+Total time for get_cholesky (n = 2048) = 2.055491
+Time for forward_substitution_matrix = 4.099333
+Time for backward_substitution_matrix = 4.079429
+Time for Compute_K_inverse = 10.235792
+Total time for compute_gradient_log_hp = 10.346812
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055053
+Total time for get_inverse_by_tmi (N = 2048) = 0.258980
+Total time for lowertriangular_matrixmultiply_noshare = 0.677881
+Time for compute_k_train: 0.007714. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.003683
+Total Time for get_log_likelihood: 3.011415
+
+Total time for get_cholesky (n = 2048) = 2.055763
+Time for forward_substitution_matrix = 4.098462
+Time for backward_substitution_matrix = 4.068273
+Time for Compute_K_inverse = 10.224038
+Total time for compute_gradient_log_hp = 10.334957
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055390
+Total time for get_inverse_by_tmi (N = 2048) = 0.259326
+Total time for lowertriangular_matrixmultiply_noshare = 0.675685
+Time for compute_k_train: 0.007712. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.002172
+Total Time for get_log_likelihood: 3.009902
+
+Total time for get_cholesky (n = 2048) = 2.055395
+Time for forward_substitution_matrix = 4.101197
+Time for backward_substitution_matrix = 4.065532
+Time for Compute_K_inverse = 10.223664
+Total time for compute_gradient_log_hp = 10.334446
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055362
+Total time for get_inverse_by_tmi (N = 2048) = 0.259159
+Total time for lowertriangular_matrixmultiply_noshare = 0.677856
+Time for compute_k_train: 0.007718. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.004149
+Total Time for get_log_likelihood: 3.011884
+
+Total time for get_cholesky (n = 2048) = 2.055508
+Time for forward_substitution_matrix = 4.097882
+Time for backward_substitution_matrix = 4.066609
+Time for Compute_K_inverse = 10.221538
+Total time for compute_gradient_log_hp = 10.332336
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.054989
+Total time for get_inverse_by_tmi (N = 2048) = 0.259382
+Total time for lowertriangular_matrixmultiply_noshare = 0.675614
+Time for compute_k_train: 0.007714. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.001749
+Total Time for get_log_likelihood: 3.009480
+
+Total time for get_cholesky (n = 2048) = 2.055245
+Time for forward_substitution_matrix = 4.094051
+Time for backward_substitution_matrix = 4.065273
+Time for Compute_K_inverse = 10.216109
+Total time for compute_gradient_log_hp = 10.326918
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.054844
+Total time for get_inverse_by_tmi (N = 2048) = 0.259622
+Total time for lowertriangular_matrixmultiply_noshare = 0.677766
+Time for compute_k_train: 0.007711. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.004006
+Total Time for get_log_likelihood: 3.011734
+
+Total time for get_cholesky (n = 2048) = 2.055571
+Time for forward_substitution_matrix = 4.103884
+Time for backward_substitution_matrix = 4.063062
+Time for Compute_K_inverse = 10.224056
+Total time for compute_gradient_log_hp = 10.334942
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055496
+Total time for get_inverse_by_tmi (N = 2048) = 0.259047
+Total time for lowertriangular_matrixmultiply_noshare = 0.678576
+Time for compute_k_train: 0.007711. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.004889
+Total Time for get_log_likelihood: 3.012617
+
+Total time for get_cholesky (n = 2048) = 2.055676
+Time for forward_substitution_matrix = 4.095623
+Time for backward_substitution_matrix = 4.058939
+Time for Compute_K_inverse = 10.211778
+Total time for compute_gradient_log_hp = 10.322571
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055028
+Total time for get_inverse_by_tmi (N = 2048) = 0.258496
+Total time for lowertriangular_matrixmultiply_noshare = 0.678516
+Time for compute_k_train: 0.007706. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.003808
+Total Time for get_log_likelihood: 3.011531
+
+Total time for get_cholesky (n = 2048) = 2.055375
+Time for forward_substitution_matrix = 4.101808
+Time for backward_substitution_matrix = 4.070942
+Time for Compute_K_inverse = 10.229664
+Total time for compute_gradient_log_hp = 10.340523
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055188
+Total time for get_inverse_by_tmi (N = 2048) = 0.259942
+Total time for lowertriangular_matrixmultiply_noshare = 0.677851
+Time for compute_k_train: 0.007725. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.004752
+Total Time for get_log_likelihood: 3.012495
+
+Total time for get_cholesky (n = 2048) = 2.055703
+Time for forward_substitution_matrix = 4.094067
+Time for backward_substitution_matrix = 4.064915
+Time for Compute_K_inverse = 10.216224
+Total time for compute_gradient_log_hp = 10.326956
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055487
+Total time for get_inverse_by_tmi (N = 2048) = 0.258618
+Total time for lowertriangular_matrixmultiply_noshare = 0.677801
+Time for compute_k_train: 0.007714. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.003673
+Total Time for get_log_likelihood: 3.011405
+
+Total time for get_cholesky (n = 2048) = 2.055524
+Time for forward_substitution_matrix = 4.101847
+Time for backward_substitution_matrix = 4.072638
+Time for Compute_K_inverse = 10.231549
+Total time for compute_gradient_log_hp = 10.342408
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055522
+Total time for get_inverse_by_tmi (N = 2048) = 0.259589
+Total time for lowertriangular_matrixmultiply_noshare = 0.677809
+Time for compute_k_train: 0.007725. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.004686
+Total Time for get_log_likelihood: 3.012428
+
+Total time for get_cholesky (n = 2048) = 2.055349
+Time for forward_substitution_matrix = 4.103026
+Time for backward_substitution_matrix = 4.072616
+Time for Compute_K_inverse = 10.232531
+Total time for compute_gradient_log_hp = 10.343327
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055391
+Total time for get_inverse_by_tmi (N = 2048) = 0.259081
+Total time for lowertriangular_matrixmultiply_noshare = 0.678007
+Time for compute_k_train: 0.007712. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.004252
+Total Time for get_log_likelihood: 3.011981
+
+Total time for get_cholesky (n = 2048) = 2.055624
+Time for forward_substitution_matrix = 4.101323
+Time for backward_substitution_matrix = 4.067670
+Time for Compute_K_inverse = 10.226176
+Total time for compute_gradient_log_hp = 10.337050
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055287
+Total time for get_inverse_by_tmi (N = 2048) = 0.258731
+Total time for lowertriangular_matrixmultiply_noshare = 0.677978
+Time for compute_k_train: 0.007710. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.003767
+Total Time for get_log_likelihood: 3.011494
+
+Total time for get_cholesky (n = 2048) = 2.055702
+Time for forward_substitution_matrix = 4.103499
+Time for backward_substitution_matrix = 4.067031
+Time for Compute_K_inverse = 10.227772
+Total time for compute_gradient_log_hp = 10.338614
+
+Get loglikelihood starts
+Total time for get_cholesky (n = 2048) = 2.055665
+Total time for get_inverse_by_tmi (N = 2048) = 0.259346
+Total time for lowertriangular_matrixmultiply_noshare = 0.678041
+Time for compute_k_train: 0.007713. DIM is 10
+Time for compute_chol_get_mul_and_det: 3.004821
+Total Time for get_log_likelihood: 3.012550
+
+Total time for get_cholesky (n = 2048) = 2.055477
+Time for forward_substitution_matrix = 4.100677
+Time for backward_substitution_matrix = 4.067912
+Time for Compute_K_inverse = 10.225606
+Total time for compute_gradient_log_hp = 10.336548
+
+
+compute-0-33.local: PLEASE-SEE  3: 0.500000, -0.707123, -0.707123
+
+Total train time: 880.773508

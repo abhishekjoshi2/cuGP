@@ -1,0 +1,557 @@
+Trying to listen on port 15618
+Hostname compute-0-25.local is listening on port 15618 with listenfd = 3
+Node is compute-0-25.local and Master is compute-0-25.local. Number of workers is 1
+Master calling cg_solve()
+YEEEEEEEEEEEEEEEHH setup call huaa
+Inside read_input_and_copy_to_GPUs
+Reading inputs boy
+Number of inputs = 64
+reading labels 
+Okay boy.. reading and malloc done
+
+Get loglikelihood starts
+Total time for get_cholesky = 0.003089
+Time for compute_k_train: 0.000038
+Time for compute_chol_get_mul_and_det: 0.003776
+Total Time for get_log_likelihood: 0.003950
+
+Total time for get_cholesky = 0.002952
+Get loglikelihood starts
+Total time for get_cholesky = 0.003054
+Time for compute_k_train: 0.000034
+Time for compute_chol_get_mul_and_det: 0.003698
+Total Time for get_log_likelihood: 0.003750
+
+Total time for get_cholesky = 0.002857
+Get loglikelihood starts
+Total time for get_cholesky = 0.002920
+Time for compute_k_train: 0.000031
+Time for compute_chol_get_mul_and_det: 0.003562
+Total Time for get_log_likelihood: 0.003612
+
+Total time for get_cholesky = 0.002927
+Get loglikelihood starts
+Total time for get_cholesky = 0.002858
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003499
+Total Time for get_log_likelihood: 0.003552
+
+Total time for get_cholesky = 0.003055
+Get loglikelihood starts
+Total time for get_cholesky = 0.002940
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003596
+Total Time for get_log_likelihood: 0.003648
+
+Total time for get_cholesky = 0.003033
+Get loglikelihood starts
+Total time for get_cholesky = 0.003036
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003695
+Total Time for get_log_likelihood: 0.003748
+
+Total time for get_cholesky = 0.003035
+Get loglikelihood starts
+Total time for get_cholesky = 0.003057
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003713
+Total Time for get_log_likelihood: 0.003766
+
+Total time for get_cholesky = 0.003028
+Get loglikelihood starts
+Total time for get_cholesky = 0.003033
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003691
+Total Time for get_log_likelihood: 0.003744
+
+Total time for get_cholesky = 0.002983
+Get loglikelihood starts
+Total time for get_cholesky = 0.003034
+Time for compute_k_train: 0.000031
+Time for compute_chol_get_mul_and_det: 0.003712
+Total Time for get_log_likelihood: 0.003764
+
+Total time for get_cholesky = 0.002834
+Get loglikelihood starts
+Total time for get_cholesky = 0.002958
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003597
+Total Time for get_log_likelihood: 0.003648
+
+Total time for get_cholesky = 0.002861
+Get loglikelihood starts
+Total time for get_cholesky = 0.002839
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003480
+Total Time for get_log_likelihood: 0.003530
+
+Total time for get_cholesky = 0.003000
+Get loglikelihood starts
+Total time for get_cholesky = 0.002859
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003516
+Total Time for get_log_likelihood: 0.003568
+
+Total time for get_cholesky = 0.003016
+Get loglikelihood starts
+Total time for get_cholesky = 0.002993
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003652
+Total Time for get_log_likelihood: 0.003703
+
+Total time for get_cholesky = 0.003015
+Get loglikelihood starts
+Total time for get_cholesky = 0.003047
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003703
+Total Time for get_log_likelihood: 0.003756
+
+Total time for get_cholesky = 0.003023
+Get loglikelihood starts
+Total time for get_cholesky = 0.003025
+Time for compute_k_train: 0.000031
+Time for compute_chol_get_mul_and_det: 0.003682
+Total Time for get_log_likelihood: 0.003733
+
+Total time for get_cholesky = 0.003013
+Get loglikelihood starts
+Total time for get_cholesky = 0.003024
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003680
+Total Time for get_log_likelihood: 0.003733
+
+Total time for get_cholesky = 0.002935
+Get loglikelihood starts
+Total time for get_cholesky = 0.003021
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003657
+Total Time for get_log_likelihood: 0.003711
+
+Total time for get_cholesky = 0.002832
+Get loglikelihood starts
+Total time for get_cholesky = 0.002898
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003533
+Total Time for get_log_likelihood: 0.003587
+
+Total time for get_cholesky = 0.002911
+Get loglikelihood starts
+Total time for get_cholesky = 0.002856
+Time for compute_k_train: 0.000031
+Time for compute_chol_get_mul_and_det: 0.003493
+Total Time for get_log_likelihood: 0.003542
+
+Total time for get_cholesky = 0.003020
+Get loglikelihood starts
+Total time for get_cholesky = 0.002913
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003569
+Total Time for get_log_likelihood: 0.003621
+
+Total time for get_cholesky = 0.003021
+Get loglikelihood starts
+Total time for get_cholesky = 0.003022
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003678
+Total Time for get_log_likelihood: 0.003732
+
+Total time for get_cholesky = 0.003042
+Get loglikelihood starts
+Total time for get_cholesky = 0.003024
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003678
+Total Time for get_log_likelihood: 0.003732
+
+Total time for get_cholesky = 0.003023
+Get loglikelihood starts
+Total time for get_cholesky = 0.003029
+Time for compute_k_train: 0.000031
+Time for compute_chol_get_mul_and_det: 0.003683
+Total Time for get_log_likelihood: 0.003735
+
+Total time for get_cholesky = 0.002992
+Get loglikelihood starts
+Total time for get_cholesky = 0.003042
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003699
+Total Time for get_log_likelihood: 0.003752
+
+Total time for get_cholesky = 0.002856
+Get loglikelihood starts
+Total time for get_cholesky = 0.002971
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003610
+Total Time for get_log_likelihood: 0.003661
+
+Total time for get_cholesky = 0.002852
+Get loglikelihood starts
+Total time for get_cholesky = 0.002848
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003487
+Total Time for get_log_likelihood: 0.003537
+
+Total time for get_cholesky = 0.002988
+Get loglikelihood starts
+Total time for get_cholesky = 0.002835
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003491
+Total Time for get_log_likelihood: 0.003543
+
+Total time for get_cholesky = 0.003024
+Get loglikelihood starts
+Total time for get_cholesky = 0.002958
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003615
+Total Time for get_log_likelihood: 0.003667
+
+Total time for get_cholesky = 0.003024
+Get loglikelihood starts
+Total time for get_cholesky = 0.003038
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003690
+Total Time for get_log_likelihood: 0.003743
+
+Total time for get_cholesky = 0.003020
+Get loglikelihood starts
+Total time for get_cholesky = 0.003022
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003678
+Total Time for get_log_likelihood: 0.003731
+
+Total time for get_cholesky = 0.003024
+Get loglikelihood starts
+Total time for get_cholesky = 0.003022
+Time for compute_k_train: 0.000031
+Time for compute_chol_get_mul_and_det: 0.003680
+Total Time for get_log_likelihood: 0.003732
+
+Total time for get_cholesky = 0.002979
+Get loglikelihood starts
+Total time for get_cholesky = 0.003306
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003960
+Total Time for get_log_likelihood: 0.004011
+
+Total time for get_cholesky = 0.002821
+Get loglikelihood starts
+Total time for get_cholesky = 0.002924
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003560
+Total Time for get_log_likelihood: 0.003612
+
+Total time for get_cholesky = 0.002887
+Get loglikelihood starts
+Total time for get_cholesky = 0.002863
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003501
+Total Time for get_log_likelihood: 0.003551
+
+Total time for get_cholesky = 0.003006
+Get loglikelihood starts
+Total time for get_cholesky = 0.002891
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003547
+Total Time for get_log_likelihood: 0.003600
+
+Total time for get_cholesky = 0.003020
+Get loglikelihood starts
+Total time for get_cholesky = 0.003018
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003672
+Total Time for get_log_likelihood: 0.003724
+
+Total time for get_cholesky = 0.003045
+Get loglikelihood starts
+Total time for get_cholesky = 0.003024
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003679
+Total Time for get_log_likelihood: 0.003733
+
+Total time for get_cholesky = 0.003022
+Get loglikelihood starts
+Total time for get_cholesky = 0.003024
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003681
+Total Time for get_log_likelihood: 0.003734
+
+Total time for get_cholesky = 0.003022
+Get loglikelihood starts
+Total time for get_cholesky = 0.003047
+Time for compute_k_train: 0.000031
+Time for compute_chol_get_mul_and_det: 0.003703
+Total Time for get_log_likelihood: 0.003754
+
+Total time for get_cholesky = 0.002893
+Get loglikelihood starts
+Total time for get_cholesky = 0.003007
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003642
+Total Time for get_log_likelihood: 0.003693
+
+Total time for get_cholesky = 0.002825
+Get loglikelihood starts
+Total time for get_cholesky = 0.002902
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003559
+Total Time for get_log_likelihood: 0.003609
+
+Total time for get_cholesky = 0.002904
+Get loglikelihood starts
+Total time for get_cholesky = 0.002834
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003470
+Total Time for get_log_likelihood: 0.003523
+
+Total time for get_cholesky = 0.003021
+Get loglikelihood starts
+Total time for get_cholesky = 0.002925
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003580
+Total Time for get_log_likelihood: 0.003632
+
+Total time for get_cholesky = 0.003041
+Get loglikelihood starts
+Total time for get_cholesky = 0.003019
+Time for compute_k_train: 0.000034
+Time for compute_chol_get_mul_and_det: 0.003671
+Total Time for get_log_likelihood: 0.003725
+
+Total time for get_cholesky = 0.003022
+Get loglikelihood starts
+Total time for get_cholesky = 0.003026
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003683
+Total Time for get_log_likelihood: 0.003736
+
+Total time for get_cholesky = 0.003006
+Get loglikelihood starts
+Total time for get_cholesky = 0.003048
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003704
+Total Time for get_log_likelihood: 0.003756
+
+Total time for get_cholesky = 0.002975
+Get loglikelihood starts
+Total time for get_cholesky = 0.003025
+Time for compute_k_train: 0.000031
+Time for compute_chol_get_mul_and_det: 0.003681
+Total Time for get_log_likelihood: 0.003732
+
+Total time for get_cholesky = 0.002844
+Get loglikelihood starts
+Total time for get_cholesky = 0.002956
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003595
+Total Time for get_log_likelihood: 0.003646
+
+Total time for get_cholesky = 0.002874
+Get loglikelihood starts
+Total time for get_cholesky = 0.002847
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003485
+Total Time for get_log_likelihood: 0.003535
+
+Total time for get_cholesky = 0.002965
+Get loglikelihood starts
+Total time for get_cholesky = 0.002849
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003505
+Total Time for get_log_likelihood: 0.003557
+
+Total time for get_cholesky = 0.003027
+Get loglikelihood starts
+Total time for get_cholesky = 0.002993
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003650
+Total Time for get_log_likelihood: 0.003702
+
+Total time for get_cholesky = 0.003023
+Get loglikelihood starts
+Total time for get_cholesky = 0.003024
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003679
+Total Time for get_log_likelihood: 0.003732
+
+Total time for get_cholesky = 0.003021
+Get loglikelihood starts
+Total time for get_cholesky = 0.003023
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003678
+Total Time for get_log_likelihood: 0.003731
+
+Total time for get_cholesky = 0.003040
+Get loglikelihood starts
+Total time for get_cholesky = 0.003026
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003681
+Total Time for get_log_likelihood: 0.003734
+
+Total time for get_cholesky = 0.002936
+Get loglikelihood starts
+Total time for get_cholesky = 0.003020
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003670
+Total Time for get_log_likelihood: 0.003721
+
+Total time for get_cholesky = 0.002837
+Get loglikelihood starts
+Total time for get_cholesky = 0.002946
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003582
+Total Time for get_log_likelihood: 0.003633
+
+Total time for get_cholesky = 0.002881
+Get loglikelihood starts
+Total time for get_cholesky = 0.002835
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003475
+Total Time for get_log_likelihood: 0.003525
+
+Total time for get_cholesky = 0.003008
+Get loglikelihood starts
+Total time for get_cholesky = 0.002892
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003549
+Total Time for get_log_likelihood: 0.003601
+
+Total time for get_cholesky = 0.003044
+Get loglikelihood starts
+Total time for get_cholesky = 0.003019
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003675
+Total Time for get_log_likelihood: 0.003728
+
+Total time for get_cholesky = 0.003018
+Get loglikelihood starts
+Total time for get_cholesky = 0.003029
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003683
+Total Time for get_log_likelihood: 0.003739
+
+Total time for get_cholesky = 0.003021
+Get loglikelihood starts
+Total time for get_cholesky = 0.003041
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003696
+Total Time for get_log_likelihood: 0.003750
+
+Total time for get_cholesky = 0.002996
+Get loglikelihood starts
+Total time for get_cholesky = 0.003020
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003678
+Total Time for get_log_likelihood: 0.003729
+
+Total time for get_cholesky = 0.002871
+Get loglikelihood starts
+Total time for get_cholesky = 0.002984
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003622
+Total Time for get_log_likelihood: 0.003673
+
+Total time for get_cholesky = 0.002854
+Get loglikelihood starts
+Total time for get_cholesky = 0.002871
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003509
+Total Time for get_log_likelihood: 0.003561
+
+Total time for get_cholesky = 0.002942
+Get loglikelihood starts
+Total time for get_cholesky = 0.002833
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003481
+Total Time for get_log_likelihood: 0.003533
+
+Total time for get_cholesky = 0.003022
+Get loglikelihood starts
+Total time for get_cholesky = 0.002968
+Time for compute_k_train: 0.000031
+Time for compute_chol_get_mul_and_det: 0.003626
+Total Time for get_log_likelihood: 0.003678
+
+Total time for get_cholesky = 0.003019
+Get loglikelihood starts
+Total time for get_cholesky = 0.003025
+Time for compute_k_train: 0.000031
+Time for compute_chol_get_mul_and_det: 0.003678
+Total Time for get_log_likelihood: 0.003730
+
+Total time for get_cholesky = 0.003019
+Get loglikelihood starts
+Total time for get_cholesky = 0.003018
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003672
+Total Time for get_log_likelihood: 0.003725
+
+Total time for get_cholesky = 0.003044
+Get loglikelihood starts
+Total time for get_cholesky = 0.003021
+Time for compute_k_train: 0.000033
+Time for compute_chol_get_mul_and_det: 0.003679
+Total Time for get_log_likelihood: 0.003732
+
+Total time for get_cholesky = 0.002946
+Get loglikelihood starts
+Total time for get_cholesky = 0.003027
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003682
+Total Time for get_log_likelihood: 0.003731
+
+Total time for get_cholesky = 0.002829
+Get loglikelihood starts
+Total time for get_cholesky = 0.002938
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003577
+Total Time for get_log_likelihood: 0.003627
+
+Total time for get_cholesky = 0.002869
+Get loglikelihood starts
+Total time for get_cholesky = 0.002837
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003474
+Total Time for get_log_likelihood: 0.003523
+
+Total time for get_cholesky = 0.002997
+Get loglikelihood starts
+Total time for get_cholesky = 0.002893
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003568
+Total Time for get_log_likelihood: 0.003620
+
+Total time for get_cholesky = 0.003020
+Get loglikelihood starts
+Total time for get_cholesky = 0.003016
+Time for compute_k_train: 0.000031
+Time for compute_chol_get_mul_and_det: 0.003671
+Total Time for get_log_likelihood: 0.003723
+
+Total time for get_cholesky = 0.003018
+Get loglikelihood starts
+Total time for get_cholesky = 0.003028
+Time for compute_k_train: 0.000032
+Time for compute_chol_get_mul_and_det: 0.003683
+Total Time for get_log_likelihood: 0.003735
+
+Total time for get_cholesky = 0.003045
+Get loglikelihood starts
+Total time for get_cholesky = 0.003019
+Time for compute_k_train: 0.000034
+Time for compute_chol_get_mul_and_det: 0.003674
+Total Time for get_log_likelihood: 0.003728
+
+Total time for get_cholesky = 0.003007
+Get loglikelihood starts
+Total time for get_cholesky = 0.003025
+Time for compute_k_train: 0.000031
+Time for compute_chol_get_mul_and_det: 0.003681
+Total Time for get_log_likelihood: 0.003732
+
+Total time for get_cholesky = 0.002885
+Get loglikelihood starts
+Total time for get_cholesky = 0.003023
+Time for compute_k_train: 0.000031
+Time for compute_chol_get_mul_and_det: 0.003659
+Total Time for get_log_likelihood: 0.003708
+
+Total time for get_cholesky = 0.002836

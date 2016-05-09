@@ -1,0 +1,3135 @@
+Trying to listen on port 15618
+Hostname compute-0-23.local is listening on port 15618 with listenfd = 3
+Node is compute-0-23.local and Master is compute-0-37.local. Number of workers is 4
+Host compute-0-23.local connected to master, connfd is 4
+Host compute-0-23.local got worker id as 3
+Worker skipping cg_solve(), instead calling accept_commands
+YEEEEEEEEEEEEEEEHH setup call huaa
+Inside read_input_and_copy_to_GPUs
+Reading inputs boy
+Number of inputs = 32
+reading labels 
+Okay boy.. reading and malloc done
+
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001549 s
+FINAL ERROR = 0.000000
+Determinant is 48.188857
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000041
+Total threads launched: 64
+Time for iter 1: 0.000039
+Total threads launched: 128
+Time for iter 2: 0.000044
+Total threads launched: 256
+Time for iter 3: 0.000055
+Total sum: 32.000000
+The value of loglikelihood = -54.772727
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001907 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 58.910485
+Dekho bhai -2.592343
+8.704524
+20.750718
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.501415
+0.495803
+0.489991
+
+------------------
+Dekho bhai naya value AYAA
+
+0.501415
+0.495803
+0.489991
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001926 s
+FINAL ERROR = 0.000000
+Determinant is 47.655743
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000047
+Total threads launched: 64
+Time for iter 1: 0.000049
+Total threads launched: 128
+Time for iter 2: 0.000053
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -54.525044
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001891 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 58.834989
+Dekho bhai -2.612943
+8.719279
+20.698215
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.504245
+0.487409
+0.469972
+
+------------------
+Dekho bhai naya value AYAA
+
+0.504245
+0.487409
+0.469972
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001967 s
+FINAL ERROR = 0.000000
+Determinant is 46.590598
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000049
+Total threads launched: 64
+Time for iter 1: 0.000049
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000064
+Total sum: 32.000000
+The value of loglikelihood = -54.030987
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001895 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 58.680927
+Dekho bhai -2.653845
+8.747242
+20.593221
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.512734
+0.462227
+0.409917
+
+------------------
+Dekho bhai naya value AYAA
+
+0.512734
+0.462227
+0.409917
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001936 s
+FINAL ERROR = 0.000000
+Determinant is 43.403703
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000050
+Total threads launched: 64
+Time for iter 1: 0.000049
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -52.559455
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001901 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 58.193265
+Dekho bhai -2.773647
+8.818212
+20.278421
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.538202
+0.386681
+0.229750
+
+------------------
+Dekho bhai naya value AYAA
+
+0.538202
+0.386681
+0.229750
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001932 s
+FINAL ERROR = 0.000000
+Determinant is 33.916517
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000049
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -48.245374
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001953 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 56.475216
+Dekho bhai -3.091751
+8.900038
+19.337570
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.614606
+0.160044
+-0.310750
+
+------------------
+Dekho bhai naya value AYAA
+
+0.614606
+0.160044
+-0.310750
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001944 s
+FINAL ERROR = 0.000000
+Determinant is 6.017889
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000049
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -36.382146
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001932 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 48.130873
+Dekho bhai -3.086240
+7.489465
+16.575971
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.843817
+-0.519868
+-1.932251
+
+------------------
+Dekho bhai naya value AYAA
+
+0.843817
+-0.519868
+-1.932251
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001951 s
+FINAL ERROR = 0.000000
+Determinant is -75.231102
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000049
+Total threads launched: 128
+Time for iter 2: 0.000056
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -25.033844
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.002004 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -68.973900
+Dekho bhai 59.067946
+-39.922108
+5.435158
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.723436
+-0.162780
+-1.080644
+
+------------------
+Dekho bhai naya value AYAA
+
+0.723436
+-0.162780
+-1.080644
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001995 s
+FINAL ERROR = 0.000000
+Determinant is -32.766028
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000053
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -23.920845
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001935 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 20.408244
+Dekho bhai 5.193217
+-2.407569
+12.611691
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.820912
+-0.451925
+-1.770217
+
+------------------
+Dekho bhai naya value AYAA
+
+0.820912
+-0.451925
+-1.770217
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001988 s
+FINAL ERROR = 0.000000
+Determinant is -67.148410
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000056
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -22.617158
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001884 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -43.141772
+Dekho bhai 41.194987
+-28.995120
+7.424234
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.811164
+-0.423011
+-1.701260
+
+------------------
+Dekho bhai naya value AYAA
+
+0.811164
+-0.423011
+-1.701260
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001980 s
+FINAL ERROR = 0.000000
+Determinant is -63.710923
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000049
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -22.002612
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001880 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -33.808612
+Dekho bhai 35.090630
+-25.040993
+8.136687
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.802392
+-0.396988
+-1.639198
+
+------------------
+Dekho bhai naya value AYAA
+
+0.802392
+-0.396988
+-1.639198
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001949 s
+FINAL ERROR = 0.000000
+Determinant is -60.617944
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000049
+Total threads launched: 64
+Time for iter 1: 0.000048
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -21.631146
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001872 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -26.136791
+Dekho bhai 30.237505
+-21.792071
+8.723676
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.794496
+-0.373567
+-1.583343
+
+------------------
+Dekho bhai naya value AYAA
+
+0.794496
+-0.373567
+-1.583343
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001953 s
+FINAL ERROR = 0.000000
+Determinant is -57.834654
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000050
+Total threads launched: 64
+Time for iter 1: 0.000049
+Total threads launched: 128
+Time for iter 2: 0.000053
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -21.430770
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001907 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -19.768708
+Dekho bhai 26.333624
+-19.098432
+9.214078
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+-0.390826
+-0.416417
+-4.472175
+
+------------------
+Dekho bhai naya value AYAA
+
+-0.390826
+-0.416417
+-4.472175
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001893 s
+FINAL ERROR = 0.000000
+Determinant is -40.661913
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000048
+Total threads launched: 64
+Time for iter 1: 0.000048
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -22.525817
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001959 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 10.196586
+Dekho bhai -14.165937
+5.055845
+0.042448
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.240747
+-0.393585
+-2.932923
+
+------------------
+Dekho bhai naya value AYAA
+
+0.240747
+-0.393585
+-2.932923
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001892 s
+FINAL ERROR = 0.000000
+Determinant is -60.572761
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000048
+Total threads launched: 128
+Time for iter 2: 0.000053
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -13.302014
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001969 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 7.270101
+Dekho bhai -16.760338
+1.478793
+2.156258
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.739121
+-0.375569
+-1.718301
+
+------------------
+Dekho bhai naya value AYAA
+
+0.739121
+-0.375569
+-1.718301
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001919 s
+FINAL ERROR = 0.000000
+Determinant is -60.337086
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000052
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000056
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -18.924378
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001970 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -14.748002
+Dekho bhai 19.281788
+-16.967011
+9.593010
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.689284
+-0.377370
+-1.839763
+
+------------------
+Dekho bhai naya value AYAA
+
+0.689284
+-0.377370
+-1.839763
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001984 s
+FINAL ERROR = 0.000000
+Determinant is -62.113259
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000052
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -16.995316
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.002018 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -10.584100
+Dekho bhai 12.798986
+-14.719412
+9.427362
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.644430
+-0.378992
+-1.949079
+
+------------------
+Dekho bhai naya value AYAA
+
+0.644430
+-0.378992
+-1.949079
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001982 s
+FINAL ERROR = 0.000000
+Determinant is -63.339988
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000056
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -15.558499
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001954 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -7.290291
+Dekho bhai 7.386432
+-12.630370
+8.985224
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.604062
+-0.380451
+-2.047463
+
+------------------
+Dekho bhai naya value AYAA
+
+0.604062
+-0.380451
+-2.047463
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001981 s
+FINAL ERROR = 0.000000
+Determinant is -64.155824
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000052
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -14.508752
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001953 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -4.722975
+Dekho bhai 3.073879
+-10.790857
+8.429370
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.567730
+-0.381765
+-2.136009
+
+------------------
+Dekho bhai naya value AYAA
+
+0.567730
+-0.381765
+-2.136009
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001971 s
+FINAL ERROR = 0.000000
+Determinant is -64.663814
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000050
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000056
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -13.752107
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001948 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -2.712377
+Dekho bhai -0.316565
+-9.203324
+7.847136
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.535032
+-0.382947
+-2.215701
+
+------------------
+Dekho bhai naya value AYAA
+
+0.535032
+-0.382947
+-2.215701
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001966 s
+FINAL ERROR = 0.000000
+Determinant is -64.940132
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000052
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -13.214276
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001944 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -1.113689
+Dekho bhai -3.001150
+-7.838499
+7.281655
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.505604
+-0.384011
+-2.287423
+
+------------------
+Dekho bhai naya value AYAA
+
+0.505604
+-0.384011
+-2.287423
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.002026 s
+FINAL ERROR = 0.000000
+Determinant is -65.042783
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000056
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -12.839319
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001872 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 0.180839
+Dekho bhai -5.165248
+-6.661665
+6.752084
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.479118
+-0.384968
+-2.351973
+
+------------------
+Dekho bhai naya value AYAA
+
+0.479118
+-0.384968
+-2.351973
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001964 s
+FINAL ERROR = 0.000000
+Determinant is -65.017459
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000049
+Total threads launched: 64
+Time for iter 1: 0.000048
+Total threads launched: 128
+Time for iter 2: 0.000052
+Total threads launched: 256
+Time for iter 3: 0.000063
+Total sum: 32.000000
+The value of loglikelihood = -12.585748
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001866 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 1.245771
+Dekho bhai -6.946923
+-5.642064
+6.264949
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.901887
+-0.073019
+-4.225105
+
+------------------
+Dekho bhai naya value AYAA
+
+0.901887
+-0.073019
+-4.225105
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001889 s
+FINAL ERROR = 0.000000
+Determinant is -105.717401
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000049
+Total threads launched: 64
+Time for iter 1: 0.000048
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000064
+Total sum: 32.000000
+The value of loglikelihood = -26.223526
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001878 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -134.705227
+Dekho bhai 143.918239
+-38.929625
+-28.422988
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.567003
+-0.320120
+-2.741358
+
+------------------
+Dekho bhai naya value AYAA
+
+0.567003
+-0.320120
+-2.741358
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001879 s
+FINAL ERROR = 0.000000
+Determinant is -72.433192
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000050
+Total threads launched: 64
+Time for iter 1: 0.000049
+Total threads launched: 128
+Time for iter 2: 0.000055
+Total threads launched: 256
+Time for iter 3: 0.000064
+Total sum: 32.000000
+The value of loglikelihood = -9.563236
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001911 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -1.495648
+Dekho bhai -5.720972
+-5.115052
+4.367228
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.609359
+-0.288867
+-2.929021
+
+------------------
+Dekho bhai naya value AYAA
+
+0.609359
+-0.288867
+-2.929021
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001868 s
+FINAL ERROR = 0.000000
+Determinant is -76.110733
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000049
+Total threads launched: 64
+Time for iter 1: 0.000047
+Total threads launched: 128
+Time for iter 2: 0.000053
+Total threads launched: 256
+Time for iter 3: 0.000064
+Total sum: 32.000000
+The value of loglikelihood = -8.496252
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.002015 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -4.582796
+Dekho bhai -3.391425
+-5.395858
+3.104460
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.638612
+-0.267282
+-3.058630
+
+------------------
+Dekho bhai naya value AYAA
+
+0.638612
+-0.267282
+-3.058630
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001925 s
+FINAL ERROR = 0.000000
+Determinant is -78.713787
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000053
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000055
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.976570
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001953 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -7.710172
+Dekho bhai -0.725230
+-5.900069
+2.044983
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.664939
+-0.247856
+-3.175277
+
+------------------
+Dekho bhai naya value AYAA
+
+0.664939
+-0.247856
+-3.175277
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001975 s
+FINAL ERROR = 0.000000
+Determinant is -81.109352
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000056
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.703620
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001950 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -11.409502
+Dekho bhai 2.654762
+-6.627629
+0.922878
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.469005
+0.620292
+-4.682718
+
+------------------
+Dekho bhai naya value AYAA
+
+0.469005
+0.620292
+-4.682718
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001971 s
+FINAL ERROR = 0.000000
+Determinant is -18.797399
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000053
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000055
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -24.633155
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001948 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 45.496264
+Dekho bhai -22.296090
+23.097044
+-0.348912
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.639992
+-0.137318
+-3.367213
+
+------------------
+Dekho bhai naya value AYAA
+
+0.639992
+-0.137318
+-3.367213
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001975 s
+FINAL ERROR = 0.000000
+Determinant is -75.497448
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000056
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.357057
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001956 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 1.200554
+Dekho bhai -6.016624
+0.741397
+-0.141119
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.662444
+-0.236802
+-3.194471
+
+------------------
+Dekho bhai naya value AYAA
+
+0.662444
+-0.236802
+-3.194471
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.002030 s
+FINAL ERROR = 0.000000
+Determinant is -80.597550
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000053
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000055
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -7.612597
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001953 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -10.021805
+Dekho bhai 1.746497
+-5.828904
+0.818001
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.660199
+-0.226854
+-3.211745
+
+------------------
+Dekho bhai naya value AYAA
+
+0.660199
+-0.226854
+-3.211745
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001972 s
+FINAL ERROR = 0.000000
+Determinant is -80.127245
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000052
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000057
+Total threads launched: 256
+Time for iter 3: 0.000067
+Total sum: 32.000000
+The value of loglikelihood = -7.541792
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001957 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -8.797976
+Dekho bhai 0.941187
+-5.123382
+0.724394
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.658178
+-0.217900
+-3.227292
+
+------------------
+Dekho bhai naya value AYAA
+
+0.658178
+-0.217900
+-3.227292
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001971 s
+FINAL ERROR = 0.000000
+Determinant is -79.696198
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000052
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.486936
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001888 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -7.716461
+Dekho bhai 0.224798
+-4.498719
+0.640489
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.656360
+-0.209842
+-3.241284
+
+------------------
+Dekho bhai naya value AYAA
+
+0.656360
+-0.209842
+-3.241284
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001974 s
+FINAL ERROR = 0.000000
+Determinant is -79.302016
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000048
+Total threads launched: 128
+Time for iter 2: 0.000053
+Total threads launched: 256
+Time for iter 3: 0.000064
+Total sum: 32.000000
+The value of loglikelihood = -7.444662
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001868 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -6.759000
+Dekho bhai -0.414126
+-3.944529
+0.565029
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.648176
+-0.173580
+-3.304249
+
+------------------
+Dekho bhai naya value AYAA
+
+0.648176
+-0.173580
+-3.304249
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001937 s
+FINAL ERROR = 0.000000
+Determinant is -77.456467
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000050
+Total threads launched: 64
+Time for iter 1: 0.000049
+Total threads launched: 128
+Time for iter 2: 0.000052
+Total threads launched: 256
+Time for iter 3: 0.000063
+Total sum: 32.000000
+The value of loglikelihood = -7.335872
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001920 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -2.632744
+Dekho bhai -3.239927
+-1.537473
+0.221101
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.718936
+-0.076746
+-3.233225
+
+------------------
+Dekho bhai naya value AYAA
+
+0.718936
+-0.076746
+-3.233225
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001876 s
+FINAL ERROR = 0.000000
+Determinant is -77.193552
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000050
+Total threads launched: 64
+Time for iter 1: 0.000049
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000064
+Total sum: 32.000000
+The value of loglikelihood = -7.130169
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001879 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -1.284101
+Dekho bhai 0.260959
+-0.884975
+0.242925
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.683556
+-0.125163
+-3.268737
+
+------------------
+Dekho bhai naya value AYAA
+
+0.683556
+-0.125163
+-3.268737
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001876 s
+FINAL ERROR = 0.000000
+Determinant is -77.300379
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000048
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.194173
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001905 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -1.753770
+Dekho bhai -1.611588
+-1.127348
+0.250463
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.701246
+-0.100955
+-3.250981
+
+------------------
+Dekho bhai naya value AYAA
+
+0.701246
+-0.100955
+-3.250981
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001874 s
+FINAL ERROR = 0.000000
+Determinant is -77.241238
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000049
+Total threads launched: 64
+Time for iter 1: 0.000048
+Total threads launched: 128
+Time for iter 2: 0.000055
+Total threads launched: 256
+Time for iter 3: 0.000064
+Total sum: 32.000000
+The value of loglikelihood = -7.152472
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001954 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -1.468685
+Dekho bhai -0.714994
+-0.984595
+0.250253
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.692706
+-0.008378
+-3.179732
+
+------------------
+Dekho bhai naya value AYAA
+
+0.692706
+-0.008378
+-3.179732
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001895 s
+FINAL ERROR = 0.000000
+Determinant is -70.879995
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000053
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.390382
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001957 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 10.302161
+Dekho bhai -8.277144
+4.028503
+1.122578
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.698984
+-0.076439
+-3.232113
+
+------------------
+Dekho bhai naya value AYAA
+
+0.698984
+-0.076439
+-3.232113
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.002014 s
+FINAL ERROR = 0.000000
+Determinant is -75.557856
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000052
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000056
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.157109
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001948 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 1.879533
+Dekho bhai -2.868542
+0.436720
+0.503047
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.725819
+-0.037870
+-3.146424
+
+------------------
+Dekho bhai naya value AYAA
+
+0.725819
+-0.037870
+-3.146424
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001972 s
+FINAL ERROR = 0.000000
+Determinant is -74.649687
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000052
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.176666
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001953 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 3.617642
+Dekho bhai -2.271465
+0.793754
+1.015067
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.712402
+-0.057154
+-3.189268
+
+------------------
+Dekho bhai naya value AYAA
+
+0.712402
+-0.057154
+-3.189268
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001966 s
+FINAL ERROR = 0.000000
+Determinant is -75.113302
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000056
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.157695
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001946 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.766296
+Dekho bhai -2.591208
+0.627248
+0.755900
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.719110
+-0.047512
+-3.167846
+
+------------------
+Dekho bhai naya value AYAA
+
+0.719110
+-0.047512
+-3.167846
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001974 s
+FINAL ERROR = 0.000000
+Determinant is -74.883929
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000053
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.164856
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001949 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 3.196399
+Dekho bhai -2.437997
+0.713724
+0.884475
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.731179
+-0.091206
+-3.154697
+
+------------------
+Dekho bhai naya value AYAA
+
+0.731179
+-0.091206
+-3.154697
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001968 s
+FINAL ERROR = 0.000000
+Determinant is -77.890908
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000056
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.206046
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.002012 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -2.982321
+Dekho bhai 2.261583
+-2.227205
+0.736044
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.721262
+-0.055304
+-3.165501
+
+------------------
+Dekho bhai naya value AYAA
+
+0.721262
+-0.055304
+-3.165501
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001971 s
+FINAL ERROR = 0.000000
+Determinant is -75.424713
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000053
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.158915
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001915 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.138593
+Dekho bhai -1.636158
+0.208896
+0.860400
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.716204
+-0.064126
+-3.160603
+
+------------------
+Dekho bhai naya value AYAA
+
+0.716204
+-0.064126
+-3.160603
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001975 s
+FINAL ERROR = 0.000000
+Determinant is -75.413211
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000056
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.170801
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001855 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.114052
+Dekho bhai -1.896148
+0.120191
+0.936835
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.708256
+-0.077986
+-3.152908
+
+------------------
+Dekho bhai naya value AYAA
+
+0.708256
+-0.077986
+-3.152908
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001940 s
+FINAL ERROR = 0.000000
+Determinant is -75.400658
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000050
+Total threads launched: 64
+Time for iter 1: 0.000048
+Total threads launched: 128
+Time for iter 2: 0.000053
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -7.194445
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001859 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.044586
+Dekho bhai -2.280078
+-0.031485
+1.053777
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.715786
+-0.092264
+-3.133855
+
+------------------
+Dekho bhai naya value AYAA
+
+0.715786
+-0.092264
+-3.133855
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001872 s
+FINAL ERROR = 0.000000
+Determinant is -76.468617
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000048
+Total threads launched: 64
+Time for iter 1: 0.000048
+Total threads launched: 128
+Time for iter 2: 0.000053
+Total threads launched: 256
+Time for iter 3: 0.000064
+Total sum: 32.000000
+The value of loglikelihood = -7.213334
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001893 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = -0.166892
+Dekho bhai -0.429551
+-1.183509
+1.100063
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.709009
+-0.079414
+-3.151002
+
+------------------
+Dekho bhai naya value AYAA
+
+0.709009
+-0.079414
+-3.151002
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001880 s
+FINAL ERROR = 0.000000
+Determinant is -75.508445
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000050
+Total threads launched: 64
+Time for iter 1: 0.000048
+Total threads launched: 128
+Time for iter 2: 0.000053
+Total threads launched: 256
+Time for iter 3: 0.000064
+Total sum: 32.000000
+The value of loglikelihood = -7.194934
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001954 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 1.827053
+Dekho bhai -2.098874
+-0.144908
+1.058434
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.708589
+-0.078616
+-3.152066
+
+------------------
+Dekho bhai naya value AYAA
+
+0.708589
+-0.078616
+-3.152066
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001872 s
+FINAL ERROR = 0.000000
+Determinant is -75.448277
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000052
+Total threads launched: 64
+Time for iter 1: 0.000057
+Total threads launched: 128
+Time for iter 2: 0.000056
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.194623
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001950 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 1.948633
+Dekho bhai -2.200168
+-0.081519
+1.055835
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.708539
+-0.078693
+-3.150685
+
+------------------
+Dekho bhai naya value AYAA
+
+0.708539
+-0.078693
+-3.150685
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001947 s
+FINAL ERROR = 0.000000
+Determinant is -75.430728
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000053
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.196205
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001955 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 1.977405
+Dekho bhai -2.217024
+-0.078961
+1.067663
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.708441
+-0.078846
+-3.147923
+
+------------------
+Dekho bhai naya value AYAA
+
+0.708441
+-0.078846
+-3.147923
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001976 s
+FINAL ERROR = 0.000000
+Determinant is -75.395591
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000052
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000056
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.199419
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001956 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.034823
+Dekho bhai -2.250564
+-0.073889
+1.091300
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.708411
+-0.078892
+-3.147090
+
+------------------
+Dekho bhai naya value AYAA
+
+0.708411
+-0.078892
+-3.147090
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001961 s
+FINAL ERROR = 0.000000
+Determinant is -75.384988
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000053
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.200401
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001959 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.052099
+Dekho bhai -2.260629
+-0.072372
+1.098421
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.711618
+-0.077143
+-3.141798
+
+------------------
+Dekho bhai naya value AYAA
+
+0.711618
+-0.077143
+-3.141798
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001975 s
+FINAL ERROR = 0.000000
+Determinant is -75.477912
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000063
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.199274
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001959 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 1.870762
+Dekho bhai -1.953802
+-0.177808
+1.113189
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.709222
+-0.078450
+-3.145752
+
+------------------
+Dekho bhai naya value AYAA
+
+0.709222
+-0.078450
+-3.145752
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001974 s
+FINAL ERROR = 0.000000
+Determinant is -75.408541
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000053
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000055
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.200033
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001957 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.006464
+Dekho bhai -2.183491
+-0.098922
+1.102155
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.709618
+-0.077321
+-3.144399
+
+------------------
+Dekho bhai naya value AYAA
+
+0.709618
+-0.077321
+-3.144399
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001959 s
+FINAL ERROR = 0.000000
+Determinant is -75.364313
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000056
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.200570
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001897 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.092776
+Dekho bhai -2.210846
+-0.065506
+1.111894
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.709846
+-0.076669
+-3.143617
+
+------------------
+Dekho bhai naya value AYAA
+
+0.709846
+-0.076669
+-3.143617
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001969 s
+FINAL ERROR = 0.000000
+Determinant is -75.338756
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000052
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.200898
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001857 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.142576
+Dekho bhai -2.226625
+-0.046234
+1.117522
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.713215
+-0.073180
+-3.143456
+
+------------------
+Dekho bhai naya value AYAA
+
+0.713215
+-0.073180
+-3.143456
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001920 s
+FINAL ERROR = 0.000000
+Determinant is -75.421519
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000049
+Total threads launched: 64
+Time for iter 1: 0.000049
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000070
+Total sum: 32.000000
+The value of loglikelihood = -7.193800
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001854 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.005443
+Dekho bhai -1.951391
+-0.088995
+1.091717
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710220
+-0.076282
+-3.143599
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710220
+-0.076282
+-3.143599
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001879 s
+FINAL ERROR = 0.000000
+Determinant is -75.347911
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000050
+Total threads launched: 64
+Time for iter 1: 0.000049
+Total threads launched: 128
+Time for iter 2: 0.000053
+Total threads launched: 256
+Time for iter 3: 0.000064
+Total sum: 32.000000
+The value of loglikelihood = -7.200072
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001931 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.127572
+Dekho bhai -2.196342
+-0.050897
+1.114683
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710345
+-0.075652
+-3.143714
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710345
+-0.075652
+-3.143714
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001875 s
+FINAL ERROR = 0.000000
+Determinant is -75.326875
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000049
+Total threads launched: 64
+Time for iter 1: 0.000048
+Total threads launched: 128
+Time for iter 2: 0.000053
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -7.199643
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001944 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.171356
+Dekho bhai -2.216735
+-0.028193
+1.113871
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710282
+-0.075967
+-3.143657
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710282
+-0.075967
+-3.143657
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001877 s
+FINAL ERROR = 0.000000
+Determinant is -75.337393
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000053
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000055
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.199856
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001938 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.149470
+Dekho bhai -2.206540
+-0.039542
+1.114277
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710313
+-0.075809
+-3.143685
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710313
+-0.075809
+-3.143685
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.002395 s
+FINAL ERROR = 0.000000
+Determinant is -75.332134
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000052
+Total threads launched: 64
+Time for iter 1: 0.000051
+Total threads launched: 128
+Time for iter 2: 0.000056
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -7.199749
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001952 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.160414
+Dekho bhai -2.211637
+-0.033867
+1.114074
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710329
+-0.075731
+-3.143700
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710329
+-0.075731
+-3.143700
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001996 s
+FINAL ERROR = 0.000000
+Determinant is -75.329505
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000053
+Total threads launched: 64
+Time for iter 1: 0.000049
+Total threads launched: 128
+Time for iter 2: 0.000055
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -7.199696
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001945 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.165885
+Dekho bhai -2.214186
+-0.031029
+1.113972
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710623
+-0.075459
+-3.144638
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710623
+-0.075459
+-3.144638
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001947 s
+FINAL ERROR = 0.000000
+Determinant is -75.350641
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000052
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000056
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.198000
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001934 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.130398
+Dekho bhai -2.178328
+-0.038521
+1.103720
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710457
+-0.075613
+-3.144107
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710457
+-0.075613
+-3.144107
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001950 s
+FINAL ERROR = 0.000000
+Determinant is -75.338678
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000053
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000055
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.198958
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001931 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.150492
+Dekho bhai -2.198634
+-0.034278
+1.109524
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710381
+-0.075449
+-3.144584
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710381
+-0.075449
+-3.144584
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001955 s
+FINAL ERROR = 0.000000
+Determinant is -75.330527
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000049
+Total threads launched: 128
+Time for iter 2: 0.000056
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -7.198591
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001944 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.168261
+Dekho bhai -2.215170
+-0.022577
+1.106708
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710419
+-0.075531
+-3.144346
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710419
+-0.075531
+-3.144346
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001945 s
+FINAL ERROR = 0.000000
+Determinant is -75.334603
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000053
+Total threads launched: 64
+Time for iter 1: 0.000049
+Total threads launched: 128
+Time for iter 2: 0.000055
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.198774
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001999 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.159377
+Dekho bhai -2.206903
+-0.028427
+1.108116
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710400
+-0.075490
+-3.144465
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710400
+-0.075490
+-3.144465
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001948 s
+FINAL ERROR = 0.000000
+Determinant is -75.332565
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000055
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -7.198683
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001936 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.163819
+Dekho bhai -2.211037
+-0.025502
+1.107412
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710391
+-0.075470
+-3.144525
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710391
+-0.075470
+-3.144525
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001963 s
+FINAL ERROR = 0.000000
+Determinant is -75.331546
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000053
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000055
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.198637
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001926 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.166040
+Dekho bhai -2.213104
+-0.024040
+1.107060
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710266
+-0.075757
+-3.145059
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710266
+-0.075757
+-3.145059
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001949 s
+FINAL ERROR = 0.000000
+Determinant is -75.343383
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000052
+Total threads launched: 64
+Time for iter 1: 0.000049
+Total threads launched: 128
+Time for iter 2: 0.000056
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.198329
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001874 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.143597
+Dekho bhai -2.207664
+-0.031445
+1.103244
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.709791
+-0.076007
+-3.145454
+
+------------------
+Dekho bhai naya value AYAA
+
+0.709791
+-0.076007
+-3.145454
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001941 s
+FINAL ERROR = 0.000000
+Determinant is -75.324113
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000052
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000055
+Total threads launched: 256
+Time for iter 3: 0.000066
+Total sum: 32.000000
+The value of loglikelihood = -7.198960
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001857 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.179613
+Dekho bhai -2.257624
+-0.014506
+1.104313
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710190
+-0.075797
+-3.145123
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710190
+-0.075797
+-3.145123
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001999 s
+FINAL ERROR = 0.000000
+Determinant is -75.340280
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000050
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000053
+Total threads launched: 256
+Time for iter 3: 0.000063
+Total sum: 32.000000
+The value of loglikelihood = -7.198430
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001848 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.149403
+Dekho bhai -2.215718
+-0.028715
+1.103416
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710113
+-0.075992
+-3.145162
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710113
+-0.075992
+-3.145162
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001906 s
+FINAL ERROR = 0.000000
+Determinant is -75.344786
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000050
+Total threads launched: 64
+Time for iter 1: 0.000048
+Total threads launched: 128
+Time for iter 2: 0.000051
+Total threads launched: 256
+Time for iter 3: 0.000063
+Total sum: 32.000000
+The value of loglikelihood = -7.198561
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001855 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.139865
+Dekho bhai -2.214212
+-0.033501
+1.103433
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710151
+-0.075894
+-3.145142
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710151
+-0.075894
+-3.145142
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001882 s
+FINAL ERROR = 0.000000
+Determinant is -75.342533
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000050
+Total threads launched: 64
+Time for iter 1: 0.000049
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000063
+Total sum: 32.000000
+The value of loglikelihood = -7.198495
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001855 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.144634
+Dekho bhai -2.214965
+-0.031108
+1.103425
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710132
+-0.075943
+-3.145152
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710132
+-0.075943
+-3.145152
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001888 s
+FINAL ERROR = 0.000000
+Determinant is -75.343659
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000050
+Total threads launched: 64
+Time for iter 1: 0.000049
+Total threads launched: 128
+Time for iter 2: 0.000053
+Total threads launched: 256
+Time for iter 3: 0.000064
+Total sum: 32.000000
+The value of loglikelihood = -7.198528
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001862 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.142250
+Dekho bhai -2.214589
+-0.032304
+1.103429
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.709979
+-0.076000
+-3.144876
+
+------------------
+Dekho bhai naya value AYAA
+
+0.709979
+-0.076000
+-3.144876
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001889 s
+FINAL ERROR = 0.000000
+Determinant is -75.331057
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000049
+Total threads launched: 64
+Time for iter 1: 0.000047
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000063
+Total sum: 32.000000
+The value of loglikelihood = -7.199175
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001907 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.164865
+Dekho bhai -2.236373
+-0.024754
+1.107187
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710117
+-0.075949
+-3.145125
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710117
+-0.075949
+-3.145125
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001868 s
+FINAL ERROR = 0.000000
+Determinant is -75.342399
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000048
+Total threads launched: 128
+Time for iter 2: 0.000052
+Total threads launched: 256
+Time for iter 3: 0.000063
+Total sum: 32.000000
+The value of loglikelihood = -7.198593
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001887 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.144512
+Dekho bhai -2.216768
+-0.031549
+1.103805
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710125
+-0.075946
+-3.145139
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710125
+-0.075946
+-3.145139
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001858 s
+FINAL ERROR = 0.000000
+Determinant is -75.343029
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000049
+Total threads launched: 64
+Time for iter 1: 0.000048
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000064
+Total sum: 32.000000
+The value of loglikelihood = -7.198560
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001885 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.143381
+Dekho bhai -2.215679
+-0.031926
+1.103617
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710121
+-0.075947
+-3.145132
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710121
+-0.075947
+-3.145132
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001858 s
+FINAL ERROR = 0.000000
+Determinant is -75.342714
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000051
+Total threads launched: 64
+Time for iter 1: 0.000048
+Total threads launched: 128
+Time for iter 2: 0.000053
+Total threads launched: 256
+Time for iter 3: 0.000064
+Total sum: 32.000000
+The value of loglikelihood = -7.198576
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001914 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.143947
+Dekho bhai -2.216224
+-0.031738
+1.103711
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710119
+-0.075948
+-3.145128
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710119
+-0.075948
+-3.145128
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001872 s
+FINAL ERROR = 0.000000
+Determinant is -75.342556
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000050
+Total threads launched: 64
+Time for iter 1: 0.000048
+Total threads launched: 128
+Time for iter 2: 0.000054
+Total threads launched: 256
+Time for iter 3: 0.000063
+Total sum: 32.000000
+The value of loglikelihood = -7.198584
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001941 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.144229
+Dekho bhai -2.216496
+-0.031643
+1.103758
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710120
+-0.075960
+-3.145098
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710120
+-0.075960
+-3.145098
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing log likelihood
+Total time taken in cholesky = 0.001935 s
+FINAL ERROR = 0.000000
+Determinant is -75.342847
+num_iters is 4
+Total threads launched: 32
+Time for iter 0: 0.000052
+Total threads launched: 64
+Time for iter 1: 0.000050
+Total threads launched: 128
+Time for iter 2: 0.000055
+Total threads launched: 256
+Time for iter 3: 0.000065
+Total sum: 32.000000
+The value of loglikelihood = -7.198617
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local will start computing gradient log hyperparams
+Yahi hai Kinv
+Total time taken in cholesky = 0.001938 s
+FINAL ERROR = 0.000000
+Why yaar? para2 = 2.143517
+Dekho bhai -2.215931
+-0.032219
+1.103977
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local expecing log hyperparams to be set
+------------------
+slave set the value of HP as
+0.710120
+-0.075960
+-3.145098
+
+------------------
+Dekho bhai naya value AYAA
+
+0.710120
+-0.075960
+-3.145098
+Node compute-0-23.local waiting for a command
+Node compute-0-23.local got DONE message. Return!
