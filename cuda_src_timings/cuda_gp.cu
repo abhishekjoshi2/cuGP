@@ -8,13 +8,10 @@
 #include <fstream>
 #include <thrust/inner_product.h>
 #include <thrust/device_ptr.h>
-#include "./Eigen/Dense"
-#include "./Eigen/src/Core/util/DisableStupidWarnings.h"
+#include "../cuda_src/Eigen/Dense"
+#include "../cuda_src/Eigen/src/Core/util/DisableStupidWarnings.h"
 #include <cmath>
 #include<string>
-
-#define INPUT_FILE "../cpp_serial_gp/sine_256_input.txt"
-#define LABEL_FILE "../cpp_serial_gp/sine_256_labels.txt"
 
 
 #define BLOCK_SIZE 32
@@ -1445,32 +1442,6 @@ double compute_log_likelihood()
 	return llans; 
 }
 
-void compute_K_inverse()
-{
-	int threads_per_block, number_of_blocks;
-	
-	// make_identity(); -> did this in setup "identity" is a double *
-
-	get_cholesky(K, N); //Set of kernels, the answer (a lower triangular matrix) is stored 
-
-	threads_per_block = 512;
-	number_of_blocks = upit(N, threads_per_block);
-	double fsm_start = CycleTimer::currentSeconds();
-	forward_substitution_matrix<<<number_of_blocks, threads_per_block>>>(K, identity, tempfsforkinv, N); // kernel - need N threads
-	cudaThreadSynchronize();
-	double fsm_end = CycleTimer::currentSeconds();
-	printf("Time for forward_substitution_matrix = %lf\n", fsm_end - fsm_start);
-	
-	// matrix_transpose(); // kernel - Not NEEDED
-
-	// matrix_backward_substitution();
-	double bsm_start = CycleTimer::currentSeconds();
-	backward_substitution_matrix<<<number_of_blocks, threads_per_block>>>(K, tempfsforkinv, Kinv, N); // kernel - need N threads
-	cudaThreadSynchronize();
-	double bsm_end = CycleTimer::currentSeconds();
-	printf("Time for backward_substitution_matrix = %lf\n", bsm_end - bsm_start);
-}
-
 void compute_K_inverse_with_tmi()
 {
 	int threads_per_block, number_of_blocks;
@@ -1540,7 +1511,7 @@ void compute_gradient_log_hyperparams(double *localhp_grad)
 	cudaThreadSynchronize();
 	
 	double compute_k_inv_start = CycleTimer::currentSeconds();
-	compute_K_inverse(); // set of kernels
+	compute_K_inverse_with_tmi();	
 	double compute_k_inv_end = CycleTimer::currentSeconds();
 	printf("Time for Compute_K_inverse = %lf\n", compute_k_inv_end - compute_k_inv_start);
 
@@ -1889,13 +1860,13 @@ void get_inverse_by_tmi(double *lower_triangular_mat, int ltm_dim)
 	int mat_size, i, num_iters;
 	int total_threads;
 	double *final_ans;
-	double *lower_triangular_mat_host;
-	lower_triangular_mat_host = new double[ltm_dim * ltm_dim];
+	//double *lower_triangular_mat_host;
+	//lower_triangular_mat_host = new double[ltm_dim * ltm_dim];
 
 	int threads_per_block = 1024;
 	int num_blocks = upit(ltm_dim / 2, threads_per_block);
 
-	cudacall(cudaMemcpy(lower_triangular_mat_host, lower_triangular_mat, sizeof(double) * ltm_dim * ltm_dim, cudaMemcpyDeviceToHost));	
+	//cudacall(cudaMemcpy(lower_triangular_mat_host, lower_triangular_mat, sizeof(double) * ltm_dim * ltm_dim, cudaMemcpyDeviceToHost));	
 
 	inplace_lower_inverse_2x2<<<num_blocks, threads_per_block>>>(lower_triangular_mat, ltm_dim);
 	cudaThreadSynchronize();
@@ -1905,7 +1876,7 @@ void get_inverse_by_tmi(double *lower_triangular_mat, int ltm_dim)
 
 	mat_size = 2;
 	double startime, endtime;
-	final_ans = new double[ltm_dim * ltm_dim];
+//	final_ans = new double[ltm_dim * ltm_dim];
 	for (i = 0; i < num_iters; i++)
 	{
 		startime = CycleTimer::currentSeconds();	
@@ -1926,7 +1897,7 @@ void get_inverse_by_tmi(double *lower_triangular_mat, int ltm_dim)
 		//printf("Time for iter %d: %lf\n", i, endtime - startime);
 	}
 
-	cudacall(cudaMemcpy(final_ans, lower_triangular_mat, sizeof(double) * ltm_dim * ltm_dim, cudaMemcpyDeviceToHost));	
+	/*cudacall(cudaMemcpy(final_ans, lower_triangular_mat, sizeof(double) * ltm_dim * ltm_dim, cudaMemcpyDeviceToHost));	
 
 	double total_sum = 0;
 	for (int i = 0; i < ltm_dim; i++)
@@ -1941,77 +1912,12 @@ void get_inverse_by_tmi(double *lower_triangular_mat, int ltm_dim)
 	}
 	// printf("Total sum: %lf\n", total_sum);
 
-	delete []lower_triangular_mat_host;
+	delete []lower_triangular_mat_host; 
+	*/
+
 	delete []final_ans;
 }
 
- void test_tmi() {
-	int ltm_dim = 2048;
-	double *lower_triangular_mat_host;
-	double *final_ans;
-	int filler = 1;
-	int i, j;
-	int num_iters;
-	int mat_size;
-	int total_threads;
-
-	lower_triangular_mat_host = new double[ltm_dim * ltm_dim];
-
-	for (i = 0; i < ltm_dim; i++)
-		for (j = 0; j <= i; j++)
-			lower_triangular_mat_host[i * ltm_dim + j] = filler++;
-
-	cudacall(cudaMalloc(&lower_triangular_mat, sizeof(double) * ltm_dim * ltm_dim));
-	cudacall(cudaMemcpy(lower_triangular_mat, lower_triangular_mat_host, sizeof(double) * ltm_dim * ltm_dim, cudaMemcpyHostToDevice));	
-
-	cudacall(cudaMalloc(&tmi_playground, sizeof(double) * ltm_dim * ltm_dim));
-
-	final_ans = new double[ltm_dim * ltm_dim];
-	double startime, endtime;
-
-	int threads_per_block = 1024;
-	int num_blocks = upit(ltm_dim / 2, threads_per_block);
-	startime = CycleTimer::currentSeconds();	
-	inplace_lower_inverse_2x2<<<num_blocks, threads_per_block>>>(lower_triangular_mat, ltm_dim);
-	cudaThreadSynchronize();
-
-	num_iters = log2((double)ltm_dim) - 1;
-	printf("num_iters is %d\n", num_iters);
-
-	mat_size = 2;
-	for (i = 0; i < num_iters; i++)
-	{
-		total_threads = ltm_dim * mat_size / 2;
-		printf("Total threads launched: %d\n", total_threads);
-
-		threads_per_block = 1024;
-		num_blocks = upit(total_threads, threads_per_block);
-
-		first_offseted_mat_mult<<<num_blocks, threads_per_block>>>(lower_triangular_mat, mat_size, tmi_playground, ltm_dim, total_threads);
-		cudaThreadSynchronize();
-
-		second_offseted_mat_mult<<<num_blocks, threads_per_block>>>(lower_triangular_mat, mat_size, tmi_playground, ltm_dim, total_threads);
-		cudaThreadSynchronize();
-
-		mat_size *= 2;
-	}
-
-	endtime = CycleTimer::currentSeconds();
-
-	cudacall(cudaMemcpy(final_ans, lower_triangular_mat, sizeof(double) * ltm_dim * ltm_dim, cudaMemcpyDeviceToHost));	
-
-	double total_sum = 0;
-	for (int i = 0; i < ltm_dim; i++)
-	{
-		for (int j = 0; j < ltm_dim; j++)
-		{
-			double sum = 0;
-			for (int k = 0; k < ltm_dim; k++)
-				sum += lower_triangular_mat_host[i * ltm_dim + k] * final_ans[k * ltm_dim + j];
-			total_sum += sum;
-		}
-	}
-} 
 
 void setup_for_testing(int offset, int numtest){
 	Xtest = X + DIM * offset;
@@ -2036,7 +1942,6 @@ void compute_test_means_and_variances(){
         compute_K_train<<<number_of_blocks, threads_per_block>>>(X, K, loghyper, N, DIM); // populated in K
         cudaThreadSynchronize();
 	
-	//compute_K_inverse(); //populates Kinv with K.inverse()
 	// instead of compute_K_inverse, let's see if TMI is of help!!!
 	compute_K_inverse_with_tmi();	
 	
@@ -2096,7 +2001,11 @@ void testing_phase(int offset, int numtest){
 	printf("TRYING TO Start compute_test_means PHASE\n");	
 	printf("---------------------------------------\n");
 	// Now calling testing phase
-	compute_test_means_and_variances();
+        double startime = CycleTimer::currentSeconds();
+        compute_test_means_and_variances();
+        double endtime = CycleTimer::currentSeconds();
+        printf("TESTING TIME = %lf\n", endtime - startime);
+
 
 		
 	printf("\n---------------------------------------\n");
