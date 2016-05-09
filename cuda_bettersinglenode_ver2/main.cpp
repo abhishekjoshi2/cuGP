@@ -173,10 +173,10 @@ int main(int argc, char *argv[])
 		printf("Host %s got worker id as %d\n", argv[1], worker_id);
 	}
 
-	int numtrain = 1024;
+	int numtrain = 6000;
 	int numtest = 1000;
-	std::string prefix_input_file_name = "../chunked_dataset/fortesting/sine_dataset_2024_10_chunk";
-	std::string prefix_label_file_name = "../chunked_dataset/fortesting/sine_dataset_2024_10_label"; 
+	std::string prefix_input_file_name = "../chunked_dataset/si32_chunk";
+	std::string prefix_label_file_name = "../chunked_dataset/si32_label"; 
 
 	std::string ipfile = prefix_input_file_name + std::to_string(worker_id) + std::string(".txt");
 	std::string opfile = prefix_label_file_name + std::to_string(worker_id) + std::string(".txt");
@@ -187,22 +187,14 @@ int main(int argc, char *argv[])
 		
 		setup(numtrain, ipfile, opfile);
 		
-		BCM_log_hyperparams = new double[3];
+		BCM_log_hyperparams = new double[3] = {0.50, 0.50, 0.50};
 
-		Eigen::VectorXd initval(3);
-		initval[0] = 3.762111;
-		initval[1] = -1.152105;
-		initval[2] = -0.384461;
-		
-		set_loghyper_eigen_multinode(initval);
+		set_loghyper_eigen_multinode(BCM_log_hyperparams);
 		
 		double st = CycleTimer::currentSeconds();
 		cg_solve(argv[1]);
 		double end = CycleTimer::currentSeconds();
 		printf("Total train time: %lf\n", end - st);
-
-		testing_phase(numtrain,numtest);
-		destruct_cublas_cusoler();	
 	}
 	else
 	{
