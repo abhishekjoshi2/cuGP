@@ -379,7 +379,7 @@ where,  </p>
 
 <p>Implementing the kernels ourselves gave us the opportunity to fuse different operations together. We benchmark our implementation on a synthetic sine dataset, wherein the input data lives in a 10 dimensional space, and the function to approximate is a sine function that depends only on the first dimension. In order to make the targets (function obsrevations) noisy, we add a Gaussian noise to the function values (the variance of this Gaussian is 0.05). Figure 1 shows the performance of the most crucial functions (some of which are implemented with a series of kernels), on the synthetic dataset. Note that all our experiments were performed using the K40 GPUs. </p>
 
-<img src="images/1_naiveparallelmicrobench.png" alt="naiveparallelmicrobench" height="500" width="600" align="middle">
+<img src="images/new_figure1_benchmarks.png" alt="naiveparallelmicrobench" height="500" width="600" align="middle">
 
 <p>We see that computation of the gradient of log hyperparameters takes the most amount of time. This is expected because the gradient computation involves an inverse of a lower triangular matrix and generation of the covariance matrix, in addition to vector-vector dot products and matrix-vector dot products and vector-vector dot product. In addition to providing significant insights, this implementation serves as strong baseline for our actual approach.</p>
 </li>
@@ -450,11 +450,11 @@ where,  </p>
 
 </br>
 
-<img src="images/3_singlenodespeedup.png" alt="singlenode" height="500" width="600" align="middle">
+<img src="images/new_figure3_training.png" alt="singlenode" height="500" width="600" align="middle">
 
 <br>
 <br>
-<img src="images/parallelpredictionnew.png" alt="parallelprediction" height="500" width="600" align="middle">
+<img src="images/new_figure4_prediction.png" alt="parallelprediction" height="500" width="600" align="middle">
 
 </li>
 
