@@ -483,7 +483,7 @@ where,  </p>
 
 <li> <u> DAS-cuGP: Distributed Approximate Scalable cuGP </u>
 
-<p>The size of data that can be handled by DA-cuGP is limited by the number of GPUs available. In order to further scale up, we wrote a decentralized scheduler which can handle arbitary sizes of data. The basic idea is the same - we shard the data into smaller subsets and map each of the shards to the avalable GPUs. Implementing a distributed version of cuGP (DA-cuGP) was a stretch goal for us. However, once we implemented DA-cuGP, we realized that it would be interesting to further extend this to a highly scalable version of cuGP.</p>
+<p>The size of data that can be handled by DA-cuGP is limited by the number of GPUs available. In order to further scale up, we wrote a decentralized scheduler which can handle arbitary sizes of data. The basic idea is the same - we shard the data into smaller subsets and map each of the shards to the avalable GPUs. Implementing a distributed version of cuGP (DA-cuGP) itself was a stretch goal for us. However, once we implemented DA-cuGP, we realized that it would be interesting to further extend this to a highly scalable version.</p>
 
 <p>To provide a high level intuition, let’s suppose that we have 8 shards but only 2 GPUs. For computing the log likelihood (LL) at a single step, we require input from all the experts (from all the shards). So the first GPU is assigned to compute the LL for shards 1, 3, 5, 7; and the second GPU computes the LL for the remaining shards (2, 4, 6, 8) in an iterative fashion (it is important to note that only 1 shard can fit in a GPU at one point of time).</p>
 
@@ -505,9 +505,9 @@ where,  </p>
 
 <h3>
 <a id="Conclusion" class="anchor" href="#bottomline" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The Bottom Line</h3>
-We have written a fast single-GPU implemenation: cuGP for exact GP regression. On comparing its performance with a strong competitive baseline, we find significant speedups for both training as well as prediction phases.
-Additionally, we also implemented a recently proposed approximate algorithm for GP regression and tailored it for a distributed multi-GPU environment, thus relaxing the memory requirement for a single GPU exact approach. Our implementation DA-cuGP harnesses the power of multiple GPUs running in parallel. The communication between these GPUs is handled by low-level socket programming. Careful inspection of the individual times suggest that the communication overhead is negligible.
-In order to scale to arbitary sized datasets, and to further relax the memory requirement constraint, we have extended the DA-cuGP approach by assigning multiple shards to each GPUs. This implementation, DAS-cuGP, scales well and is able to handle a real world dataset comprising of 1 million input data points.
+<p>We have written a fast single-GPU implemenation: cuGP for exact GP regression. On comparing its performance with a strong competitive baseline, we find significant speedups for both training as well as prediction phases. </p>
+<p> Additionally, we also implemented a recently proposed approximate algorithm for GP regression and tailored it for a distributed multi-GPU environment, thus relaxing the memory requirement for a single GPU exact approach. Our implementation DA-cuGP harnesses the power of multiple GPUs running in parallel. The communication between these GPUs is handled by low-level socket programming. Careful inspection of the individual times suggest that the communication overhead is negligible. </p>
+<p> In order to scale to arbitary sized datasets, and to further relax the memory requirement constraint, we have extended the DA-cuGP approach by assigning multiple shards to each GPUs. This implementation, DAS-cuGP, scales well and is able to handle a real world dataset comprising of 1 million input data points. </p>
 
 <h3>
 <a id="workdivision" class="anchor" href="#workdivision" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Work Division</h3>
