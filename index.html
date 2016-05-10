@@ -505,7 +505,7 @@ where,  </p>
 
 <h3>
 <a id="Conclusion" class="anchor" href="#bottomline" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The Bottom Line</h3>
-<p>We have written a fast single-GPU implemenation: cuGP for exact GP regression. On comparing its performance with a strong competitive baseline, we find significant speedups for both training as well as prediction phases. </p>
+<p>We have written a fast single-GPU implemenation: cuGP for exact GP regression. On comparing its performance with a strong competitive baseline, we find significant speedups for both training as well as prediction phases. Even after searching extensively, we did not find any open source GPU implementation of Gaussian Process Regression, and hence all our benchmarks were compared to our own baselines.</p>
 <p> Additionally, we also implemented a recently proposed approximate algorithm for GP regression and tailored it for a distributed multi-GPU environment, thus relaxing the memory requirement for a single GPU exact approach. Our implementation DA-cuGP harnesses the power of multiple GPUs running in parallel. The communication between these GPUs is handled by low-level socket programming. Careful inspection of the individual times suggest that the communication overhead is negligible. </p>
 <p> In order to scale to arbitary sized datasets, and to further relax the memory requirement constraint, we have extended the DA-cuGP approach by assigning multiple shards to each GPUs. This implementation, DAS-cuGP, scales well and is able to handle a real world dataset comprising of 1 million input data points. </p>
 
