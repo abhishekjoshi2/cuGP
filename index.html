@@ -185,8 +185,9 @@ We are contemplating moving to a distributed enviroment once we optimize our sin
 
 <p>A GP is completely specified by a mean function ($m(\vec{x})$) and a covariance function ($\kappa (\vec{x}_1, \vec{x}_2)$), which for a real process $f(\vec{x})$ can be defined as:</p>
 
-<p>$$ m(\vec{x}) = \mathbf{E}[f(\vec{x})] \ 
-\kappa (\vec{x}_1, \vec{x}_2) =  \mathbf{E}[(f(\vec{x}_1) - m(\vec{x}_1))( f(\vec{x}_2) - m(\vec{x}_2)  )] $$</p>
+<p>$$ m(\vec{x}) = \mathbf{E}[f(\vec{x})] $$</p>
+</br>
+<p> $$ \kappa (\vec{x}_1, \vec{x}_2) =  \mathbf{E}[(f(\vec{x}_1) - m(\vec{x}_1))( f(\vec{x}_2) - m(\vec{x}_2)  )] $$</p>
 
 <p>Generally, the mean function is taken as zero. In that case, the covariance function  ($\kappa (\vec{x}_1, \vec{x}_2)$) basically turns into the covariance between $f(\vec{x}_1)$ and $f(\vec{x}_2)$. The squared exponential (SE) kernel is a common choice of covariance function (amongst a wide range of available choices for the kernel), and is defined as follows:
 $$ \kappa (\vec{x}_1, \vec{x}_2)  = \exp( -\frac{1}{2l^2} | \vec{x}_1 -  \vec{x}_2 |^2 ),$$
@@ -330,8 +331,8 @@ We will use the C++ programming language for this project along with the Nvidia 
 
 <p>A GP is completely specified by a mean function ($m(\vec{x})$) and a covariance function ($\kappa (\vec{x}_1, \vec{x}_2)$), which for a real process $f(\vec{x})$ can be defined as:</p>
 
-<p>$$ m(\vec{x}) = \mathbf{E}[f(\vec{x})] \ 
-\kappa (\vec{x}_1, \vec{x}_2) =  \mathbf{E}[(f(\vec{x}_1) - m(\vec{x}_1))( f(\vec{x}_2) - m(\vec{x}_2)  )] $$</p>
+<p>$$ m(\vec{x}) = \mathbf{E}[f(\vec{x})] $$ </p>
+<p> $$ \kappa (\vec{x}_1, \vec{x}_2) =  \mathbf{E}[(f(\vec{x}_1) - m(\vec{x}_1))( f(\vec{x}_2) - m(\vec{x}_2)  )] $$</p>
 
 <p>Generally, the mean function is taken as zero. In that case, the covariance function  ($\kappa (\vec{x}_1, \vec{x}_2)$) basically turns into the covariance between $f(\vec{x}_1)$ and $f(\vec{x}_2)$. The squared exponential (SE) kernel is a common choice of covariance function (amongst a wide range of available choices for the kernel), and is defined as follows:
 $$ \kappa (\vec{x}_1, \vec{x}_2)  = \exp( -\frac{1}{2l^2} | \vec{x}_1 -  \vec{x}_2 |^2 ),$$
