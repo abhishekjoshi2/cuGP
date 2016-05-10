@@ -337,18 +337,18 @@ We will use the C++ programming language for this project along with the Nvidia 
 $$ \kappa (\vec{x}_1, \vec{x}_2)  = \exp( -\frac{1}{2l^2} | \vec{x}_1 -  \vec{x}_2 |^2 ),$$
 where, $l$ is the lengthscale parameter that needs to be estimated.</p>
 
-<p>In order to perform nonparametric regression, a GP prior is placed over the unknown function. The posterior distribution obtained by multiplying the prior with the likelihood is again a GP. The predictive distribution for a new test point ( $ \vec{x}_{t} $ ), given the entire dataset ($n$ tuples of the form $(\vec{x}, y)$) can be shown to be a Gaussian with the following mean ( $ \hat{f_{t}} $ ) and variance ( $ \mathbf{V}[f_{t}] $ ):
+<p>In order to perform nonparametric regression, a GP prior is placed over the unknown function. The posterior distribution obtained by multiplying the prior with the likelihood is again a GP. The predictive distribution for a new test point ( $ \vec{x}_{t} $ ), given the entire dataset ($N$ tuples of the form $(\vec{x}, y)$) can be shown to be a Gaussian with the following mean ( $ \hat{f_{t}} $ ) and variance ( $ \mathbf{V}[f_{t}] $ ):
 $$ \hat{f_{t}} = {\vec{k}_{t}}^{T} (K + \sigma_{n}^2I)^{-1} \vec{y} $$
 
 $$ \mathbf{V}[f_{t}] = \kappa (\vec{x}_{t}, \vec{x}_{t}) - {\vec{k}_{t}}^{T} (K + \sigma_{n}^2I)^{-1} \vec{k}_{t} $$
 where,  </p>
 
 <ul>
-<li> $K$ is a $n \times n$ matrix where the $ij$th entry is computed as $K_{ij} = \kappa (\vec{x}_i, \vec{x}_j)$,
-<li>$\vec{y}$ is a $n \times 1$ vector formed by stacking the $n$ target values together from the dataset,</li>
-<li>$I$ is a $n \times n$ identity matrix,</li>
+<li> $K$ is a $N \times N$ matrix where the $ij$th entry is computed as $K_{ij} = \kappa (\vec{x}_i, \vec{x}_j)$,
+<li>$\vec{y}$ is a $N \times 1$ vector formed by stacking the $n$ target values together from the dataset,</li>
+<li>$I$ is a $N \times N$ identity matrix,</li>
 <li>$\sigma^2$ is the noise variance,</li>
-<li>$ \vec{k}_{t}$ is a $n \times 1$ vector where each entry is computed as $ \vec{k}_{t_{i}} = \kappa (\vec{x}_i, \vec{x}_{t})$</li>
+<li>$ \vec{k}_{t}$ is a $N \times 1$ vector where each entry is computed as $ \vec{k}_{t_{i}} = \kappa (\vec{x}_i, \vec{x}_{t})$</li>
 </ul>
 
 
@@ -358,7 +358,7 @@ where,  </p>
 
 <p>If we consider $\vec{\theta}$ as the vector of parameters to estimate, gradient based methods (conjugate gradient of L-BFGS) can be employed after obtaining suitable analytic gradients $ \frac{\partial LML}{ \partial \vec{\theta}_i}$.</p>
 
-<p>The main bottlenecks for both training and prediction phases are the compute- and memory-intensive matrix computations, which take $\mathcal{O}(n^3)$ flops, thus limiting the application of GPs for large datasets having $ n &gt; 10000$ samples.</p>
+<p>The main bottlenecks for both training and prediction phases are the compute- and memory-intensive matrix computations, which take $\mathcal{O}(N^3)$ flops, thus limiting the application of GPs for large datasets having $ N &gt; 10000$ samples.</p>
 
 
 
@@ -377,7 +377,7 @@ where,  </p>
 <li> <u> GPR on CUDA: First attempt </u>
 <p> After acquainting ourselves with the nitty gritty details at each step, we implemented GP regression on CUDA writing our own kernels for each task. As in the previous case, we implemented the kernels for the required matrix computations ourselves. More precisely, we wrote a recursive blocked version of Cholesky decomposition as described in the paper by Dong et al [DH14]. One of the important steps in computing the likelihood as well as in computing the gradients,  is solving a triangular system of equations. An efficient method for solving such a system is to employ forward/backward substitution algorithm. Since both the algorithms are inherently sequential, we implemented a recursive algorithm for efficiently finding the inverse of a lower (upper) triangular matrix as given in [K09]. We also implemented a reasonably fast matrix-matrix multiplication kernel that uses shared memory.</p>
 
-<p>Implementing the kernels ourselves gave us the opportunity to fuse different operations together. We benchmark our implementation on a synthetic sine dataset, wherein the input data lives in a 10 dimensional space, and the function to approximate is a sine function that depends only on the first dimension. In order to make the targets (function obsrevations) noisy, we add a Gaussian noise to the function values (the variance of this Gaussian is 0.05). Figure 1 shows the performance of the most crucial functions (some of which are implemented with a series of kernels), on the synthetic dataset. Note that all our experiments were performed using the K40 GPUs. </p>
+<p>Implementing the kernels ourselves gave us the opportunity to fuse different operations together. We benchmark our implementation on a synthetic sine dataset, wherein the input data lives in a 10 dimensional space, and the function to approximate is a sine function that depends only on the first dimension. In order to make the targets (function obsrevations) noisy, we add a Gaussian noise to the function values (the variance of this Gaussian is 0.05). Figure 1 shows the performance of the most crucial functions (some of which are implemented with a series of kernels), on the synthetic dataset. Note that all our experiments were performed using the K40 GPUs present in the <i>latedays cluster</i>. </p>
 
 <img src="images/new_figure1_benchmarks.png" alt="naiveparallelmicrobench" height="500" width="600" align="middle">
 
@@ -449,7 +449,7 @@ where,  </p>
 </br>
 
 
-<p>Figures 3 and 4 compare the performance of cuGP with the baseline in the training and prediction phases respectively. The X-axis shows only the number of training points. In the case of prediction, the number of traning points for each experiment was 1000. We see signifiant speedup values over the baseline for both training as well as testing phases.</p>
+<p>Figures 3 and 4 compare the performance of cuGP with the baseline in the training and prediction phases respectively. The X-axis shows only the number of training points. In the case of prediction, the number of traning points for each experiment was 1000. We see signifiant speedup values over the baseline for both training as well as testing (prediction) phases. However, for smaller values of the input dataset, the CUDA baseline performs better than cuGP. This is because of fusing of multiple operations in the kernels in the baseline implementation.  </p>
 
 </br>
 
@@ -465,9 +465,9 @@ where,  </p>
 
 <li> <u> DA-cuGP: Distributed Approximate cuGP </u>
 
-<p>The single node cuGP implementation performs well on datasets of the size $ \mathcal{O}(10^4)$. Howerver, due to the $ \mathcal{O}(N^2) $ storage requirement, the cuGP implementation is limited by the amount of memory available on the device. To further scale, we have implemented a recent approach [DN14] which is an approximation to the exact GP regression. This was our stretch goal up until the checkpoint. We extend the method suggested in [DN14] to multiple GPUs. The high level idea of the approximate approach is to have several "experts", each of which is responsible for a subset of the original data. The approach basically approximates the originial covariance matrix to several blocks.</p>
+<p>The single node cuGP implementation performs well on datasets of the size $ \mathcal{O}(10^4)$. Howerver, due to the $ \mathcal{O}(N^2) $ storage requirement, the cuGP implementation is limited by the amount of memory available on the device. To further scale, we have implemented a recent approach [DN14] which is an approximation to the exact GP regression. This was our <i>stretch goal</i> up until the checkpoint. We extend the method suggested in [DN14] to multiple GPUs. The high level idea of the approximate approach is to have several "experts", each of which is responsible for a subset of the original data. The approach basically approximates the originial covariance matrix to several blocks. The input dataset is divided into $K$ chunks, and in oursetup each GP expert takes care of a single chunk.</p>
 
-<p>In this approach, the negative log marginal likelihood can be approximated by the sum of the log marginal likelihood values of each individual expert. The subtle point in the learning (training) phase is that the hyperparameters have to be shared across the experts.</p>
+<p>In this approach, the negative log marginal likelihood can be approximated by the sum of the log marginal likelihood values of each individual expert. The subtle point in the learning (training) phase is that the hyperparameters have to be shared across the experts. Due to this, the time complexity is $\mathcal{O}(N_c^3)$ where $N_c$ is the size of each of the $K$ data shards (which is basically the data subset size).</p>
 
 <p>This approach is similar to the parameter-server approach as discussed in the class. So one node (a master node) is responsible for storing the current hyperparamters of the GP model. At each step of the log likelihood / gradient compuatation, each of the workers (experts in our context) need to get the latest value of the hyperparameters, and perform the required computation. The master then collects the partial results and updates the hyperparameters and broadcasts back the new parameters to the experts for the next round. </p>
 
@@ -475,8 +475,7 @@ where,  </p>
 
 <p>In our implementation, experts are nothing but nodes on the latedays cluster, each with its own GPU. The host on one of these experts is assigned to be the master, and is responsible for initiating all communication. The other nodes are notified about the identity of the master at program launch.  We call our implementation Distributed Approximate cuGP (DA-cuGP).</p>
 
-<p>The performance of the DA-cuGP on the synthetic sine dataset is shown in Figure 5. The first bar corresponds to the exact GP working on a dataset with 10000 points. As we move towards the right, the number of GPUs increases and the size of the dataset per GPU decreases. As one might expect, we obtain massive speedup due to both reduction of the problem size, and asymptotically lower complexity of the approximate method itself.</p>
-
+<p>The performance of the DA-cuGP on the synthetic sine dataset is shown in Figure 5. The first bar corresponds to the exact GP working on a dataset with 10000 points. As we move towards the right, the number of GPUs increases and the size of the dataset per GPU decreases. As one might expect, we obtain massive speedup due to both reduction of the problem size, and asymptotically lower complexity of the approximate method itself. So for 10 GPUs, the shard size is $\frac{1}{10}$ of that handled by a single GP (which falls back to an exact GP model). Thus, we obtain super-linear speedups since the time complexity of this algorithm scales cubically with the shard size, and this is further amplified by the distributed computation. It is worth noting that as the number of GPUs increase, we incur a higher approximation in the prediction phase. However, inspecting the hyper-parameters we find that the variance in the values is reasonably small. </p>
 
 <img src="images/distributednew.png" alt="distributed" height="500" width="600" align="middle">
 
@@ -505,8 +504,10 @@ where,  </p>
 </ul>
 
 <h3>
-<a id="bottomline" class="anchor" href="#bottomline" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The Bottom Line</h3>
-We have implemented a fast single-GPU exact GP for regression, and extended it to a distributed approximate setting which can scale to modern data sets.
+<a id="Conclusion" class="anchor" href="#bottomline" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The Bottom Line</h3>
+We have written a fast single-GPU implemenation: cuGP for exact GP regression. On comparing its performance with a strong competitive baseline, we find significant speedups for both training as well as prediction phases.
+Additionally, we also implemented a recently proposed approximate algorithm for GP regression and tailored it for a distributed multi-GPU environment, thus relaxing the memory requirement for a single GPU exact approach. Our implementation DA-cuGP harnesses the power of multiple GPUs running in parallel. The communication between these GPUs is handled by low-level socket programming. Careful inspection of the individual times suggest that the communication overhead is negligible.
+In order to scale to arbitary sized datasets, and to further relax the memory requirement constraint, we have extended the DA-cuGP approach by assigning multiple shards to each GPUs. This implementation, DAS-cuGP, scales well and is able to handle a real world dataset comprising of 1 million input data points.
 
 <h3>
 <a id="references" class="anchor" href="#references" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>References</h3>
