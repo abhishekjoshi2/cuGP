@@ -21,6 +21,8 @@ void test_matrix_mult();
 
 void setup(int, std::string, std::string );
 
+void test_compute_K_train();
+
 void cg_solve(char *);
 
 void test_tmi();
@@ -176,7 +178,7 @@ int main(int argc, char *argv[])
 	int numtrain = 8192;
 	int numtest = 1000;
 	std::string prefix_input_file_name = "../chunked_dataset/siproper_9192_10_chunk";
-	std::string prefix_label_file_name = "../chunked_dataset/siproper_9192_10_label"; 
+	std::string prefix_label_file_name = "../chunked_dataset/siproper_9192_10_label";
 
 	std::string ipfile = prefix_input_file_name + std::to_string(worker_id) + std::string(".txt");
 	std::string opfile = prefix_label_file_name + std::to_string(worker_id) + std::string(".txt");
@@ -187,17 +189,29 @@ int main(int argc, char *argv[])
 		
 		setup(numtrain, ipfile, opfile);
 		
-		BCM_log_hyperparams = new double[3] = {0.50, 0.50, 0.50};
+		BCM_log_hyperparams = new double[3];
+		BCM_log_hyperparams[0] = 0.5;
+		BCM_log_hyperparams[1] = 0.5;
+		BCM_log_hyperparams[2] = 0.5;
 
-		set_loghyper_eigen_multinode(BCM_log_hyperparams);
+		Eigen::VectorXd new_eigen(3);
+
+		new_eigen[0] = BCM_log_hyperparams[0];
+		new_eigen[1] = BCM_log_hyperparams[1];
+		new_eigen[2] = BCM_log_hyperparams[2];
+
+		set_loghyper_eigen_multinode(new_eigen);
 		
+		test_compute_K_train();
+
+		return 0;
 		double st = CycleTimer::currentSeconds();
 		cg_solve(argv[1]);
 		double end = CycleTimer::currentSeconds();
 		printf("Total train time: %lf\n", end - st);
 
-		testing_phase(numtrain,numtest);
-		destruct_cublas_cusoler();	
+		/* testing_phase(numtrain,numtest);
+		destruct_cublas_cusoler();	*/
 	}
 	else
 	{

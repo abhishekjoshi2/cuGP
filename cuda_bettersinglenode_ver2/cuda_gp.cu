@@ -54,6 +54,7 @@ double *tempdiagonal; //for storing diagonal elements of tempWmatrix: NOTE: CAN 
 
 // K is the covariance matrix (will be updated depending upon hyper params
 double *K;
+double *K_new;
 double *a11;
 double *a21_transpose;
 double *l21_transpose_from_fs;
@@ -229,32 +230,6 @@ compute_K_train(double *M, double *K_output, double *loghyper, int n, int dim) {
 	int i_index = (blockIdx.x * blockDim.x + threadIdx.x);
 	int j_index = (blockIdx.y * blockDim.y + threadIdx.y);
 
-/*	if (i_index >= n * n) return;
-
-	double ell_sq = exp(loghyper[0] * 2); //l^2 after coverting back from the log form
-	double signal_var = exp(loghyper[1] * 2); // signal variance
-	double noise_var = exp(loghyper[2] * 2); //noise variance
-
-	int M_row, M_col;
-
-	M_row = i_index / n;
-	M_col = i_index % n;
-
-	if (M_row < M_col) // upper triangular bye bye
-		return;
-
-	if (M_row == M_col){
-		K_output[M_row * n + M_col] = signal_var +  noise_var;
-		return;
-	}
-
-	for (int i = 0; i < dim; i++)
-		dot_product += (M[M_row * dim + i] - M[M_col * dim + i]) * (M[M_row * dim + i] - M[M_col * dim + i]);
-
-	dot_product = signal_var * exp(-dot_product * 0.5 / ell_sq);
-
-	K_output[M_row * n + M_col] = K_output[M_col * n + M_row] = dot_product;
-*/
 	if (i_index >= n || j_index >= n || i_index > j_index) return;
 
 	double ell_sq = exp(loghyper[0] * 2); //l^2 after coverting back from the log form
@@ -273,6 +248,110 @@ compute_K_train(double *M, double *K_output, double *loghyper, int n, int dim) {
 	}
 	dot_product = signal_var * exp(-dot_product * 0.5 / ell_sq);
 	K_output[j_index * n + i_index] = K_output[i_index * n + j_index] = dot_product;
+}
+
+__global__ void
+compute_K_train_new(double *M, double *K_output, double *loghyper, int n, int dim) {
+
+		double tmp = 0.0;
+		/*__shared__ double K1_shared[32][dim];
+		__shared__ double N_shared[32][dim];
+
+		int col = blockIdx.x * blockDim.x + threadIdx.x;
+		int row = blockIdx.y * blockDim.y + threadIdx.y;
+
+		for(int m = 0; m < (BLOCK_SIZE + colsA - 1)/BLOCK_SIZE; m++)
+		{
+			if(m * BLOCK_SIZE + threadIdx.x < colsA && row < rowsA)
+			{
+				M_shared[threadIdx.y][threadIdx.x] =
+					A[row * colsA + m * BLOCK_SIZE + threadIdx.x];
+			}
+			else
+			{
+				M_shared[threadIdx.y][threadIdx.x] = 0.0;
+			}
+
+			if(m * BLOCK_SIZE + threadIdx.y < rowsB && col < colsB)
+			{
+				N_shared[threadIdx.y][threadIdx.x] =
+					B[(m * BLOCK_SIZE + threadIdx.y) * colsB + col];
+			}
+			else
+			{
+				N_shared[threadIdx.y][threadIdx.x] = 0.0;
+			}
+			__syncthreads();
+
+
+			for(int tileIndex = 0; tileIndex < BLOCK_SIZE; tileIndex++)
+			{
+				tmp += M_shared[threadIdx.y][tileIndex] * N_shared[tileIndex][threadIdx.x];
+			}
+			__syncthreads();
+		}
+
+		if(row < rowsA && col < colsB)
+		{
+			C[((blockIdx.y * blockDim.y + threadIdx.y) * colsB) +
+				(blockIdx.x * blockDim.x) + threadIdx.x] = tmp;
+		} */
+
+	__shared__ double M1_shared[32][10];
+	__shared__ double M2_shared[32][10];
+
+	int j_index = (blockIdx.x * blockDim.x + threadIdx.x);
+	int i_index = (blockIdx.y * blockDim.y + threadIdx.y);
+
+	if (i_index >= n || j_index >= n) return;
+
+	double ell_sq = exp(loghyper[0] * 2); //l^2 after coverting back from the log form
+	double signal_var = exp(loghyper[1] * 2); // signal variance
+	double noise_var = exp(loghyper[2] * 2); //noise variance
+
+	// first bring in all rows
+	if (threadIdx.x < dim)
+	{
+		M1_shared[threadIdx.y][threadIdx.x] = M[i_index * dim + threadIdx.x];
+		//printf("M1_shared[%d][%d] = M[%d]\n", threadIdx.y, threadIdx.x, i_index * dim + threadIdx.x);
+		//printf("M2_shared[%d][%d] = M[%d]\n", threadIdx.y, threadIdx.x, j_index * dim + threadIdx.x);
+	}
+
+	// now bring in all columns
+	if (threadIdx.y < dim)
+	{
+		M2_shared[threadIdx.x][threadIdx.y] = M[j_index * dim + threadIdx.y];
+	}
+
+	__syncthreads();
+
+	if (j_index > i_index) return;
+	/* if (threadIdx.x == 0 && threadIdx.y == 0)
+	{
+		for (int i = 0; i < 32; i++)
+			for (int j = 0; j < 10; j++)
+				if (M1_shared[i][j] != M2_shared[i][j])
+				{
+					printf("Shared matrices are not same! i = %d, j = %d\n", i, j);
+				}
+		printf("Dim is %d\n", dim);
+		printf("Shared matrices are same!\n");
+	} */
+
+	double dot_product = 0.0;
+	for(int i = 0; i < dim; i++) {
+		double val1 = M1_shared[threadIdx.y][i];
+		double val2 = M2_shared[threadIdx.x][i];
+		dot_product += (val1 - val2) * (val1 - val2);
+	}
+	dot_product = signal_var * exp(-dot_product * 0.5 / ell_sq);
+	//K_output[j_index * n + i_index] = K_output[i_index * n + j_index] = dot_product;
+	K_output[j_index * n + i_index] = K_output[i_index * n + j_index] = dot_product;
+
+	if (i_index == j_index) {
+		K_output[j_index * n + i_index] = signal_var + noise_var;
+		return;
+	}
 }
 
 __global__ void
@@ -467,6 +546,9 @@ void setup_loglikelihood_data()
 {
 	// this is the covariance matrix
 	cudacall(cudaMalloc(&K, sizeof(double) * N * N));
+	
+	// this is the new covariance matrix
+	cudacall(cudaMalloc(&K_new, sizeof(double) * N * N));
 	
 	//matrix for storing K.inverse()
 	cudacall(cudaMalloc(&Kinv, sizeof(double) * N * N));
@@ -1012,6 +1094,58 @@ void get_negative_log_predprob(){
 	
 	cudacall(cudaMemcpy(finalans, ans_nlpp,  sizeof(double), cudaMemcpyDeviceToHost));
 	printf("OKAY FINAL NLPP = %lf\n", *finalans);
+}
+
+void test_compute_K_train()
+{
+	double *K_host, *K_new_host;
+
+	K_host = new double[N * N];
+	K_new_host = new double[N * N];
+
+	dim3 blockDim1(32,32);
+ 	dim3 gridDim1( upit(N, blockDim1.x), upit(N, blockDim1.y));
+	double ckts = CycleTimer::currentSeconds();
+	compute_K_train<<<gridDim1, blockDim1>>>(X, K, loghyper, N, DIM); // kernel
+	cudaThreadSynchronize();
+	double ckte = CycleTimer::currentSeconds();
+	printf("compute_K_train time: %lf\n", ckte - ckts);
+
+	dim3 blockDim2(32,32);
+ 	dim3 gridDim2( upit(N, blockDim2.x), upit(N, blockDim2.y));
+	ckts = CycleTimer::currentSeconds();
+	compute_K_train_new<<<gridDim2, blockDim2>>>(X, K_new, loghyper, N, DIM); // kernel
+	cudaThreadSynchronize();
+	ckte = CycleTimer::currentSeconds();
+	printf("compute_K_train_new time: %lf\n", ckte - ckts);
+
+	cudacall(cudaMemcpy(K_host, K, sizeof(double) * N * N, cudaMemcpyDeviceToHost));	
+	cudacall(cudaMemcpy(K_new_host, K_new, sizeof(double) * N * N, cudaMemcpyDeviceToHost));	
+
+	bool correct = true;
+	/* for (int i = 0; i < N * N; i++)
+	{
+		if (K_host[i] == K_new_host[i])
+		{
+			std::cout << "Y";
+		}
+		else
+			std::cout << "N";
+		if (i % N == N - 1)
+			std::cout << std::endl;
+	} */
+
+	for (int i = 0; i < N * N; i++)
+	{
+		if (K_host[i] != K_new_host[i])
+		{
+			std::cout << "Not same!" << std::endl;
+			return ;
+		}
+	}
+
+	std::cout << "Success!" << std::endl;
+	
 }
 
 void testing_phase(int offset, int numtest){
