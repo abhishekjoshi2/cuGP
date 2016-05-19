@@ -202,9 +202,8 @@ int main(int argc, char *argv[])
 
 		set_loghyper_eigen_multinode(new_eigen);
 		
-		test_compute_K_train();
-
-		return 0;
+		// test_compute_K_train();
+		// return 0;
 		double st = CycleTimer::currentSeconds();
 		cg_solve(argv[1]);
 		double end = CycleTimer::currentSeconds();
